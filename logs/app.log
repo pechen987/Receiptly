@@ -1,0 +1,909 @@
+2025-06-01 15:47:14,900 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 15:47:47,966 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 15:51:48,074 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 15:51:51,362 ERROR: An unexpected error occurred [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/.venv/lib/python3.9/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/.venv/lib/python3.9/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/auth.py", line 51, in register
+    user.set_password(password)
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/models.py", line 22, in set_password
+    self.password_hash = generate_password_hash(password)
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/.venv/lib/python3.9/site-packages/werkzeug/security.py", line 101, in generate_password_hash
+    h, actual_method = _hash_internal(method, salt, password)
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/.venv/lib/python3.9/site-packages/werkzeug/security.py", line 43, in _hash_internal
+    hashlib.scrypt(password, salt=salt, n=n, r=r, p=p, maxmem=maxmem).hex(),
+AttributeError: module 'hashlib' has no attribute 'scrypt'
+2025-06-01 15:53:08,709 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 15:53:14,263 ERROR: An unexpected error occurred [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/.venv/lib/python3.9/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/.venv/lib/python3.9/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/auth.py", line 51, in register
+    user.set_password(password)
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/models.py", line 22, in set_password
+    self.password_hash = generate_password_hash(password)
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/.venv/lib/python3.9/site-packages/werkzeug/security.py", line 101, in generate_password_hash
+    h, actual_method = _hash_internal(method, salt, password)
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/.venv/lib/python3.9/site-packages/werkzeug/security.py", line 43, in _hash_internal
+    hashlib.scrypt(password, salt=salt, n=n, r=r, p=p, maxmem=maxmem).hex(),
+AttributeError: module 'hashlib' has no attribute 'scrypt'
+2025-06-01 15:53:52,773 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 15:53:55,053 ERROR: An unexpected error occurred [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/.venv/lib/python3.9/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/.venv/lib/python3.9/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/auth.py", line 51, in register
+    user.set_password(password)
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/models.py", line 23, in set_password
+    self.password_hash = generate_password_hash(password, method='bcrypt')
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/.venv/lib/python3.9/site-packages/werkzeug/security.py", line 101, in generate_password_hash
+    h, actual_method = _hash_internal(method, salt, password)
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/.venv/lib/python3.9/site-packages/werkzeug/security.py", line 66, in _hash_internal
+    raise ValueError(f"Invalid hash method '{method}'.")
+ValueError: Invalid hash method 'bcrypt'.
+2025-06-01 18:44:28,898 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:44:43,394 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:45:35,789 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:45:36,059 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:46:07,421 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/auth.py", line 85, in login
+    user = User.query.filter_by(email=email).first()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/sqlalchemy/orm/query.py", line 2759, in first
+    return self.limit(1)._iter().first()  # type: ignore
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/sqlalchemy/orm/query.py", line 2858, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/sqlalchemy/orm/session.py", line 2365, in execute
+    return self._execute_internal(
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    bind = self.get_bind(**bind_arguments)
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_sqlalchemy/session.py", line 53, in get_bind
+    engines = self._db.engines
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_sqlalchemy/extension.py", line 690, in engines
+    raise RuntimeError(
+RuntimeError: The current Flask app is not registered with this 'SQLAlchemy' instance. Did you forget to call 'init_app', or did you create multiple 'SQLAlchemy' instances?
+2025-06-01 18:47:39,140 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:48:10,363 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:48:24,697 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/auth.py", line 89, in login
+    db_instance = app.db # Access db via current_app
+AttributeError: 'Flask' object has no attribute 'db'
+2025-06-01 18:49:20,841 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:49:36,271 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/auth.py", line 90, in login
+    user = User.query.filter_by(email=email).first() # Use imported db implicitly via User.query
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/sqlalchemy/orm/query.py", line 2759, in first
+    return self.limit(1)._iter().first()  # type: ignore
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/sqlalchemy/orm/query.py", line 2858, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/sqlalchemy/orm/session.py", line 2365, in execute
+    return self._execute_internal(
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    bind = self.get_bind(**bind_arguments)
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_sqlalchemy/session.py", line 53, in get_bind
+    engines = self._db.engines
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_sqlalchemy/extension.py", line 690, in engines
+    raise RuntimeError(
+RuntimeError: The current Flask app is not registered with this 'SQLAlchemy' instance. Did you forget to call 'init_app', or did you create multiple 'SQLAlchemy' instances?
+2025-06-01 18:50:36,503 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:51:20,229 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:51:20,480 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:51:28,969 INFO: Created new user: igorek.krug@yandex.ru [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/auth.py:59]
+2025-06-01 18:51:51,438 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/app.py", line 743, in get_widget_order
+    user_id = request.user.get('user_id')
+AttributeError: 'Request' object has no attribute 'user'
+2025-06-01 18:52:41,824 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/app.py", line 743, in get_widget_order
+    user_id = request.user.get('user_id')
+AttributeError: 'Request' object has no attribute 'user'
+2025-06-01 18:54:13,214 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:54:42,381 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:54:49,858 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:54:59,418 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:55:21,887 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:55:22,133 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 18:55:35,516 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 18:55:35,517 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 18:56:27,945 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 18:56:27,947 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 18:57:36,135 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 18:57:36,135 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 18:57:43,361 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 18:57:43,362 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:00:17,449 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:06:48,882 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:06:49,140 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:06:52,082 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:06:52,083 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:06:52,871 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:06:52,872 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:07:04,161 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:07:04,161 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:07:18,567 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:07:18,568 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:10:38,960 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:10:38,960 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:11:03,541 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:11:03,803 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:11:16,355 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:11:16,357 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:11:28,865 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:11:28,865 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:14:08,619 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:14:08,868 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:14:21,635 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:14:21,635 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:16:34,861 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:16:56,894 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:17:09,595 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:17:25,348 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:17:40,021 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:18:00,940 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:18:04,908 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:18:04,908 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:18:18,764 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:18:39,960 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:18:39,960 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:18:50,070 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:19:07,990 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:19:19,595 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:19:55,951 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:22:31,761 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:22:32,022 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 19:22:48,107 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:22:48,109 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:22:53,941 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:22:53,942 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:22:53,942 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:22:53,943 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:51:31,221 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 19:51:31,228 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5MjE3M30.Kw5RbCcpLqjg3X6tmyXeoSlBBpq78AIO2creJqAVuE4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 19:51:31,230 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 19:51:31,231 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 19:51:31,239 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 19:51:31,302 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 19:51:31,303 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5MjE3M30.Kw5RbCcpLqjg3X6tmyXeoSlBBpq78AIO2creJqAVuE4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 19:51:31,303 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 19:51:31,312 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 19:51:31,313 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5MjE3M30.Kw5RbCcpLqjg3X6tmyXeoSlBBpq78AIO2creJqAVuE4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 19:51:31,316 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 19:51:33,545 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:51:33,545 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 19:51:40,255 INFO: [Analytics] Spend analytics request - user_id: 1, interval: weekly [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 19:51:40,255 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5MjE3M30.Kw5RbCcpLqjg3X6tmyXeoSlBBpq78AIO2creJqAVuE4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 19:51:40,255 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'weekly')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 19:51:40,256 INFO: [Analytics] Fetching spend analytics for user 1 with interval weekly [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 19:51:40,259 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 19:51:41,882 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 19:51:41,882 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5MjE3M30.Kw5RbCcpLqjg3X6tmyXeoSlBBpq78AIO2creJqAVuE4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 19:51:41,882 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 19:51:41,882 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 19:51:41,884 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 19:51:48,008 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 19:51:48,010 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 20:24:13,629 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:24:13,883 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:24:28,967 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 20:24:28,969 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 20:24:37,546 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 20:24:37,547 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NTg3NH0.k0wUjvwJXP6x4wMaLCxW_6nxK4c8R4PuPpxsistujAA
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 20:24:37,547 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 20:24:37,548 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 20:24:37,553 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 20:24:37,615 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:24:37,616 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NTg3NH0.k0wUjvwJXP6x4wMaLCxW_6nxK4c8R4PuPpxsistujAA
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:24:37,616 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:24:37,628 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:24:37,631 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NTg3NH0.k0wUjvwJXP6x4wMaLCxW_6nxK4c8R4PuPpxsistujAA
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:24:37,631 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:24:50,412 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:24:57,028 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 20:24:57,029 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NTg3NH0.k0wUjvwJXP6x4wMaLCxW_6nxK4c8R4PuPpxsistujAA
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 20:24:57,029 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 20:24:57,030 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 20:24:57,037 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 20:24:57,123 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:24:57,126 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NTg3NH0.k0wUjvwJXP6x4wMaLCxW_6nxK4c8R4PuPpxsistujAA
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:24:57,128 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:24:58,309 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 20:24:58,310 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NTg3NH0.k0wUjvwJXP6x4wMaLCxW_6nxK4c8R4PuPpxsistujAA
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 20:24:58,310 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 20:24:58,311 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 20:24:58,314 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 20:24:58,394 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:24:58,395 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NTg3NH0.k0wUjvwJXP6x4wMaLCxW_6nxK4c8R4PuPpxsistujAA
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:24:58,412 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:24:59,293 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 20:24:59,293 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NTg3NH0.k0wUjvwJXP6x4wMaLCxW_6nxK4c8R4PuPpxsistujAA
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 20:24:59,294 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 20:24:59,294 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 20:24:59,297 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 20:24:59,376 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:24:59,384 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NTg3NH0.k0wUjvwJXP6x4wMaLCxW_6nxK4c8R4PuPpxsistujAA
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:24:59,389 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:25:00,972 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 20:25:00,973 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NTg3NH0.k0wUjvwJXP6x4wMaLCxW_6nxK4c8R4PuPpxsistujAA
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 20:25:00,973 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 20:25:00,973 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 20:25:00,977 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 20:25:01,052 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:25:01,052 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NTg3NH0.k0wUjvwJXP6x4wMaLCxW_6nxK4c8R4PuPpxsistujAA
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:25:01,056 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:25:35,966 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:25:35,967 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NTg3NH0.k0wUjvwJXP6x4wMaLCxW_6nxK4c8R4PuPpxsistujAA
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:25:35,970 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:25:36,424 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 20:25:36,424 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 20:25:50,268 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 20:25:50,269 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 20:25:55,288 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 20:25:55,289 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 20:27:53,712 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 20:27:53,712 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 20:28:36,177 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 20:28:36,178 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 20:28:36,179 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 20:28:36,182 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 20:29:30,949 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:29:31,200 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:29:56,304 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 20:29:56,305 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NjE5MX0.Pfln29p4iylYsS7YK5XyY-fGZZGySjBuctxu5Nhu7ZY
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 20:29:56,305 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 20:29:56,305 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 20:29:56,311 INFO: [Analytics] Found 2 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 20:29:56,371 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:29:56,372 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NjE5MX0.Pfln29p4iylYsS7YK5XyY-fGZZGySjBuctxu5Nhu7ZY
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:29:56,379 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:29:56,380 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:29:56,382 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NjE5MX0.Pfln29p4iylYsS7YK5XyY-fGZZGySjBuctxu5Nhu7ZY
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:29:56,390 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:45:59,334 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:46:30,677 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:52:43,107 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:52:43,346 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:52:46,084 INFO: [Analytics] Spend analytics request - user_id: 1, interval: weekly [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 20:52:46,085 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NjE5MX0.Pfln29p4iylYsS7YK5XyY-fGZZGySjBuctxu5Nhu7ZY
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 20:52:46,085 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'weekly')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 20:52:46,086 INFO: [Analytics] Fetching spend analytics for user 1 with interval weekly [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 20:52:46,101 INFO: [Analytics] Found 2 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 20:52:46,161 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:52:46,161 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NjE5MX0.Pfln29p4iylYsS7YK5XyY-fGZZGySjBuctxu5Nhu7ZY
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:52:46,161 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:54:09,321 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:54:18,869 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:54:48,832 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:54:49,067 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:55:01,977 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 20:55:01,979 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 20:55:12,001 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 20:55:12,001 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NzcwN30.N4jCBXHGg0hwGn8wKCu1SB4bzysa2qL74KbljNxx23s
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 20:55:12,001 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 20:55:12,002 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 20:55:12,008 INFO: [Analytics] Found 2 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 20:55:12,088 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:55:12,090 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:55:12,095 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NzcwN30.N4jCBXHGg0hwGn8wKCu1SB4bzysa2qL74KbljNxx23s
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:55:12,095 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NzcwN30.N4jCBXHGg0hwGn8wKCu1SB4bzysa2qL74KbljNxx23s
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:55:12,096 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:55:12,099 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:55:57,518 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:56:07,062 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:56:25,798 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:56:37,501 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:57:03,655 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 20:57:22,416 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 20:57:22,416 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NzcwN30.N4jCBXHGg0hwGn8wKCu1SB4bzysa2qL74KbljNxx23s
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 20:57:22,416 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 20:57:22,417 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 20:57:22,423 INFO: [Analytics] Found 2 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 20:57:22,498 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:57:22,498 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NzcwN30.N4jCBXHGg0hwGn8wKCu1SB4bzysa2qL74KbljNxx23s
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:57:22,498 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:57:23,405 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 20:57:23,405 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NzcwN30.N4jCBXHGg0hwGn8wKCu1SB4bzysa2qL74KbljNxx23s
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 20:57:23,406 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 20:57:23,406 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 20:57:23,410 INFO: [Analytics] Found 2 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 20:57:23,494 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:57:23,501 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NzcwN30.N4jCBXHGg0hwGn8wKCu1SB4bzysa2qL74KbljNxx23s
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:57:23,505 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 20:57:24,715 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:26]
+2025-06-01 20:57:24,715 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NzcwN30.N4jCBXHGg0hwGn8wKCu1SB4bzysa2qL74KbljNxx23s
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:27]
+2025-06-01 20:57:24,715 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:28]
+2025-06-01 20:57:24,716 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:46]
+2025-06-01 20:57:24,718 INFO: [Analytics] Found 2 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:64]
+2025-06-01 20:57:24,805 INFO: [Analytics] Top products request - user_id: 1, period: month [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:82]
+2025-06-01 20:57:24,809 INFO: [Analytics] Request headers: Host: 192.168.1.190:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3826.500.131 Darwin/24.5.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc0ODg5NzcwN30.N4jCBXHGg0hwGn8wKCu1SB4bzysa2qL74KbljNxx23s
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:83]
+2025-06-01 20:57:24,810 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '8')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:84]
+2025-06-01 21:03:54,833 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 21:03:55,090 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-06-01 21:04:42,048 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 21:04:42,048 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 21:07:15,742 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 21:07:15,742 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 21:07:27,514 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 21:07:27,515 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError
+2025-06-01 21:09:19,852 WARNING: Token is missing! [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py:21]
+2025-06-01 21:09:19,852 ERROR: An unexpected error occurred: [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/errors.py:56]
+Traceback (most recent call last):
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/igorkruglov/Library/Python/3.9/lib/python/site-packages/flask_cors/decorator.py", line 121, in wrapped_function
+    resp = make_response(f(*args, **kwargs))
+  File "/Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/utils/decorators.py", line 22, in decorated
+    raise AuthenticationError('Token is missing!')
+backend.errors.AuthenticationError

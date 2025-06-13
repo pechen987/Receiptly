@@ -1,0 +1,7 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Always consult with project architecture for better understanding of the app. Write clean, logical, production ready code. Act like a top CTO and like yor life depends on writing the best code ever.
+[architecture.md](mdc:assets/architecture.md)
