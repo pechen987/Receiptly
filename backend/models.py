@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.ext.mutable import MutableList
 
 db = SQLAlchemy()
 
@@ -20,6 +21,15 @@ class User(db.Model):
     next_billing_date = db.Column(db.DateTime, nullable=True)
     subscription_end_date = db.Column(db.DateTime, nullable=True)  # For cancelled subscriptions
     subscription_status = db.Column(db.String(20), nullable=True)  # active, cancelled, etc.
+
+    trial_start_date = db.Column(db.DateTime, nullable=True)
+    trial_end_date = db.Column(db.DateTime, nullable=True)
+    is_trial_active = db.Column(db.Boolean, default=False)
+
+    has_completed_onboarding = db.Column(db.Boolean, default=False, nullable=False)
+    onboarding_goals = db.Column(db.JSON, nullable=True)
+    onboarding_features = db.Column(db.JSON, nullable=True)
+    onboarding_completed_at = db.Column(db.DateTime, nullable=True)
 
     # Optional: One-to-many relationship
     receipts = db.relationship('Receipt', backref='user', lazy=True)
@@ -47,7 +57,7 @@ class Receipt(db.Model):
     tax_amount = db.Column(db.Float)
     total_discount = db.Column(db.Float)
 
-    items = db.Column(JSON)  # Stores list of {"name", "quantity", "price", "category", "total", "discount"}
+    items = db.Column(MutableList.as_mutable(JSON))  # Stores list of {"name", "quantity", "price", "category", "total", "discount"} and tracks mutations
     fingerprint = db.Column(db.String(64), nullable=False, index=True)  # SHA256 hex string
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

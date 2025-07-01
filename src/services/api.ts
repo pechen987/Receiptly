@@ -102,25 +102,52 @@ api.interceptors.response.use(
   }
 );
 
+// Validate promocode
+export const validatePromocode = async (promoCode: string) => {
+  try {
+    const response = await api.post('/api/subscription/validate-promocode', { promo_code: promoCode });
+    return response.data;
+  } catch (error: any) {
+    console.log('Error validating promocode:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'Failed to validate promocode');
+  }
+};
+
 // Subscription setup function for Stripe payments
-export const createStripeSubscriptionSetup = async (plan: string, billingDetails: any) => {
+export const createStripeSubscriptionSetup = async (plan: string, billingDetails: any, promotionCodeId?: string) => {
   try {
     console.log(`Creating subscription setup for plan: ${plan}`);
-    
     const response = await api.post('/api/subscription/create-subscription-setup', {
       plan: plan,
-      billing_details: billingDetails
+      billing_details: billingDetails,
+      promotion_code_id: promotionCodeId || undefined
     });
-    
     console.log('Subscription setup response:', response.data);
     return response.data;
   } catch (error: any) {
-    console.error('Error creating subscription setup:', error.response?.data || error.message);
+    console.log('Error creating subscription setup:', error.response?.data || error.message);
     throw new Error(error.response?.data?.error || 'Failed to create subscription setup');
   }
 };
 
-// Complete subscription payment after Stripe payment sheet
+// Complete trial setup function
+export const completeTrialSetup = async (setupIntentId: string) => {
+  try {
+    console.log(`Completing trial setup for setup intent: ${setupIntentId}`);
+    
+    const response = await api.post('/api/subscription/complete-trial-setup', {
+      setup_intent_id: setupIntentId
+    });
+    
+    console.log('Trial setup completion response:', response.data);
+    return response.data;
+  } catch (error: any) {
+    console.log('Error completing trial setup:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || 'Failed to complete trial setup');
+  }
+};
+
+// Complete subscription payment function
 export const completeSubscriptionPayment = async (paymentIntentId: string) => {
   try {
     console.log(`Completing subscription payment for: ${paymentIntentId}`);
@@ -132,19 +159,26 @@ export const completeSubscriptionPayment = async (paymentIntentId: string) => {
     console.log('Complete payment response:', response.data);
     return response.data;
   } catch (error: any) {
-    console.error('Error completing subscription payment:', error.response?.data || error.message);
+    console.log('Error completing subscription payment:', error.response?.data || error.message);
     throw new Error(error.response?.data?.error || 'Failed to complete subscription payment');
   }
 };
 
-// Get user's receipt count and plan info
-export const getReceiptCount = async () => {
+// Complete custom payment function
+export const completeCustomPayment = async (clientSecret: string, intentType: string) => {
   try {
-    const response = await api.get('/api/subscription/receipt-count');
+    console.log(`Completing custom payment for intent type: ${intentType}`);
+    
+    const response = await api.post('/api/subscription/complete-custom-payment', {
+      client_secret: clientSecret,
+      intent_type: intentType
+    });
+    
+    console.log('Custom payment completion response:', response.data);
     return response.data;
   } catch (error: any) {
-    console.error('Error fetching receipt count:', error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || 'Failed to fetch receipt count');
+    console.log('Error completing custom payment:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || 'Failed to complete custom payment');
   }
 };
 

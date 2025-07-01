@@ -74,6 +74,7 @@ from backend.utils.decorators import token_required
 from backend.routes.analytics import analytics_bp
 from backend.routes.profile import profile_bp
 from backend.routes.receipts import receipts_bp
+from backend.routes.filters import filters_bp
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -89,6 +90,7 @@ app.register_blueprint(analytics_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(receipts_bp)
 app.register_blueprint(subscription_bp)
+app.register_blueprint(filters_bp)
 
 # Define the path for uploaded images
 UPLOAD_FOLDER = os.path.join(project_root, 'uploads')

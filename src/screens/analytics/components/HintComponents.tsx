@@ -28,7 +28,7 @@ const modalStyles = StyleSheet.create({
     textAlign: 'left',
   },
   hintIcon: {
-    marginLeft: 0, // Reduce space between title text and icon
+    top: 2,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -39,7 +39,7 @@ const modalStyles = StyleSheet.create({
   },
   closeIcon: {
     position: 'absolute',
-    top: 0,
+    top: 4,
     right: 0,
     padding: 8,
     zIndex: 1,

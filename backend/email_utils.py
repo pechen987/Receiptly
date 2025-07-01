@@ -33,49 +33,59 @@ def send_confirmation_email(mail, to_email, username, token):
         subject="Confirm Your Email Address",
         recipients=[to_email],
         html=f"""
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <h1 style="color: #4a6fa5; margin-bottom: 20px;">Welcome to Our App!</h1>
-            <p>Hello {username},</p>
-            <p>Thank you for registering. Please confirm your email address by clicking the button below:</p>
-            <div style="margin: 25px 0;">
-                <a href="{confirm_url}" 
-                   style="background-color: #4a6fa5; 
-                          color: white; 
-                          padding: 12px 24px; 
-                          text-decoration: none; 
-                          border-radius: 4px;
-                          font-weight: bold;
-                          display: inline-block;
-                          margin: 10px 0;">
-                    Confirm Email
-                </a>
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #16191f; color: #e6e9f0;">
+            <div style="background: #232632; border-radius: 16px; padding: 32px; border: 1px solid #333; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                <h1 style="color: #7e5cff; margin-bottom: 20px; font-size: 28px; font-weight: 700; text-align: center;">Welcome to Receiptly!</h1>
+                <p style="color: #c1c6d9; font-size: 16px; line-height: 1.6; margin-bottom: 16px;">Hello {username},</p>
+                <p style="color: #c1c6d9; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">Thank you for registering with Receiptly. Please confirm your email address by clicking the button below:</p>
+                
+                <div style="margin: 32px 0; text-align: center;">
+                    <a href="{confirm_url}" 
+                       style="background-color: #7e5cff; 
+                              color: white; 
+                              padding: 16px 32px; 
+                              text-decoration: none; 
+                              border-radius: 8px;
+                              font-weight: 600;
+                              display: inline-block;
+                              margin: 10px 0;
+                              font-size: 16px;
+                              transition: background-color 0.3s ease;">
+                        Confirm Email Address
+                    </a>
+                </div>
+                
+                <p style="color: #8ca0c6; font-size: 14px; margin-bottom: 16px;">If the button above doesn't work, you can also copy and paste this link in your browser:</p>
+                <div style="word-break: break-all; color: #c1c6d9; background: #1a1d24; padding: 16px; border-radius: 8px; font-size: 14px; border: 1px solid #333; margin-bottom: 24px;">
+                    {confirm_url}
+                </div>
+                
+                <div style="margin-top: 32px; padding: 20px; background: #1a1d24; border-radius: 8px; border-left: 4px solid #7e5cff;">
+                    <p style="margin: 0; color: #8ca0c6; font-size: 14px;">
+                        <strong style="color: #7e5cff;">Security Notice:</strong> This link will expire in 24 hours for your security.
+                    </p>
+                </div>
+                
+                <hr style="border: none; border-top: 1px solid #333; margin: 32px 0;">
+                <p style="color: #8ca0c6; font-size: 14px; text-align: center; margin: 0;">
+                    If you didn't create an account, you can safely ignore this email.
+                </p>
             </div>
-            <p>Or copy and paste this link in your browser:</p>
-            <p style="word-break: break-all; color: #333; background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 0.9em;">
-                {confirm_url}
-            </p>
-            <p style="color: #666; font-size: 0.9em; margin-top: 20px;">
-                This link will expire in 24 hours.
-            </p>
-            <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;">
-            <p style="color: #999; font-size: 0.9em;">
-                If you didn't create an account, you can safely ignore this email.
-            </p>
         </div>
         """
     )
     
     # Add plain text version as well
     msg.body = f"""
-    Welcome to Our App!
+    Welcome to Receiptly!
     
     Hello {username},
     
-    Thank you for registering. Please confirm your email address by visiting the following link:
+    Thank you for registering with Receiptly. Please confirm your email address by visiting the following link:
     
     {confirm_url}
     
-    This link will expire in 24 hours.
+    This link will expire in 24 hours for your security.
     
     If you didn't create an account, you can safely ignore this email.
     """
@@ -97,40 +107,44 @@ def send_password_reset_email(mail, to_email, username, token):
         subject="Reset Your Password",
         recipients=[to_email],
         html=f"""
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <h1 style="color: #7e5cff; margin-bottom: 20px;">Reset Your Password</h1>
-            <p>Hello {username},</p>
-            <p>We received a request to reset your password. If you didn't make this request, you can safely ignore this email.</p>
-            
-            <div style="margin: 25px 0;">
-                <a href="{reset_url}" 
-                   style="background-color: #7e5cff; 
-                          color: white; 
-                          padding: 12px 24px; 
-                          text-decoration: none; 
-                          border-radius: 8px;
-                          font-weight: bold;
-                          display: inline-block;
-                          margin: 10px 0;">
-                    Reset Password in App
-                </a>
-            </div>
-            
-            <p>If the button above doesn't work, you can also copy and paste this link in your mobile browser (it will open the app):</p>
-            <p style="word-break: break-all; color: #333; background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 0.9em;">
-                {reset_url}
-            </p>
-            
-            <div style="margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 4px; border-left: 4px solid #7e5cff;">
-                <p style="margin: 0; color: #666; font-size: 0.95em;">
-                    <strong>Security Notice:</strong> This link will expire in 1 hour for your security.
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #16191f; color: #e6e9f0;">
+            <div style="background: #232632; border-radius: 16px; padding: 32px; border: 1px solid #333; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+                <h1 style="color: #7e5cff; margin-bottom: 20px; font-size: 28px; font-weight: 700; text-align: center;">Reset Your Password</h1>
+                <p style="color: #c1c6d9; font-size: 16px; line-height: 1.6; margin-bottom: 16px;">Hello {username},</p>
+                <p style="color: #c1c6d9; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">We received a request to reset your password. If you didn't make this request, you can safely ignore this email.</p>
+                
+                <div style="margin: 32px 0; text-align: center;">
+                    <a href="{reset_url}" 
+                       style="background-color: #7e5cff; 
+                              color: white; 
+                              padding: 16px 32px; 
+                              text-decoration: none; 
+                              border-radius: 8px;
+                              font-weight: 600;
+                              display: inline-block;
+                              margin: 10px 0;
+                              font-size: 16px;
+                              transition: background-color 0.3s ease;">
+                        Reset Password
+                    </a>
+                </div>
+                
+                <p style="color: #8ca0c6; font-size: 14px; margin-bottom: 16px;">If the button above doesn't work, you can also copy and paste this link in your browser:</p>
+                <div style="word-break: break-all; color: #c1c6d9; background: #1a1d24; padding: 16px; border-radius: 8px; font-size: 14px; border: 1px solid #333; margin-bottom: 24px;">
+                    {reset_url}
+                </div>
+                
+                <div style="margin-top: 32px; padding: 20px; background: #1a1d24; border-radius: 8px; border-left: 4px solid #7e5cff;">
+                    <p style="margin: 0; color: #8ca0c6; font-size: 14px;">
+                        <strong style="color: #7e5cff;">Security Notice:</strong> This link will expire in 1 hour for your security.
+                    </p>
+                </div>
+                
+                <hr style="border: none; border-top: 1px solid #333; margin: 32px 0;">
+                <p style="color: #8ca0c6; font-size: 14px; text-align: center; margin: 0;">
+                    If you're having trouble with the app, please contact our support team.
                 </p>
             </div>
-            
-            <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;">
-            <p style="color: #999; font-size: 0.9em;">
-                If you're having trouble with the app, please contact our support team.
-            </p>
         </div>
         """
     )

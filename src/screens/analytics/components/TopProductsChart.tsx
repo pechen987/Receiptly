@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import { Svg, G, Rect, Text as SvgText } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/Feather';
 import { memo } from 'react';
@@ -13,12 +13,7 @@ import { HintIcon, HintModal, modalStyles, HintIconProps, HintModalProps } from 
 import { BlurView } from 'expo-blur';
 import { useNavigation } from '@react-navigation/native';
 
-export interface TopProductsChartProps extends ChartProps {
-  userPlan?: string | null;
-  navigation?: any;
-}
-
-const TopProductsChart = memo(({ userId, refreshTrigger, userPlan, navigation: propNavigation }: TopProductsChartProps) => {
+const TopProductsChart = memo(({ userId, refreshTrigger, userPlan, navigation: propNavigation, selectedStore, selectedCategory }: ChartProps & { userPlan?: string | null; navigation?: any; selectedStore: string | null; selectedCategory: string | null }) => {
   const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
   const [productsPeriod, setProductsPeriod] = useState<'month' | 'year' | 'all'>('month');
   const [loading, setLoading] = useState(false);
@@ -42,7 +37,7 @@ const TopProductsChart = memo(({ userId, refreshTrigger, userPlan, navigation: p
           console.log('[TopProducts] Found user ID in token:', currentUserId);
         }
       } catch (error) {
-        console.error('[TopProducts] Error checking token:', error);
+        console.log('[TopProducts] Error checking token:', error);
       }
     }
 
@@ -58,14 +53,18 @@ const TopProductsChart = memo(({ userId, refreshTrigger, userPlan, navigation: p
       console.log('[TopProducts] Request params:', { 
         user_id: currentUserId, 
         period: productsPeriod,
-        limit: 8
+        limit: 6,
+        store_name: selectedStore,
+        store_category: selectedCategory
       });
 
       const res = await axios.get(`${API_BASE_URL}/api/analytics/top-products`, {
         params: { 
           user_id: currentUserId, 
           period: productsPeriod,
-          limit: 8
+          limit: 6,
+          store_name: selectedStore,
+          store_category: selectedCategory
         },
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +77,7 @@ const TopProductsChart = memo(({ userId, refreshTrigger, userPlan, navigation: p
       setTotalReceipts(res.data.total_receipts || 0);
       setHasData(res.data.has_data === true);
     } catch (e: any) {
-      console.error('[TopProducts] Error fetching top products:', e);
+      console.log('[TopProducts] Error fetching top products:', e);
       let userMessage = 'Unable to load top products.';
       if (axios.isAxiosError(e)) {
         if (!e.response) {
@@ -92,7 +91,7 @@ const TopProductsChart = memo(({ userId, refreshTrigger, userPlan, navigation: p
     } finally {
       setLoading(false);
     }
-  }, [userId, productsPeriod]);
+  }, [userId, productsPeriod, selectedStore, selectedCategory]);
 
   // Fetch data when component mounts or when period changes
   useEffect(() => {
@@ -218,44 +217,61 @@ const TopProductsChart = memo(({ userId, refreshTrigger, userPlan, navigation: p
         )}
       </View>
 
-      <View style={{ minHeight: 300 }}>
-        {loading ? (
-          <View style={{ height: 400, justifyContent: 'center' }}>
-            <Text style={styles.message}>Loading top products...</Text>
-          </View>
-        ) : error ? (
-          <View style={{ height: 400, justifyContent: 'center' }}>
-            <Text style={[styles.message, { color: 'red' }]}>{error}</Text>
-          </View>
-        ) : !hasData ? (
-          <View style={{ height: 200, justifyContent: 'center' }}>
-            <Text style={styles.message}>No data yet</Text>
-          </View>
-        ) : topProducts.length === 0 ? (
-          <View style={{ height: 200, justifyContent: 'center' }}>
-            <Text style={styles.message}>No data for this interval</Text>
-          </View>
-        ) : (
+      {loading ? (
+        <View style={styles.emptyCompact}>
+          <Text style={styles.message}>Loading top products...</Text>
+        </View>
+      ) : error ? (
+        <View style={styles.emptyCompact}>
+          <Text style={[styles.message, { color: 'red' }]}>{error}</Text>
+        </View>
+      ) : !hasData ? (
+        <View style={styles.emptyCompact}>
+          <Text style={styles.message}>No data yet</Text>
+        </View>
+      ) : topProducts.length === 0 ? (
+        <View style={styles.emptyCompact}>
+          <Text style={styles.message}>No data for this interval</Text>
+        </View>
+      ) : (
+        <View style={{ minHeight: 220 }}>
           <ScrollView showsVerticalScrollIndicator={false}>
             {renderBarChart()}
           </ScrollView>
-        )}
-      </View>
+        </View>
+      )}
       {userPlan === 'basic' && (
-        <BlurView intensity={40} tint="dark" style={[StyleSheet.absoluteFillObject, {zIndex: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16, overflow: 'hidden', paddingHorizontal: 24}]}> 
-          <View style={{ alignItems: 'center', width: '100%' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
-              <Icon name="shopping-bag" size={32} color="#7e5cff" style={{ marginRight: 10 }} />
-              <Text style={[{ color: '#fff', fontSize: 22, fontWeight: '700', textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 32 }]}>Most popular products</Text>
+        Platform.OS === 'ios' ? (
+          <BlurView intensity={40} tint="dark" style={[StyleSheet.absoluteFillObject, {zIndex: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16, overflow: 'hidden', paddingHorizontal: 24}]}> 
+            <View style={{ alignItems: 'center', width: '100%' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                <Icon name="shopping-bag" size={32} color="#7e5cff" style={{ marginRight: 10 }} />
+                <Text style={[{ color: '#fff', fontSize: 22, fontWeight: '700', textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 32 }]}>Most popular products</Text>
+              </View>
+              <Text style={[{ color: '#fff', fontSize: 16, fontWeight: '600', textAlign: 'center', marginBottom: 8, marginTop: 16, textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 30 }]}>Upgrade to Pro to unlock this chart</Text>
+              <TouchableOpacity style={{ backgroundColor: '#FFBF00', paddingVertical: 10, paddingHorizontal: 30, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 8 }}
+                onPress={() => navigation.navigate('ProOnboarding')}
+              >
+                <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
+              </TouchableOpacity>
             </View>
-            <Text style={[{ color: '#fff', fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 8, marginTop: 16, textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 30 }]}>Upgrade to Pro to unlock this chart</Text>
-            <TouchableOpacity style={{ backgroundColor: '#FFBF00', paddingVertical: 12, paddingHorizontal: 36, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 8 }}
-              onPress={() => navigation.navigate('ProOnboarding')}
-            >
-              <Text style={{ color: '#000', fontSize: 16, fontWeight: '700' }}>Go Pro</Text>
-            </TouchableOpacity>
+          </BlurView>
+        ) : (
+          <View style={[StyleSheet.absoluteFillObject, {backgroundColor: 'rgba(20,20,30,0.95)', zIndex: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16, overflow: 'hidden', paddingHorizontal: 24}]}> 
+            <View style={{ alignItems: 'center', width: '100%' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                <Icon name="shopping-bag" size={32} color="#7e5cff" style={{ marginRight: 10 }} />
+                <Text style={[{ color: '#fff', fontSize: 22, fontWeight: '700', textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 32 }]}>Most popular products</Text>
+              </View>
+              <Text style={[{ color: '#fff', fontSize: 16, fontWeight: '600', textAlign: 'center', marginBottom: 8, marginTop: 16, textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 30 }]}>Upgrade to Pro to unlock this chart</Text>
+              <TouchableOpacity style={{ backgroundColor: '#FFBF00', paddingVertical: 10, paddingHorizontal: 30, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 8 }}
+                onPress={() => navigation.navigate('ProOnboarding')}
+              >
+                <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </BlurView>
+        )
       )}
     </View>
   );

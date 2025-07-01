@@ -14,7 +14,7 @@ from backend.utils.decorators import token_required
 
 receipts_bp = Blueprint('receipts', __name__, url_prefix='/api/receipts')
 
-BASIC_MONTHLY_LIMIT = 10 # Define the monthly limit for basic users
+BASIC_MONTHLY_LIMIT = 8 # Define the monthly limit for basic users (now 8 per calendar month)
 
 def canonicalize_receipt(data):
     # Ensure all relevant fields are present and items are sorted
@@ -101,13 +101,20 @@ def add_receipt(user_id):
 
         # --- Plan Restriction Check ----
         if user.plan == 'basic':
-            thirty_days_ago = datetime.utcnow() - timedelta(days=30)
-            monthly_receipt_count = db.session.query(Receipt).filter(
+            # Only allow 8 scans per current calendar month
+            today = datetime.utcnow().date()
+            first_day = today.replace(day=1)
+            if today.month == 12:
+                next_month = today.replace(year=today.year + 1, month=1, day=1)
+            else:
+                next_month = today.replace(month=today.month + 1, day=1)
+            current_month_receipt_count = db.session.query(Receipt).filter(
                 Receipt.user_id == user_id,
-                Receipt.date >= thirty_days_ago.date()
+                Receipt.date >= first_day,
+                Receipt.date < next_month
             ).count()
 
-            if monthly_receipt_count >= BASIC_MONTHLY_LIMIT:
+            if current_month_receipt_count >= BASIC_MONTHLY_LIMIT:
                 app.logger.info(f"Basic user {user_id} reached monthly receipt limit.")
                 return jsonify({'error': f'Monthly receipt limit ({BASIC_MONTHLY_LIMIT}) reached for basic plan. Upgrade to add more.'}), 403 # Use 403 Forbidden
         # --- End Plan Restriction Check ---
@@ -170,3 +177,154 @@ def delete_receipt(user_id, receipt_id):
     except Exception as e:
         app.logger.error(f"Error deleting receipt {receipt_id} for user {user_id}: {e}")
         return jsonify({'error': 'Failed to delete receipt'}), 500
+
+@receipts_bp.route('/<int:receipt_id>/item-price', methods=['PATCH'])
+@token_required
+def update_item_price(user_id, receipt_id):
+    data = request.get_json()
+    item_index = data.get('item_index')
+    new_price = data.get('new_price')
+
+    if item_index is None or new_price is None:
+        return jsonify({'error': 'Missing item_index or new_price'}), 400
+
+    # Robust float conversion
+    try:
+        if isinstance(new_price, str):
+            new_price = new_price.replace(',', '.')
+        new_price = float(new_price)
+    except Exception:
+        return jsonify({'error': 'Invalid price format'}), 400
+
+    with app.app_context():
+        db = app.extensions['sqlalchemy']
+        receipt = db.session.query(Receipt).filter_by(id=receipt_id, user_id=user_id).first()
+        if not receipt:
+            return jsonify({'error': 'Receipt not found or does not belong to user'}), 404
+        if not receipt.items or not (0 <= item_index < len(receipt.items)):
+            return jsonify({'error': 'Invalid item index'}), 400
+
+        # Update the price and total for the item
+        item = receipt.items[item_index]
+        try:
+            quantity = float(item.get('quantity', 1))
+        except Exception:
+            quantity = 1
+        item['price'] = new_price
+        item['total'] = new_price * quantity
+        receipt.items[item_index] = item
+
+        # Recalculate receipt total - handle None values properly
+        receipt.total = sum(
+            float(i.get('total', 0)) if i.get('total') is not None else 0 
+            for i in receipt.items
+        )
+
+        db.session.commit()
+        return jsonify({'success': True, 'receipt': {
+            'id': receipt.id,
+            'store_category': receipt.store_category,
+            'store_name': receipt.store_name,
+            'date': receipt.date.strftime('%Y-%m-%d'),
+            'total': receipt.total,
+            'currency': receipt.user.currency if receipt.user and receipt.user.currency else 'USD',
+            'tax_amount': receipt.tax_amount,
+            'total_discount': receipt.total_discount,
+            'items': receipt.items,
+        }})
+
+@receipts_bp.route('/<int:receipt_id>/update-field', methods=['PATCH'])
+@token_required
+def update_receipt_field(user_id, receipt_id):
+    data = request.get_json()
+    field = data.get('field')
+    value = data.get('value')
+    item_index = data.get('item_index')
+    item_field = data.get('item_field')
+    item_value = data.get('item_value')
+
+    with app.app_context():
+        db = app.extensions['sqlalchemy']
+        receipt = db.session.query(Receipt).filter_by(id=receipt_id, user_id=user_id).first()
+        if not receipt:
+            return jsonify({'error': 'Receipt not found or does not belong to user'}), 404
+
+        # Update store_name or date
+        if field in ['store_name', 'date', 'store_category']:
+            if field == 'store_name':
+                if not isinstance(value, str) or not value.strip():
+                    return jsonify({'error': 'Invalid store name'}), 400
+                receipt.store_name = value.strip()
+            elif field == 'date':
+                try:
+                    # Accept both YYYY-MM-DD and ISO format
+                    if isinstance(value, str):
+                        if 'T' in value:
+                            value = value.split('T')[0]
+                        receipt.date = datetime.strptime(value, '%Y-%m-%d').date()
+                    else:
+                        return jsonify({'error': 'Invalid date format'}), 400
+                except Exception:
+                    return jsonify({'error': 'Invalid date format'}), 400
+            elif field == 'store_category':
+                if not isinstance(value, str) or not value.strip():
+                    return jsonify({'error': 'Invalid store category'}), 400
+                receipt.store_category = value.strip()
+            db.session.commit()
+            return jsonify({'success': True, 'receipt': {
+                'id': receipt.id,
+                'store_category': receipt.store_category,
+                'store_name': receipt.store_name,
+                'date': receipt.date.strftime('%Y-%m-%d'),
+                'total': receipt.total,
+                'currency': receipt.user.currency if receipt.user and receipt.user.currency else 'USD',
+                'tax_amount': receipt.tax_amount,
+                'total_discount': receipt.total_discount,
+                'items': receipt.items,
+                'store_category': receipt.store_category,
+            }})
+
+        # Update item fields (name, quantity)
+        if item_index is not None and item_field in ['name', 'quantity', 'category']:
+            if not receipt.items or not (0 <= item_index < len(receipt.items)):
+                return jsonify({'error': 'Invalid item index'}), 400
+            item = receipt.items[item_index]
+            if item_field == 'name':
+                if not isinstance(item_value, str) or not item_value.strip():
+                    return jsonify({'error': 'Invalid item name'}), 400
+                item['name'] = item_value.strip()
+            elif item_field == 'quantity':
+                try:
+                    qty = float(item_value)
+                    if qty <= 0:
+                        return jsonify({'error': 'Quantity must be positive'}), 400
+                    item['quantity'] = qty
+                    # Recalculate total for this item - handle None values properly
+                    price = float(item.get('price', 0)) if item.get('price') is not None else 0
+                    item['total'] = price * qty
+                except Exception:
+                    return jsonify({'error': 'Invalid quantity'}), 400
+            elif item_field == 'category':
+                if not isinstance(item_value, str) or not item_value.strip():
+                    return jsonify({'error': 'Invalid category'}), 400
+                item['category'] = item_value.strip()
+            receipt.items[item_index] = item
+            # Recalculate receipt total - handle None values properly
+            receipt.total = sum(
+                float(i.get('total', 0)) if i.get('total') is not None else 0 
+                for i in receipt.items
+            )
+            db.session.commit()
+            return jsonify({'success': True, 'receipt': {
+                'id': receipt.id,
+                'store_category': receipt.store_category,
+                'store_name': receipt.store_name,
+                'date': receipt.date.strftime('%Y-%m-%d'),
+                'total': receipt.total,
+                'currency': receipt.user.currency if receipt.user and receipt.user.currency else 'USD',
+                'tax_amount': receipt.tax_amount,
+                'total_discount': receipt.total_discount,
+                'items': receipt.items,
+            }})
+
+        return jsonify({'error': 'Invalid update request'}), 400

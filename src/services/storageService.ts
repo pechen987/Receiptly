@@ -1,8 +1,11 @@
+import 'react-native-get-random-values';
 import * as Crypto from 'expo-crypto';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwtDecode from 'jwt-decode';
 import apiConfig from '../config/api';
+import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 
 // Helper to get user ID from stored JWT token
 export const getUserIdFromToken = async (): Promise<number | null> => {
@@ -12,7 +15,7 @@ export const getUserIdFromToken = async (): Promise<number | null> => {
     const decoded: any = jwtDecode(token);
     return decoded.user_id || decoded.id || null;
   } catch (e) {
-    console.error('Error decoding JWT for user id', e);
+    console.log('Error decoding JWT for user id', e);
     return null;
   }
 };
@@ -41,13 +44,6 @@ export interface Receipt {
 
 const BACKEND_URL = apiConfig.API_BASE_URL;
 
-const generateUUID = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-};
-
 const generateFingerprint = async (receipt: Omit<Receipt, 'id' | 'timestamp' | 'fingerprint'>): Promise<string> => {
   const canonical = JSON.stringify({
     store_category: receipt.store_category,
@@ -72,8 +68,8 @@ export const getReceipts = async (): Promise<Receipt[]> => {
   try {
     const userId = await getUserIdFromToken();
     if (!userId) {
-      console.error('No user ID found - user might not be authenticated');
-      throw new Error('No user id found');
+      console.log('No user ID found - user might not be authenticated');
+      return [];
     }
 
     console.log('Fetching receipts for user:', userId);
@@ -103,7 +99,7 @@ export const getReceipts = async (): Promise<Receipt[]> => {
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Server response error:', {
+      console.log('Server response error:', {
         status: response.status,
         statusText: response.statusText,
         body: errorText
@@ -114,20 +110,25 @@ export const getReceipts = async (): Promise<Receipt[]> => {
     const data = await response.json();
     return data.receipts || [];
   } catch (error: any) {
-    if (error instanceof TypeError && error.message.includes('Network request failed')) {
-      console.error('Network error details:', error);
-      Alert.alert(
-        'Network Error',
-        'Could not connect to backend. Please check your connection and make sure the server is running.'
-      );
+    if (axios.isAxiosError(error) && error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log('Server response error:', {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers,
+      });
+      // Optionally re-throw a more specific error or handle it
+      throw new Error(error.response.data?.message || `Server error: ${error.response.status}`);
+    } else if (axios.isAxiosError(error) && error.request) {
+      // The request was made but no response was received
+      console.log('Network error details:', error);
+      throw new Error('Network error: Please check your connection.');
     } else {
-      console.error('Error fetching receipts:', error);
-      Alert.alert(
-        'Error',
-        'Failed to load receipts. Please try again later.'
-      );
+      // Something happened in setting up the request that triggered an Error
+      console.log('Error fetching receipts:', error);
+      throw new Error('An unexpected error occurred while fetching receipts.');
     }
-    return [];
   }
 };
 
@@ -152,7 +153,7 @@ export const deleteReceipt = async (id: string): Promise<void> => {
       throw new Error(errorMessage);
     }
   } catch (error) {
-    console.error('Error deleting receipt:', error);
+    console.log('Error deleting receipt:', error);
     Alert.alert('Error', 'Failed to delete receipt');
   }
 };
@@ -164,7 +165,7 @@ export const saveReceipt = async (receipt: Omit<Receipt, 'id' | 'timestamp' | 'f
 
     const newReceipt: Receipt = {
       ...receipt,
-      id: generateUUID(),
+      id: uuidv4(),
       timestamp: now,
       fingerprint,
     };
@@ -179,7 +180,7 @@ export const saveReceipt = async (receipt: Omit<Receipt, 'id' | 'timestamp' | 'f
       // Retrieve token directly from AsyncStorage for API call
       const token = await AsyncStorage.getItem('jwt_token');
       if (!token) {
-        console.error('No token found for saving receipt.');
+        console.log('No token found for saving receipt.');
         Alert.alert('Authentication Error', 'Could not save receipt. Please log in again.');
         return null;
       }
@@ -231,7 +232,7 @@ export const saveReceipt = async (receipt: Omit<Receipt, 'id' | 'timestamp' | 'f
     const saved = response.data;
     return { ...newReceipt, id: saved.id }; // Update with backend ID if needed
   } catch (error: any) {
-    console.error('Error saving receipt:', error);
+    console.log('Error saving receipt:', error);
     // Only show a generic error if a specific one wasn't handled earlier
     if (!error.response) { // Check if it's not an axios error with a response
          Alert.alert('Error', error.message || 'Failed to save receipt.');
@@ -295,7 +296,7 @@ export const saveReceiptFromOpenAI = async (openAIReceipt: any): Promise<Receipt
     };
     return await saveReceipt(receipt);
   } catch (error) {
-    console.error('Error saving OpenAI receipt:', error);
+    console.log('Error saving OpenAI receipt:', error);
     Alert.alert('Error', 'Failed to save receipt.');
     return null;
   }

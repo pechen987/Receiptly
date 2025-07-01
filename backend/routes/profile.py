@@ -36,6 +36,7 @@ def get_user_profile(user_id):
             'user_id': user.id,
             'email': user.email,
             'currency': user.currency or 'USD',
+            'has_completed_onboarding': user.has_completed_onboarding,
         })
 
 @profile_bp.route('', methods=['POST'])
@@ -70,3 +71,24 @@ def update_user_profile(user_id):
         user.currency = currency
         db.session.commit() # Use db from extensions
         return jsonify({'success': True, 'currency': user.currency})
+
+@profile_bp.route('/complete-onboarding', methods=['POST'])
+@cross_origin()
+@token_required
+def complete_onboarding(user_id):
+    data = request.get_json() or {}
+    from datetime import datetime
+    with app.app_context():
+        db = app.extensions['sqlalchemy']
+        user = db.session.query(User).get(user_id)
+        if not user:
+            app.logger.error(f"User with ID {user_id} not found in DB for onboarding completion.")
+            return jsonify({'error': 'User not found'}), 404
+        
+        user.has_completed_onboarding = True
+        user.onboarding_goals = data.get('goals', [])
+        user.onboarding_features = data.get('features', [])
+        user.onboarding_completed_at = datetime.utcnow()
+        db.session.commit()
+        
+        return jsonify({'success': True, 'message': 'Onboarding completed successfully.'})

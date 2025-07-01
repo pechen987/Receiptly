@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, Pressable, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import React, { useEffect, useState, useCallback, memo } from 'react';
+import { View, Text, StyleSheet, Dimensions, Pressable, ScrollView, TouchableOpacity, Alert, Platform } from 'react-native';
 import { Svg, G, Rect, Text as SvgText } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/Feather';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -13,24 +13,29 @@ import jwtDecode from 'jwt-decode';
 import { HintIcon, HintModal, modalStyles, HintIconProps, HintModalProps } from './HintComponents';
 import { BlurView } from 'expo-blur';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import apiConfig from '../../../config/api';
+
+const API_BASE_URL = apiConfig.API_BASE_URL;
 
 interface ShoppingDaysChartProps {
     refreshTrigger: number;
     userPlan?: string | null;
+    selectedStore?: string | null;
+    selectedCategory?: string | null;
 }
 
-
-const ShoppingDaysChart: React.FC<ShoppingDaysChartProps & { navigation?: any }> = ({ refreshTrigger, userPlan, navigation: propNavigation }) => {
+const ShoppingDaysChart: React.FC<ShoppingDaysChartProps & { navigation?: any }> = ({ refreshTrigger, userPlan, navigation: propNavigation, selectedStore, selectedCategory }) => {
   const { user } = useAuth();
   const [data, setData] = useState<ShoppingDaysData | null>(null);
   const [period, setPeriod] = useState<'month' | 'all'>('month');
+  const [currency, setCurrency] = useState('USD');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hasData, setHasData] = useState(false);
+  const [hasDataInAnyPeriod, setHasDataInAnyPeriod] = useState(false);
   const navigation = propNavigation || useNavigation();
 
-  useEffect(() => {
-    const loadData = async () => {
+  const fetchData = useCallback(async (force: boolean = false) => {
       let currentUserId = user?.id;
       
       if (!currentUserId) {
@@ -55,30 +60,93 @@ const ShoppingDaysChart: React.FC<ShoppingDaysChartProps & { navigation?: any }>
       setLoading(true);
       setError(null);
       try {
-        console.log('[ShoppingDays] Making API request with user ID:', currentUserId);
-        const response = await fetchShoppingDays(currentUserId, period);
-        console.log('[ShoppingDays] API Response:', response);
-        // Ensure data is sorted Mon-Sun (0-6)
-        const sortedData = response.data.sort((a: ShoppingDay, b: ShoppingDay) => {
-            const daysOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-            return daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day);
-        });
-        setData({...response, data: sortedData});
-        setHasData(response.has_data === true);
+      console.log('[ShoppingDays] Making API request to:', `${API_BASE_URL}/api/analytics/shopping-days`);
+      console.log('[ShoppingDays] Request params:', { 
+        user_id: currentUserId, 
+        period,
+        store_name: selectedStore,
+        store_category: selectedCategory
+      });
+
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${await AsyncStorage.getItem('jwt_token')}`
+      };
+
+      const res = await axios.get(`${API_BASE_URL}/api/analytics/shopping-days`, {
+        params: { 
+          user_id: currentUserId, 
+          period,
+          store_name: selectedStore,
+          store_category: selectedCategory
+        },
+        headers
+      });
+
+      console.log('[ShoppingDays] API Response:', res);
+      const newData = res.data.data || [];
+      const newCurrency = res.data.currency || 'USD';
+      
+      setData({...res.data, data: newData});
+      setCurrency(newCurrency);
+
+      // Check other periods for data
+      console.log('[ShoppingDays] Checking other periods for data...');
+      const periods: ('month' | 'all')[] = ['month', 'all'];
+      let hasData = newData.length > 0 && newData.some((item: ShoppingDay) => item.count > 0);
+      
+      if (!hasData) {
+        for (const p of periods) {
+          if (p === period) continue;
+          try {
+            const periodRes = await axios.get(`${API_BASE_URL}/api/analytics/shopping-days`, {
+              params: { 
+                user_id: currentUserId, 
+                period: p, 
+                store_name: selectedStore,
+                store_category: selectedCategory
+              },
+              headers
+            });
+            
+            if (periodRes.data.data && periodRes.data.data.length > 0 && periodRes.data.data.some((item: ShoppingDay) => item.count > 0)) {
+              hasData = true;
+              break;
+            }
+          } catch (e) {
+            console.error(`[ShoppingDays] Error checking period ${p}:`, e);
+          }
+        }
+      }
+      
+      setHasDataInAnyPeriod(hasData);
       } catch (e: any) {
         console.error('[ShoppingDays] Error fetching shopping days:', e);
-        let userMessage = 'Failed to load shopping days data.';
-        if (e.message && e.message.toLowerCase().includes('network')) {
+      let userMessage = 'Unable to load shopping days.';
+      if (axios.isAxiosError(e)) {
+        if (!e.response) {
+          userMessage = 'No internet connection or the server is not responding.';
+        }
+      } else if (e.message && e.message.toLowerCase().includes('network')) {
           userMessage = 'No internet connection. Please check your connection and try again.';
         }
         setError(userMessage);
+      setData(null);
+      setHasDataInAnyPeriod(false);
         Alert.alert('Shopping Days', userMessage);
       } finally {
         setLoading(false);
       }
-    };
-    loadData();
-  }, [user?.id, period, refreshTrigger]);
+  }, [user?.id, period, selectedStore, selectedCategory]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Refetch data when refreshTrigger changes (e.g., after receipt deletion)
+  useEffect(() => {
+    fetchData();
+  }, [refreshTrigger]);
 
   // Add debug logging for data state
   useEffect(() => {
@@ -179,21 +247,6 @@ const ShoppingDaysChart: React.FC<ShoppingDaysChartProps & { navigation?: any }>
             <Text style={sharedStyles.title}>Shopping days</Text>
             <HintIcon hintText="This chart shows the number of receipts you have for each day of the week. The statistics are for the last 30 days or all time, depending on the selected interval." />
           </View>
-          <View style={sharedStyles.selector}>
-            {['M', 'All'].map(label => {
-              const mode = label === 'M' ? 'month' : 'all';
-              const active = period === mode;
-              return (
-                <Pressable
-                  key={label}
-                  style={[sharedStyles.btn, active && sharedStyles.btnActive]}
-                  onPress={() => setPeriod(mode)}
-                >
-                  <Text style={[sharedStyles.btnText, active && sharedStyles.btnTextActive]}>{label}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
         </View>
         <View style={[styles.loadingContainer, { minHeight: 200 }]}>
           <Text style={sharedStyles.message}>Loading Shopping Days...</Text>
@@ -228,10 +281,10 @@ const ShoppingDaysChart: React.FC<ShoppingDaysChartProps & { navigation?: any }>
           <Text style={sharedStyles.title}>Shopping days</Text>
           <HintIcon hintText="This chart shows the number of receipts you have for each day of the week. The statistics are for the last 30 days or all time, depending on the selected interval." />
         </View>
-        {hasData && (
+        {hasDataInAnyPeriod && !loading && !error && (
           <View style={sharedStyles.selector}>
             {['M', 'All'].map(label => {
-              const mode = label === 'M' ? 'month' : 'all';
+              const mode: 'month' | 'all' = label === 'M' ? 'month' : 'all';
               const active = period === mode;
               return (
                 <Pressable
@@ -246,12 +299,12 @@ const ShoppingDaysChart: React.FC<ShoppingDaysChartProps & { navigation?: any }>
           </View>
         )}
       </View>
-      {!hasData ? (
-        <View style={[styles.emptyContainer, { minHeight: 200 }]}>
+      {!hasDataInAnyPeriod ? (
+        <View style={sharedStyles.emptyCompact}> 
           <Text style={sharedStyles.message}>No data yet</Text>
         </View>
       ) : !hasDataForInterval ? (
-        <View style={[styles.emptyContainer, { minHeight: 200 }]}>
+        <View style={sharedStyles.emptyCompact}> 
           <Text style={sharedStyles.message}>No data for this interval</Text>
         </View>
       ) : (
@@ -269,20 +322,33 @@ const ShoppingDaysChart: React.FC<ShoppingDaysChartProps & { navigation?: any }>
         </ScrollView>
       )}
       {userPlan === 'basic' && (
-        <BlurView intensity={40} tint="dark" style={[StyleSheet.absoluteFillObject, {zIndex: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16, overflow: 'hidden', paddingHorizontal: 24}]}> 
-          <View style={{ alignItems: 'center', width: '100%' }}>
+        Platform.OS === 'ios' ? (
+          <BlurView intensity={40} tint="dark" style={[StyleSheet.absoluteFillObject, {zIndex: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16, overflow: 'hidden', paddingHorizontal: 24}]}> 
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
               <Icon name="calendar" size={32} color="#7e5cff" style={{ marginRight: 10 }} />
-              <Text style={[{ color: '#fff', fontSize: 22, fontWeight: '700', textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 32 }]}>Shopping days</Text>
+              <Text style={[{ color: '#fff', fontSize: 22, fontWeight: '700', textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 32 }]}>Shopping Days</Text>
             </View>
-            <Text style={[{ color: '#fff', fontSize: 18, fontWeight: '600', textAlign: 'center', marginBottom: 8, marginTop: 16, textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 20 }]}>Upgrade to Pro to unlock this chart</Text>
-            <TouchableOpacity style={{ backgroundColor: '#FFBF00', paddingVertical: 12, paddingHorizontal: 36, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 8 }}
+            <Text style={[{ color: '#fff', fontSize: 16, fontWeight: '600', textAlign: 'center', marginBottom: 8, marginTop: 16, textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 20 }]}>Upgrade to Pro to unlock this chart</Text>
+            <TouchableOpacity style={{ backgroundColor: '#FFBF00', paddingVertical: 10, paddingHorizontal: 30, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 8 }}
               onPress={() => navigation.navigate('ProOnboarding')}
             >
-              <Text style={{ color: '#000', fontSize: 16, fontWeight: '700' }}>Go Pro</Text>
+              <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
+            </TouchableOpacity>
+          </BlurView>
+        ) : (
+          <View style={[StyleSheet.absoluteFillObject, {backgroundColor: 'rgba(20,20,30,0.95)', zIndex: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16, overflow: 'hidden', paddingHorizontal: 24}]}> 
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+              <Icon name="calendar" size={32} color="#7e5cff" style={{ marginRight: 10 }} />
+              <Text style={[{ color: '#fff', fontSize: 22, fontWeight: '700', textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 32 }]}>Shopping Days</Text>
+            </View>
+            <Text style={[{ color: '#fff', fontSize: 16, fontWeight: '600', textAlign: 'center', marginBottom: 8, marginTop: 16, textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 20 }]}>Upgrade to Pro to unlock this chart</Text>
+            <TouchableOpacity style={{ backgroundColor: '#FFBF00', paddingVertical: 10, paddingHorizontal: 30, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 8 }}
+              onPress={() => navigation.navigate('ProOnboarding')}
+            >
+              <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
             </TouchableOpacity>
           </View>
-        </BlurView>
+        )
       )}
     </View>
   );

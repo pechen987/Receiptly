@@ -1,11 +1,12 @@
 import React from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import HistoryScreen from './src/screens/HistoryScreen';
 import { CurrencyProvider } from './src/screens/analytics/contexts/CurrencyContext';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
@@ -15,15 +16,20 @@ import AnalyticsScreen from './src/screens/analytics';
 import ProfileScreen from './src/screens/ProfileScreen';
 import AuthScreen from './src/screens/AuthScreen';
 import apiConfig from './src/config/api';
+import OnboardingScreen from './src/screens/OnboardingScreen';
 import ProOnboardingScreen from './src/screens/ProOnboardingScreen';
+import CustomPaymentScreen from './src/screens/CustomPaymentScreen';
 import { StripeProvider } from '@stripe/stripe-react-native';
+import axios from 'axios';
 
 // Define screen params
 type RootStackParamList = {
   MainTabs: undefined;
   ReceiptDetail: { receipt: any };
   Auth: undefined;
+  Onboarding: undefined;
   ProOnboarding: undefined;
+  CustomPayment: { plan: 'monthly' | 'yearly' };
 };
 
 type TabParamList = {
@@ -84,10 +90,43 @@ function MainTabs({ onLogout }: { onLogout: () => void }) {
 }
 
 function AppContent() {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading, signOut, completeOnboarding } = useAuth();
+  const [showOnboarding, setShowOnboarding] = React.useState(false);
+
+  React.useEffect(() => {
+    if (user && !user.has_completed_onboarding) {
+      setShowOnboarding(true);
+    } else {
+      setShowOnboarding(false);
+    }
+  }, [user]);
+
+  const handleOnboardingComplete = async (answers?: { goals: string[]; features: string[] }) => {
+    try {
+      const token = await AsyncStorage.getItem('jwt_token');
+      if (token) {
+        await axios.post(
+          `${apiConfig.API_BASE_URL}/api/user/profile/complete-onboarding`,
+          answers ? { goals: answers.goals, features: answers.features } : {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        completeOnboarding(); // Update state in AuthContext
+        setShowOnboarding(false);
+      }
+    } catch (error) {
+      console.error('Failed to complete onboarding:', error);
+      // Optionally show an error to the user
+    }
+  };
 
   if (loading) {
     return null; // Or a loading spinner
+  }
+
+  if (showOnboarding) {
+    return <OnboardingScreen onComplete={handleOnboardingComplete} />;
   }
 
   return (
@@ -107,6 +146,11 @@ function AppContent() {
             component={ProOnboardingScreen}
             options={{ title: 'Go Pro' }}
           />
+          <Stack.Screen
+            name="CustomPayment"
+            component={CustomPaymentScreen}
+            options={{ title: 'Payment' }}
+          />
         </>
       ) : (
         <Stack.Screen name="Auth">
@@ -123,6 +167,7 @@ export default function App() {
   // pk_live_51NqPP9CmfcezbXmU2SIYleIJ46oP1iS4K6AohfCekW0svZMZLPGexZ2U27c9aFmtYCzYYpjj5X4uTjJcSZib0TCv00iCWKnFJN
 
   return (
+    <SafeAreaProvider>
     <GestureHandlerRootView style={styles.container}>
       <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>
         <AuthProvider>
@@ -136,6 +181,7 @@ export default function App() {
         </AuthProvider>
       </StripeProvider>
     </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
 

@@ -130,48 +130,67 @@ def confirm_email():
                     justify-content: center;
                     align-items: center;
                     min-height: 100vh;
-                    background-color: #f5f5f5;
+                    background-color: #16191f;
                 }
                 .container {
-                    background: white;
-                    padding: 2rem;
-                    border-radius: 12px;
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    background: #232632;
+                    padding: 2.5rem;
+                    border-radius: 16px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
                     text-align: center;
                     max-width: 400px;
                     width: 90%;
-                }
-                h1 {
-                    color: #2c3e50;
-                    margin-bottom: 1.5rem;
+                    border: 1px solid #333;
                 }
                 .success-icon {
                     font-size: 4rem;
-                    color: #2ecc71;
+                    color: #4caf50;
                     margin-bottom: 1.5rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 80px;
+                    height: 80px;
+                    background: rgba(76, 175, 80, 0.1);
+                    border-radius: 50%;
+                    margin: 0 auto 1.5rem;
+                }
+                h1 {
+                    color: #e6e9f0;
+                    margin-bottom: 1.5rem;
+                    font-size: 1.8rem;
+                    font-weight: 700;
                 }
                 .message {
-                    color: #34495e;
+                    color: #c1c6d9;
                     margin-bottom: 2rem;
                     line-height: 1.6;
+                    font-size: 1rem;
                 }
                 .button {
                     display: inline-block;
                     padding: 0.8rem 1.5rem;
-                    background-color: #3498db;
+                    background-color: #7e5cff;
                     color: white;
                     text-decoration: none;
-                    border-radius: 6px;
+                    border-radius: 8px;
                     font-weight: 600;
                     transition: background-color 0.3s ease;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 1rem;
                 }
                 .button:hover {
-                    background-color: #2980b9;
+                    background-color: #5a3fc0;
                 }
                 .footer {
                     margin-top: 2rem;
-                    color: #7f8c8d;
+                    color: #8ca0c6;
                     font-size: 0.9rem;
+                }
+                .app-name {
+                    color: #7e5cff;
+                    font-weight: 700;
                 }
             </style>
         </head>
@@ -181,7 +200,11 @@ def confirm_email():
                 <h1>Email Verified Successfully!</h1>
                 <div class="message">
                     <p>Your email address has been successfully verified.</p>
-                    <p>You can now use the app to track your expenses and scan receipts.</p>
+                    <p>You can now use <span class="app-name">Receiptly</span> to track your expenses and scan receipts.</p>
+                </div>
+                <button class="button" onclick="window.close()">Close Page</button>
+                <div class="footer">
+                    <p>Welcome to Receiptly!</p>
                 </div>
             </div>
         </body>
@@ -265,8 +288,100 @@ def reset_password_web():
                 user.set_password(new_password)
                 db.session.commit() # Use db from extensions
                 return render_template_string('''
-                    <h2>Password Reset Successful!</h2>
-                    <p>Your password has been updated. You can now close this page and log in with your new password.</p>
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Password Reset Success</title>
+                    <style>
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                            margin: 0;
+                            padding: 0;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                            background-color: #16191f;
+                        }
+                        .container {
+                            background: #232632;
+                            padding: 2.5rem;
+                            border-radius: 16px;
+                            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                            text-align: center;
+                            max-width: 400px;
+                            width: 90%;
+                            border: 1px solid #333;
+                        }
+                        .success-icon {
+                            font-size: 4rem;
+                            color: #4caf50;
+                            margin-bottom: 1.5rem;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            width: 80px;
+                            height: 80px;
+                            background: rgba(76, 175, 80, 0.1);
+                            border-radius: 50%;
+                            margin: 0 auto 1.5rem;
+                        }
+                        h1 {
+                            color: #e6e9f0;
+                            margin-bottom: 1.5rem;
+                            font-size: 1.8rem;
+                            font-weight: 700;
+                        }
+                        .message {
+                            color: #c1c6d9;
+                            margin-bottom: 2rem;
+                            line-height: 1.6;
+                            font-size: 1rem;
+                        }
+                        .button {
+                            display: inline-block;
+                            padding: 0.8rem 1.5rem;
+                            background-color: #7e5cff;
+                            color: white;
+                            text-decoration: none;
+                            border-radius: 8px;
+                            font-weight: 600;
+                            transition: background-color 0.3s ease;
+                            border: none;
+                            cursor: pointer;
+                            font-size: 1rem;
+                        }
+                        .button:hover {
+                            background-color: #5a3fc0;
+                        }
+                        .footer {
+                            margin-top: 2rem;
+                            color: #8ca0c6;
+                            font-size: 0.9rem;
+                        }
+                        .app-name {
+                            color: #7e5cff;
+                            font-weight: 700;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="success-icon">✓</div>
+                        <h1>Password Reset Successful!</h1>
+                        <div class="message">
+                            <p>Your password has been successfully updated.</p>
+                            <p>You can now close this page and log in to <span class="app-name">Receiptly</span> with your new password.</p>
+                        </div>
+                        <button class="button" onclick="window.close()">Close Page</button>
+                        <div class="footer">
+                            <p>Thank you for using Receiptly!</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
                 ''')
 
     except jwt.ExpiredSignatureError as e:
@@ -302,12 +417,77 @@ def reset_password_web():
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Reset Password</title>
                 <style>
-                    body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-                    .container { background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); max-width: 400px; width: 100%; }\n                    h2 { color: #7e5cff; margin-bottom: 1.5rem; }
-                    input[type=password], input[type=submit] { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; }
-                    input[type=submit] { background: #7e5cff; color: #fff; border: none; font-weight: bold; cursor: pointer; }
-                    input[type=submit]:hover { background: #5a3fc0; }
-                    .error { color: #ff4a4a; margin-bottom: 1rem; }
+                    body { 
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
+                        background: #16191f; 
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center; 
+                        min-height: 100vh; 
+                        margin: 0;
+                        padding: 20px;
+                    }
+                    .container { 
+                        background: #232632; 
+                        padding: 2.5rem; 
+                        border-radius: 16px; 
+                        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); 
+                        max-width: 400px; 
+                        width: 100%; 
+                        border: 1px solid #333;
+                    }
+                    h2 { 
+                        color: #7e5cff; 
+                        margin-bottom: 1.5rem; 
+                        font-size: 1.8rem;
+                        font-weight: 700;
+                        text-align: center;
+                    }
+                    input[type=password] { 
+                        width: 100%; 
+                        padding: 16px; 
+                        margin: 12px 0; 
+                        border-radius: 8px; 
+                        border: 1px solid #333; 
+                        font-size: 1rem; 
+                        background: #1a1d24;
+                        color: #e6e9f0;
+                        box-sizing: border-box;
+                    }
+                    input[type=password]:focus {
+                        outline: none;
+                        border-color: #7e5cff;
+                        box-shadow: 0 0 0 2px rgba(126, 92, 255, 0.2);
+                    }
+                    input[type=password]::placeholder {
+                        color: #8ca0c6;
+                    }
+                    input[type=submit] { 
+                        width: 100%; 
+                        padding: 16px; 
+                        margin: 16px 0 8px 0; 
+                        border-radius: 8px; 
+                        border: none; 
+                        font-size: 1rem; 
+                        background: #7e5cff; 
+                        color: #fff; 
+                        font-weight: 600; 
+                        cursor: pointer; 
+                        transition: background-color 0.3s ease;
+                    }
+                    input[type=submit]:hover { 
+                        background: #5a3fc0; 
+                    }
+                    .error { 
+                        color: #ff4a4a; 
+                        margin-bottom: 1rem; 
+                        text-align: center;
+                        font-size: 0.9rem;
+                    }
+                    .app-name {
+                        color: #7e5cff;
+                        font-weight: 700;
+                    }
                 </style>
             </head>
             <body>

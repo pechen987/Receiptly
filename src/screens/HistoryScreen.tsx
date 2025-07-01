@@ -3,8 +3,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCurrency } from '../screens/analytics/contexts/CurrencyContext';
 import { useReceipt } from '../contexts/ReceiptContext';
 import axios from 'axios';
-import { AppState, Animated } from 'react-native';
 import {
+  AppState,
+  Animated,
+  StatusBar,
   StyleSheet,
   View,
   Text,
@@ -13,9 +15,9 @@ import {
   RefreshControl,
   Modal,
   Pressable,
-  Alert,
-  SafeAreaView
+  Alert
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
 import { getReceipts, deleteReceipt } from '../services/storageService';
@@ -27,11 +29,13 @@ import { saveReceiptFromOpenAI } from '../services/storageService';
 import { AppNavigationProps, RootStackParamList } from '../types/navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { formatCurrency, getCurrencySymbol } from '../screens/analytics/utils/currency';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '../contexts/AuthContext';
 import apiConfig from '../config/api';
 import BasicPlanHeader from '../components/BasicPlanHeader';
+import ArrowSvg from '../../assets/arrow.svg';
+import { useButtonAnimation } from '../hooks/useButtonAnimation';
 
 const API_BASE_URL = apiConfig.API_BASE_URL;
 
@@ -62,7 +66,7 @@ function groupReceiptsByMonth(receipts: Receipt[]): SectionData[] {
   const groupedReceipts = receipts.reduce((acc: { [key: string]: Receipt[] }, receipt) => {
     const date = new Date(normalizeDateToYMD(receipt.date));
     const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
-    
+
     if (!acc[monthYear]) {
       acc[monthYear] = [];
     }
@@ -87,12 +91,14 @@ function groupReceiptsByMonth(receipts: Receipt[]): SectionData[] {
 }
 
 // Re-introduce the local BASIC_MONTHLY_LIMIT constant for frontend check
-const BASIC_MONTHLY_LIMIT = 10; // Note: Backend is the source of truth, keep this value consistent
+const BASIC_MONTHLY_LIMIT = 8; // Note: Backend is the source of truth, keep this value consistent
 
 export default function HistoryScreen() {
   const { currency } = useCurrency();
   const { triggerRefresh } = useReceipt();
-  const { user } = useAuth();
+  const { user, planRefreshTrigger } = useAuth();
+  const insets = useSafeAreaInsets();
+  const { createPressAnimation } = useButtonAnimation();
 
   // Update currency if changed in profile (when app comes to foreground)
   useEffect(() => {
@@ -114,8 +120,12 @@ export default function HistoryScreen() {
 
   // Add state for plan and monthly count for frontend check
   const [userPlan, setUserPlan] = useState<string | null>(null);
-  const [monthlyReceiptCount, setMonthlyReceiptCount] = useState<number | null>(null);
+  const [currentMonthReceiptCount, setCurrentMonthReceiptCount] = useState<number | null>(null);
   const [isLoadingReceiptCount, setIsLoadingReceiptCount] = useState(true);
+
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const shadowOpacityAnim = useRef(new Animated.Value(0.25)).current;
+  const elevationAnim = useRef(new Animated.Value(12)).current;
 
   const scanningMessages = [
     "Scanning your receipt... 📝",
@@ -135,7 +145,7 @@ export default function HistoryScreen() {
     if (loading) {
       let index = 0;
       setScanningMessage(scanningMessages[0]);
-      
+
       messageInterval.current = setInterval(() => {
         index += 1;
         if (index < scanningMessages.length) {
@@ -159,12 +169,12 @@ export default function HistoryScreen() {
     };
   }, [loading]);
 
-  // Effect to load receipts and fetch plan/count when screen is focused
+  // Effect to load receipts and fetch plan/count when screen is focused or plan changes
   useEffect(() => {
-    console.log('[HistoryScreen] Loading data due to refresh or user change');
-      loadReceipts();
+    console.log('[HistoryScreen] Loading data due to refresh, user change, or plan change');
+    loadReceipts();
     fetchReceiptCountAndPlan(); // Fetch plan and count
-  }, [user, triggerRefresh]); // Depend on user and triggerRefresh from ReceiptContext
+  }, [user, triggerRefresh, planRefreshTrigger]); // Add planRefreshTrigger as a dependency
 
   // Modified fetch function to get both plan and count
   const fetchReceiptCountAndPlan = async () => {
@@ -176,9 +186,9 @@ export default function HistoryScreen() {
     // Retrieve token directly from AsyncStorage for API call
     const token = await AsyncStorage.getItem('jwt_token');
     if (!token) {
-       setIsLoadingReceiptCount(false);
-       console.log('No token found for fetching receipt count and plan.');
-       return; // Cannot fetch without a token
+      setIsLoadingReceiptCount(false);
+      console.log('No token found for fetching receipt count and plan.');
+      return; // Cannot fetch without a token
     }
 
     setIsLoadingReceiptCount(true);
@@ -191,17 +201,17 @@ export default function HistoryScreen() {
       const data = await response.json();
       if (response.ok) {
         setUserPlan(data.user_plan);
-        setMonthlyReceiptCount(data.monthly_receipt_count); // Re-introduce setting monthly count
+        setCurrentMonthReceiptCount(data.current_month_receipt_count); // Use new field for current month
         console.log('Fetched plan and counts:', data);
       } else {
-        console.error('Failed to fetch receipt count and plan:', response.status, data.message);
+        console.log('Failed to fetch receipt count and plan:', response.status, data.message);
         setUserPlan('basic'); // Default to basic on error
-        setMonthlyReceiptCount(null); // Assume no count on error
+        setCurrentMonthReceiptCount(null); // Assume no count on error
       }
     } catch (error) {
-      console.error('Error fetching receipt count and plan:', error);
+      console.log('Error fetching receipt count and plan:', error);
       setUserPlan('basic'); // Default to basic on network error
-      setMonthlyReceiptCount(null); // Assume no count on network error
+      setCurrentMonthReceiptCount(null); // Assume no count on network error
     } finally {
       setIsLoadingReceiptCount(false);
     }
@@ -214,7 +224,7 @@ export default function HistoryScreen() {
       setReceipts(sortedReceipts);
       setSections(groupReceiptsByMonth(sortedReceipts));
     } catch (error: any) {
-      console.error('Error loading receipts:', error);
+      console.log('Error loading receipts:', error);
       alert('Error loading receipts: ' + error.message);
     } finally {
       setRefreshing(false);
@@ -229,29 +239,29 @@ export default function HistoryScreen() {
 
   const handleScan = () => {
     console.log('handleScan pressed. States:', {
-        isLoadingReceiptCount,
-        userPlan,
-        monthlyReceiptCount // monthlyReceiptCount is now relevant again
+      isLoadingReceiptCount,
+      userPlan,
+      currentMonthReceiptCount // now using current month count
     });
 
     // Check if the user can scan based on plan and monthly count (Frontend Check)
-    const canScan = !isLoadingReceiptCount && (userPlan === 'premium' || (userPlan === 'basic' && monthlyReceiptCount !== null && monthlyReceiptCount < BASIC_MONTHLY_LIMIT));
+    const canScan = !isLoadingReceiptCount && (userPlan === 'premium' || (userPlan === 'basic' && currentMonthReceiptCount !== null && currentMonthReceiptCount < BASIC_MONTHLY_LIMIT));
 
-    if (!isLoadingReceiptCount && userPlan === 'basic' && monthlyReceiptCount !== null && monthlyReceiptCount >= BASIC_MONTHLY_LIMIT) {
-         // Show alert immediately if limit is reached and data is loaded
-         Alert.alert(
-            'Monthly Limit Reached',
-            `You have reached your monthly limit of ${BASIC_MONTHLY_LIMIT} receipts for the basic plan. Upgrade to premium to scan more.`
-          );
+    if (!isLoadingReceiptCount && userPlan === 'basic' && currentMonthReceiptCount !== null && currentMonthReceiptCount >= BASIC_MONTHLY_LIMIT) {
+      // Show alert immediately if limit is reached and data is loaded
+      Alert.alert(
+        'Monthly Limit Reached',
+        `You have reached your monthly limit of ${BASIC_MONTHLY_LIMIT} receipts for the basic plan. Upgrade to premium to scan more.`
+      );
       return; // Stop further execution if limit is reached
     }
-    
+
     // If still loading or not on a basic plan with limit reached, proceed to show modal (or wait for loading)
     if (!isLoadingReceiptCount) { // Only show modal if loading is complete
-    showModal();
+      showModal();
     } else {
-        console.log('Loading plan and count. Cannot proceed with scan yet.');
-        // Optionally show a loading indicator or toast while loading plan info
+      console.log('Loading plan and count. Cannot proceed with scan yet.');
+      // Optionally show a loading indicator or toast while loading plan info
     }
   };
 
@@ -299,6 +309,11 @@ export default function HistoryScreen() {
     setPendingAction('gallery');
     hideModal();
   };
+
+  // Reusable animation functions
+  const scanButtonAnim = createPressAnimation();
+  const cameraButtonAnim = createPressAnimation();
+  const galleryButtonAnim = createPressAnimation();
 
   const handleModalDismiss = async () => {
     if (!hasPermissions) {
@@ -362,16 +377,16 @@ export default function HistoryScreen() {
         const updatedReceipts = sortReceiptsByDate([...receipts, savedReceipt]);
         setReceipts(updatedReceipts);
         setSections(groupReceiptsByMonth(updatedReceipts));
-        
+
         // Add a longer delay to ensure backend processing is complete
         await new Promise(resolve => setTimeout(resolve, 2000));
-        
+
         // Trigger refresh for analytics screen
         triggerRefresh();
-        
+
         // Add another small delay before navigation
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         // Navigate after ensuring data is processed
         navigation.navigate('ReceiptDetail', { receiptData: savedReceipt });
       } else {
@@ -441,7 +456,7 @@ export default function HistoryScreen() {
       await loadReceipts();
       triggerRefresh(); // Trigger refresh for analytics screen after deletion
     } catch (error) {
-      console.error('Error deleting receipt:', error);
+      console.log('Error deleting receipt:', error);
       Alert.alert(
         'Error',
         error instanceof Error ? error.message : 'Failed to delete receipt. Please try again.'
@@ -455,93 +470,205 @@ export default function HistoryScreen() {
     </View>
   );
 
-  return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        {!isLoadingReceiptCount && userPlan === 'basic' && monthlyReceiptCount !== null && (
-          <BasicPlanHeader monthlyReceiptCount={monthlyReceiptCount} limit={BASIC_MONTHLY_LIMIT} />
-        )}
+  const loadReceiptsFromBackend = async () => {
+    try {
+      const token = await AsyncStorage.getItem('jwt_token');
+      const res = await axios.get(`${API_BASE_URL}/api/receipts`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.data && res.data.receipts) {
+        const sortedReceipts = sortReceiptsByDate(res.data.receipts);
+        setReceipts(sortedReceipts);
+        setSections(groupReceiptsByMonth(sortedReceipts));
+      }
+    } catch (error: any) {
+      console.log('Error loading receipts from backend:', error);
+      alert('Error loading receipts: ' + error.message);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
-        {loading ? (
-          <View style={styles.loadingContainer}>
-            <Ionicons name="receipt-outline" size={64} color="#7e5cff" />
-            <Text style={styles.overlayText}>{scanningMessage}</Text>
-            <Text style={styles.loadingSubtext}>
-              This may take a few moments. Please keep the app open until processing is complete.
-            </Text>
-          </View>
-        ) : (
-          <SectionList
-            sections={sections}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            renderSectionHeader={renderSectionHeader}
-            stickySectionHeadersEnabled={false}
-            contentContainerStyle={[
-              styles.listContent,
-              sections.length === 0 && styles.emptyListContent
-            ]}
-            style={styles.list}
-            refreshControl={
-              <RefreshControl 
-                refreshing={refreshing} 
-                onRefresh={onRefresh} 
-                tintColor="#7e5cff"
-                colors={['#7e5cff']}
-                progressViewOffset={0}
-                progressBackgroundColor="transparent"
-                style={{ backgroundColor: 'transparent' }}
-              />
-            }
-            ListEmptyComponent={
-              <View style={styles.emptyStateContainer}>
-                <View style={styles.emptyStateContent}>
-                  <Icon name="file-text" size={64} color="#7e5cff" />
-                  <Text style={styles.emptyText}>Ready to scan your first receipt? Tap the camera button below to get started!</Text>
-                </View>
+  useFocusEffect(
+    React.useCallback(() => {
+      loadReceiptsFromBackend();
+    }, [])
+  );
+
+  return (
+    <View style={[styles.safeArea, { paddingTop: insets.top }]}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="#16191f"
+        translucent={false}
+      />
+      {!isLoadingReceiptCount && (userPlan === 'basic' || userPlan === 'pro') && (
+        <BasicPlanHeader
+          monthlyReceiptCount={currentMonthReceiptCount}
+          limit={BASIC_MONTHLY_LIMIT}
+          userPlan={userPlan}
+        />
+      )}
+
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <Ionicons name="receipt-outline" size={64} color="#7e5cff" />
+          <Text style={styles.overlayText}>{scanningMessage}</Text>
+          <Text style={styles.loadingSubtext}>
+            This may take a few moments. Please keep the app open until processing is complete.
+          </Text>
+        </View>
+      ) : (
+        <SectionList
+          sections={sections}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          renderSectionHeader={renderSectionHeader}
+          stickySectionHeadersEnabled={false}
+          contentContainerStyle={[
+            styles.listContent,
+            sections.length === 0 && styles.emptyListContent,
+            { paddingBottom: insets.bottom > 0 ? insets.bottom : 20 }
+          ]}
+          style={styles.list}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#7e5cff"
+              colors={['#7e5cff']}
+              progressViewOffset={0}
+              progressBackgroundColor="transparent"
+              style={{ backgroundColor: 'transparent' }}
+            />
+          }
+          ListEmptyComponent={
+            <View style={styles.emptyStateContainer}>
+              <View style={styles.emptyStateContent}>
+                <Text style={styles.emptyText}>Ready to scan your first receipt?</Text>
+                <Text style={styles.emptyText}>Tap the camera button below!</Text>
+                <ArrowSvg width={220} height={220} style={styles.arrow} fill="#8ca0c6" />
               </View>
+            </View>
+          }
+        />
+      )}
+      {!loading && (
+        <Animated.View
+          style={[
+            styles.fabContainer,
+            {
+              transform: [{ scale: scanButtonAnim.scaleAnim }],
             }
-          />
-        )}
-        {!loading && (
-          <TouchableOpacity
-            style={styles.fab}
-            onPress={handleScan}
-            activeOpacity={0.8}
-          >
-            <Icon name="camera" size={28} color="#fff" />
-          </TouchableOpacity>
-        )}
-        <Modal
-          visible={scanModalVisible}
-          transparent
-          animationType="none"
-          onRequestClose={handleCloseModal}
-          onDismiss={handleModalDismiss}
+          ]}
         >
-          <Animated.View 
+          <Animated.View
             style={[
-              styles.modalOverlay,
-              { opacity: fadeAnim }
+              styles.fabShadow,
+              {
+                shadowOpacity: scanButtonAnim.shadowOpacityAnim,
+                elevation: scanButtonAnim.elevationAnim,
+              }
             ]}
           >
-            <Pressable style={styles.modalOverlay} onPress={handleCloseModal}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalTitleAccent}>Add receipt</Text>
-                <TouchableOpacity style={styles.scanOptionLeft} onPress={handleCamera}>
-                  <Icon name="camera" size={22} color="#fff" />
-                  <Text style={styles.scanOptionText}>Snap a photo</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.scanOptionLeft} onPress={handleGallery}>
-                  <Icon name="image" size={22} color="#fff" />
-                  <Text style={styles.scanOptionText}>Upload image</Text>
-                </TouchableOpacity>
-              </View>
-            </Pressable>
+            <TouchableOpacity
+              style={styles.fab}
+              onPress={handleScan}
+              onPressIn={scanButtonAnim.handlePressIn}
+              onPressOut={scanButtonAnim.handlePressOut}
+              activeOpacity={1}
+            >
+              <Icon name="camera" size={28} color="#fff" />
+            </TouchableOpacity>
           </Animated.View>
-        </Modal>
-      </View>
-    </SafeAreaView>
+        </Animated.View>
+      )}
+
+      <Modal
+        visible={scanModalVisible}
+        transparent
+        animationType="none"
+        onRequestClose={handleCloseModal}
+        onDismiss={handleModalDismiss}
+      >
+        <Animated.View
+          style={[
+            styles.modalOverlay,
+            { opacity: fadeAnim }
+          ]}
+        >
+          <Pressable style={styles.modalOverlay} onPress={handleCloseModal}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalButtonsRow}>
+                <Animated.View
+                  style={[
+                    styles.modalButtonContainer,
+                    {
+                      transform: [{ scale: galleryButtonAnim.scaleAnim }],
+                    }
+                  ]}
+                >
+                  <Animated.View
+                    style={[
+                      styles.modalButtonShadow,
+                      {
+                        shadowOpacity: galleryButtonAnim.shadowOpacityAnim,
+                        elevation: galleryButtonAnim.elevationAnim,
+                      }
+                    ]}
+                  >
+                    <TouchableOpacity 
+                      style={styles.modalButton} 
+                      onPress={handleGallery}
+                      onPressIn={galleryButtonAnim.handlePressIn}
+                      onPressOut={galleryButtonAnim.handlePressOut}
+                      activeOpacity={1}
+                    >
+                      <View style={styles.iconBackground}>
+                        <Icon name="image" size={70} color="rgba(255,255,255,0.15)" />
+                      </View>
+                      <Text style={styles.modalButtonText}>Upload</Text>
+                    </TouchableOpacity>
+                  </Animated.View>
+                </Animated.View>
+
+                <Animated.View
+                  style={[
+                    styles.modalButtonContainer,
+                    {
+                      transform: [{ scale: cameraButtonAnim.scaleAnim }],
+                    }
+                  ]}
+                >
+                  <Animated.View
+                    style={[
+                      styles.modalButtonShadow,
+                      {
+                        shadowOpacity: cameraButtonAnim.shadowOpacityAnim,
+                        elevation: cameraButtonAnim.elevationAnim,
+                      }
+                    ]}
+                  >
+                    <TouchableOpacity 
+                      style={styles.modalButton} 
+                      onPress={handleCamera}
+                      onPressIn={cameraButtonAnim.handlePressIn}
+                      onPressOut={cameraButtonAnim.handlePressOut}
+                      activeOpacity={1}
+                    >
+                      <View style={styles.iconBackground}>
+                        <Icon name="camera" size={70} color="rgba(255,255,255,0.15)" />
+                      </View>
+                      <Text style={styles.modalButtonText}>Scan</Text>
+                    </TouchableOpacity>
+                  </Animated.View>
+                </Animated.View>
+              </View>
+            </View>
+          </Pressable>
+        </Animated.View>
+      </Modal>
+    </View>
   );
 }
 
@@ -560,15 +687,9 @@ const styles = StyleSheet.create({
     minHeight: 400,
   },
   emptyStateContent: {
+    marginTop: 200,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  loadingText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#e2e8f0',
-    marginTop: 20,
-    textAlign: 'center',
   },
   loadingSubtext: {
     fontSize: 14,
@@ -585,25 +706,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  scanOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#7e5cff',
-    padding: 14,
-    borderRadius: 10,
-    marginBottom: 10,
-    width: 200,
-    justifyContent: 'center',
-    borderWidth: 1.2,
-    borderColor: '#232632',
-  },
   scanOptionLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#7e5cff',
     padding: 14,
     borderRadius: 10,
-    marginBottom: 16,
+    marginBottom: 8,
     width: 220,
     justifyContent: 'flex-start',
     borderWidth: 1.2,
@@ -615,27 +724,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-  scanCancel: {
-    display: 'none',
-  },
-  modalTitleAccent: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 16,
-    marginLeft: 2,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#16191f',
-    paddingHorizontal: 0,
-    paddingTop: 0,
-  },
   list: {
     flex: 1,
   },
   listContent: {
     paddingHorizontal: 12,
+    paddingBottom: 0,
   },
   emptyListContent: {
     flex: 1,
@@ -652,10 +746,6 @@ const styles = StyleSheet.create({
     elevation: 3,
     marginHorizontal: 16,
     marginTop: 4,
-  },
-  receiptInfo: {
-    flex: 1,
-    marginLeft: 10,
   },
   receiptTitle: {
     fontSize: 18,
@@ -677,74 +767,29 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#8ca0c6',
   },
-  headerCentered: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 22,
-    paddingBottom: 10,
-    backgroundColor: 'transparent',
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#e6e9f0',
-    fontFamily: 'System',
-    letterSpacing: 1,
-  },
   fab: {
-    position: 'absolute',
-    right: 24,
-    bottom: 36,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: '#7e5cff',
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    borderWidth: 2,
+    borderColor: '#9575ff',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.18,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 8,
-    zIndex: 100,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 0,
   },
   modalContent: {
-    backgroundColor: '#232632',
-    paddingRight: 70,
-    paddingLeft: 70,
-    paddingTop: 20,
-    paddingBottom: 10,
+    width: '100%',
+    paddingRight: 40,
+    paddingLeft: 40,
+    paddingTop: 30,
+    paddingBottom: 30,
     borderRadius: 16,
     alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 18,
-    color: '#333',
-  },
-  modalButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    backgroundColor: '#f0f4fa',
-    marginBottom: 12,
-    width: '100%',
-  },
-  modalButtonText: {
-    marginLeft: 12,
-    fontSize: 16,
-    color: '#7e5cff',
-    fontWeight: '500',
-  },
-  loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 200,
   },
   overlayText: {
     fontSize: 18,
@@ -755,14 +800,10 @@ const styles = StyleSheet.create({
   emptyText: {
     textAlign: 'center',
     color: '#8ca0c6',
-    fontSize: 16,
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontSize: 18,
+    fontWeight: '500',
+    marginTop: 8,
+    marginBottom: 0,
   },
   modalOverlay: {
     flex: 1,
@@ -771,7 +812,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -791,16 +832,94 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   sectionHeader: {
-    paddingVertical: 12,
+    paddingVertical: 8,
     paddingHorizontal: 16,
     marginTop: 16,
-    marginBottom: 8,
   },
   sectionHeaderText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#8ca0c6',
     textTransform: 'capitalize',
+  },
+  arrowContainer: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 99,
+  },
+  arrow: {
+    transform: [{ rotate: '12deg' }],
+    left: 20,
+    top: 40,
+  },
+  fabContainer: {
+    position: 'absolute',
+    right: 24,
+    bottom: 36,
+    shadowColor: '#7e5cff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 16,
+    zIndex: 100,
+  },
+  fabShadow: {
+    shadowColor: '#7e5cff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 16,
+    borderRadius: 32,
+  },
+  modalButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 20,
+  },
+  modalButtonContainer: {
+    width: '45%',
+    aspectRatio: 1,
+  },
+  modalButtonShadow: {
+    shadowColor: '#7e5cff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 8,
+    borderRadius: 12,
+    flex: 1,
+  },
+  modalButton: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#7e5cff',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#9575ff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    elevation: 0,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  modalButtonText: {
+    fontSize: 22,
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    zIndex: 2,
+    position: 'relative',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  iconBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
   },
 });
 

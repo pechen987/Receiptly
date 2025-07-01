@@ -14,6 +14,8 @@ interface BillStatsChartProps {
   userId?: string;
   refreshTrigger: number;
   userCurrency: string;
+  selectedStore: string | null;
+  selectedCategory: string | null;
 }
 
 interface BillStats {
@@ -24,7 +26,7 @@ interface BillStats {
   has_data: boolean;
 }
 
-const BillStatsChart: React.FC<BillStatsChartProps> = ({ userId, refreshTrigger, userCurrency }) => {
+const BillStatsChart: React.FC<BillStatsChartProps> = ({ userId, refreshTrigger, userCurrency, selectedStore, selectedCategory }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<BillStats | null>(null);
@@ -59,13 +61,17 @@ const BillStatsChart: React.FC<BillStatsChartProps> = ({ userId, refreshTrigger,
       console.log('[BillStats] Making API request to:', `${API_BASE_URL}/api/analytics/bill-stats`);
       console.log('[BillStats] Request params:', { 
         user_id: currentUserId, 
-        interval 
+        interval,
+        store_name: selectedStore,
+        store_category: selectedCategory
       });
 
       const res = await axios.get(`${API_BASE_URL}/api/analytics/bill-stats`, {
         params: { 
           user_id: currentUserId,
-          interval
+          interval,
+          store_name: selectedStore,
+          store_category: selectedCategory
         },
         headers: {
           'Content-Type': 'application/json',
@@ -95,101 +101,7 @@ const BillStatsChart: React.FC<BillStatsChartProps> = ({ userId, refreshTrigger,
 
   useEffect(() => {
     fetchStats();
-  }, [userId, interval, refreshTrigger]);
-
-  if (loading) {
-    return (
-      <View style={[styles.widgetBg, { minHeight: 180 }]}>
-        <View style={styles.titleRow}>
-          <View style={styles.titleWithIcon}>
-            <Icon name="dollar-sign" size={20} color="#7e5cff" />
-            <Text style={styles.title}>Bill statistics</Text>
-            <HintIcon hintText="This chart displays the total number of receipts you've added and calculates your average bill amount. These statistics are for the last 30 days or all time, depending on the selected interval." />
-          </View>
-          <View style={styles.selector}>
-            <Pressable
-              style={[styles.btn, interval === 'M' && styles.btnActive]}
-              onPress={() => setInterval('M')}
-            >
-              <Text style={[styles.btnText, interval === 'M' && styles.btnTextActive]}>M</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.btn, interval === 'All' && styles.btnActive]}
-              onPress={() => setInterval('All')}
-            >
-              <Text style={[styles.btnText, interval === 'All' && styles.btnTextActive]}>All</Text>
-            </Pressable>
-          </View>
-        </View>
-        <View style={{ alignItems: 'center', paddingVertical: 40 }}>
-          <ActivityIndicator color="#7e5cff" />
-        </View>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={[styles.widgetBg, { minHeight: 180 }]}>
-        <View style={styles.titleRow}>
-          <View style={styles.titleWithIcon}>
-            <Icon name="dollar-sign" size={20} color="#7e5cff" />
-            <Text style={styles.title}>Bill statistics</Text>
-            <HintIcon hintText="This chart displays the total number of receipts you've added and calculates your average bill amount. These statistics are for the last 30 days or all time, depending on the selected interval." />
-          </View>
-        </View>
-        <Text style={styles.message}>{error}</Text>
-      </View>
-    );
-  }
-
-  if (!hasData) {
-    return (
-      <View style={[styles.widgetBg, { minHeight: 180 }]}>
-        <View style={styles.titleRow}>
-          <View style={styles.titleWithIcon}>
-            <Icon name="dollar-sign" size={20} color="#7e5cff" />
-            <Text style={styles.title}>Bill statistics</Text>
-            <HintIcon hintText="This chart displays the total number of receipts you've added and calculates your average bill amount. These statistics are for the last 30 days or all time, depending on the selected interval." />
-          </View>
-        </View>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={styles.message}>No data yet</Text>
-        </View>
-      </View>
-    );
-  }
-
-  if (!stats || stats.total_receipts === 0) {
-  return (
-      <View style={[styles.widgetBg, { minHeight: 180 }]}>
-      <View style={styles.titleRow}>
-        <View style={styles.titleWithIcon}>
-          <Icon name="dollar-sign" size={20} color="#7e5cff" />
-          <Text style={styles.title}>Bill statistics</Text>
-            <HintIcon hintText="This chart displays the total number of receipts you've added and calculates your average bill amount. These statistics are for the last 30 days or all time, depending on the selected interval." />
-        </View>
-          <View style={styles.selector}>
-            <Pressable
-              style={[styles.btn, interval === 'M' && styles.btnActive]}
-              onPress={() => setInterval('M')}
-            >
-              <Text style={[styles.btnText, interval === 'M' && styles.btnTextActive]}>M</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.btn, interval === 'All' && styles.btnActive]}
-              onPress={() => setInterval('All')}
-            >
-              <Text style={[styles.btnText, interval === 'All' && styles.btnTextActive]}>All</Text>
-            </Pressable>
-          </View>
-        </View>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={styles.message}>No data for this interval</Text>
-        </View>
-      </View>
-    );
-  }
+  }, [userId, interval, refreshTrigger, selectedStore, selectedCategory]);
 
   return (
     <View style={[styles.widgetBg, { paddingBottom: 16, minHeight: 180 }]}>
@@ -199,55 +111,75 @@ const BillStatsChart: React.FC<BillStatsChartProps> = ({ userId, refreshTrigger,
           <Text style={styles.title}>Bill statistics</Text>
           <HintIcon hintText="This chart displays the total number of receipts you've added and calculates your average bill amount. These statistics are for the last 30 days or all time, depending on the selected interval." />
         </View>
-        <View style={styles.selector}>
-          <Pressable
-            style={[styles.btn, interval === 'M' && styles.btnActive]}
-            onPress={() => setInterval('M')}
-          >
-            <Text style={[styles.btnText, interval === 'M' && styles.btnTextActive]}>M</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.btn, interval === 'All' && styles.btnActive]}
-            onPress={() => setInterval('All')}
-          >
-            <Text style={[styles.btnText, interval === 'All' && styles.btnTextActive]}>All</Text>
-          </Pressable>
-        </View>
+        {hasData && !loading && !error && (
+          <View style={styles.selector}>
+            <Pressable
+              style={[styles.btn, interval === 'M' && styles.btnActive]}
+              onPress={() => setInterval('M')}
+            >
+              <Text style={[styles.btnText, interval === 'M' && styles.btnTextActive]}>M</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.btn, interval === 'All' && styles.btnActive]}
+              onPress={() => setInterval('All')}
+            >
+              <Text style={[styles.btnText, interval === 'All' && styles.btnTextActive]}>All</Text>
+            </Pressable>
+          </View>
+        )}
       </View>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
-        {/* Average Bill */}
-        <View style={{ flex: 1, alignItems: 'center', marginRight: 8 }}>
-          <Text style={{ color: '#8ca0c6', fontSize: 14, marginBottom: 4 }}>Average bill</Text>
-          <Text style={{ color: '#e6e9f0', fontSize: 32, fontWeight: '700' }}>
-            {formatCurrency(Number(stats.average_bill.toFixed(1)), stats.currency)}
-          </Text>
-          {stats.average_bill_delta !== null && stats.average_bill_delta !== 0 && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
-              <Icon 
-                name={stats.average_bill_delta > 0 ? "arrow-up" : "arrow-down"} 
-                size={16} 
-                color={stats.average_bill_delta > 0 ? "#4CAF50" : "#FF5252"} 
-              />
-              <Text style={{ 
-                color: stats.average_bill_delta > 0 ? "#4CAF50" : "#FF5252",
-                marginLeft: 4,
-                fontSize: 14,
-                fontWeight: '600'
-              }}>
-                {formatCurrency(Number(Math.abs(stats.average_bill_delta).toFixed(1)), stats.currency)}
+      <View style={{ flex: 1, minHeight: 120 }}>
+        {loading ? (
+          <View style={{ flex: 1 }} />
+        ) : error ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={styles.message}>{error}</Text>
+          </View>
+        ) : !hasData ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={styles.message}>No data yet</Text>
+          </View>
+        ) : !stats || stats.total_receipts === 0 ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={styles.message}>No data for this interval</Text>
+          </View>
+        ) : (
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
+            {/* Average Bill */}
+            <View style={{ flex: 1, alignItems: 'center', marginRight: 8 }}>
+              <Text style={{ color: '#8ca0c6', fontSize: 14, marginBottom: 4 }}>Average bill</Text>
+              <Text style={{ color: '#e6e9f0', fontSize: 32, fontWeight: '700' }}>
+                {formatCurrency(Number(stats.average_bill.toFixed(1)), stats.currency)}
+              </Text>
+              {stats.average_bill_delta !== null && stats.average_bill_delta !== 0 && (
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                  <Icon 
+                    name={stats.average_bill_delta > 0 ? "arrow-up" : "arrow-down"} 
+                    size={16} 
+                    color={stats.average_bill_delta > 0 ? "#4CAF50" : "#FF5252"} 
+                  />
+                  <Text style={{ 
+                    color: stats.average_bill_delta > 0 ? "#4CAF50" : "#FF5252",
+                    marginLeft: 4,
+                    fontSize: 14,
+                    fontWeight: '600'
+                  }}>
+                    {formatCurrency(Number(Math.abs(stats.average_bill_delta).toFixed(1)), stats.currency)}
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            {/* Total Receipts */}
+            <View style={{ flex: 1, alignItems: 'center', marginLeft: 8 }}>
+              <Text style={{ color: '#8ca0c6', fontSize: 14, marginBottom: 4 }}>Total receipts</Text>
+              <Text style={{ color: '#e6e9f0', fontSize: 32, fontWeight: '700' }}>
+                {stats.total_receipts}
               </Text>
             </View>
-          )}
-        </View>
-
-        {/* Total Receipts */}
-        <View style={{ flex: 1, alignItems: 'center', marginLeft: 8 }}>
-          <Text style={{ color: '#8ca0c6', fontSize: 14, marginBottom: 4 }}>Total receipts</Text>
-          <Text style={{ color: '#e6e9f0', fontSize: 32, fontWeight: '700' }}>
-            {stats.total_receipts}
-          </Text>
-        </View>
+          </View>
+        )}
       </View>
     </View>
   );

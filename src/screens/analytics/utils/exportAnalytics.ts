@@ -24,6 +24,7 @@ export async function exportAnalyticsAsPDF(userId: string, userPlan: string) {
     top_products: { url: '/api/analytics/top-products', intervals: ['month', 'year', 'all'] },
     most_expensive: { url: '/api/analytics/most-expensive-products', intervals: ['month', 'year', 'all'] },
     shopping_days: { url: '/api/analytics/shopping-days', intervals: ['month', 'all'] },
+    diet_composition: { url: '/api/analytics/diet-composition', intervals: ['3months'] },
   };
 
   // 2. Filter endpoints by plan
@@ -43,6 +44,7 @@ export async function exportAnalyticsAsPDF(userId: string, userPlan: string) {
       if (chart === 'by_category') params.period = interval;
       if (chart === 'top_products' || chart === 'most_expensive') params.period = interval;
       if (chart === 'shopping_days') params.period = interval;
+      if (chart === 'diet_composition') params.interval = interval;
       try {
         const res = await fetchWithAuth(`${API_BASE_URL}${endpoints[chart].url}`, params);
         analyticsData[chart][interval] = res.data;

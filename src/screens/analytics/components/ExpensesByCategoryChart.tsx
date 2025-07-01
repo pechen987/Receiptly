@@ -15,7 +15,7 @@ import { HintIcon, HintModal, modalStyles, HintIconProps, HintModalProps } from 
 const MAX_RETRIES = 3;
 const INITIAL_RETRY_DELAY = 1000; // 1 second
 
-const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation }: ChartProps) => {
+const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation: propNavigation, selectedStore, selectedCategory }: ChartProps & { navigation?: any; selectedStore: string | null; selectedCategory: string | null }) => {
   const [period, setPeriod] = useState<'week' | 'month' | 'all'>('week');
   const [data, setData] = useState<CategoryData[]>([]);
   const [currency, setCurrency] = useState('USD');
@@ -84,7 +84,9 @@ const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation }: Ch
         console.log('[CategoryExpenses] Making API request to:', `${API_BASE_URL}/api/analytics/expenses-by-category`);
         console.log('[CategoryExpenses] Request params:', { 
           user_id: currentUserId, 
-          period 
+          period,
+          store_name: selectedStore,
+          store_category: selectedCategory
         });
 
         const headers = {
@@ -94,7 +96,7 @@ const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation }: Ch
 
         const res = await makeRequest(
           `${API_BASE_URL}/api/analytics/expenses-by-category`,
-          { user_id: currentUserId, period },
+          { user_id: currentUserId, period, store_name: selectedStore, store_category: selectedCategory },
           headers
         );
 
@@ -116,7 +118,7 @@ const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation }: Ch
             try {
               const periodRes = await makeRequest(
                 `${API_BASE_URL}/api/analytics/expenses-by-category`,
-                { user_id: currentUserId, period: p },
+                { user_id: currentUserId, period: p, store_name: selectedStore, store_category: selectedCategory },
                 headers
               );
               
@@ -149,7 +151,7 @@ const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation }: Ch
         setLoading(false);
       }
     // }, 300); // 300ms debounce
-  }, [userId, period]);
+  }, [userId, period, selectedStore, selectedCategory]);
 
   useEffect(() => { 
     fetchData();
@@ -174,8 +176,8 @@ const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation }: Ch
     let angleStart = 0;
     return data.map((d, i) => {
       const value = d.total;
-      // Subtract gap from each slice except the last
-      const angle = total === 0 ? 0 : (value / total) * 360 - (data.length > 1 ? sliceGapDeg : 0);
+      // For a single category, use full 360 degrees minus a small gap
+      const angle = total === 0 ? 0 : data.length === 1 ? 357 : (value / total) * 360 - sliceGapDeg;
       const angleEnd = angleStart + Math.max(angle, 0);
       // Convert to radians
       const startRad = (Math.PI / 180) * angleStart;
@@ -192,7 +194,7 @@ const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation }: Ch
         `A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2}`,
         'Z',
       ].join(' ');
-      // Next slice starts after the gap
+      // Next slice starts after the gap only if there are multiple categories
       angleStart = angleEnd + (data.length > 1 ? sliceGapDeg : 0);
       return { pathData, color: getProductColor(d.category), value, category: d.category };
     });
@@ -220,7 +222,9 @@ const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation }: Ch
         params: { 
           user_id: userId, 
           category, 
-          period 
+          period,
+          store_name: selectedStore,
+          store_category: selectedCategory
         },
         headers: headers // Add headers here
       });
@@ -248,12 +252,12 @@ const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation }: Ch
     } finally {
       setModalLoading(false);
     }
-  }, [userId, period]);
+  }, [userId, period, selectedStore, selectedCategory]);
 
   const hasData = data.length > 0 && total > 0;
 
   return (
-    <View style={[styles.widgetBg]}> 
+    <View style={[styles.widgetBg, { paddingBottom: 16, minHeight: 180 }]}> 
       <View style={styles.titleRow}>
         <View style={styles.titleWithIcon}>
           <Icon name="pie-chart" size={22} color="#7e5cff" style={{ marginRight: 8 }} />
@@ -278,25 +282,25 @@ const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation }: Ch
           </View>
         )}
       </View>
-      <View style={{ minHeight: 300, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ flex: 1, minHeight: 120, alignItems: 'center', justifyContent: 'center' }}>
         {loading ? (
-          <View style={{ height: 570, justifyContent: 'center' }}>
+          <View style={styles.emptyCompact}>
             <Text style={styles.message}>Loading category expenses...</Text>
           </View>
         ) : error ? (
-          <View style={{ height: 570, justifyContent: 'center' }}>
+          <View style={styles.emptyCompact}>
             <Text style={[styles.message, { color: 'red' }]}>{error}</Text>
           </View>
         ) : !hasDataInAnyPeriod ? (
-          <View style={{ height: 200, justifyContent: 'center' }}>
+          <View style={styles.emptyCompact}>
             <Text style={styles.message}>No data yet</Text>
           </View>
         ) : !hasData ? (
-          <View style={{ height: 200, justifyContent: 'center' }}>
+          <View style={styles.emptyCompact}>
             <Text style={styles.message}>No data for this interval</Text>
           </View>
         ) : (
-          <View style={{ alignItems: 'center' }}>
+          <View style={{ minHeight: 220, alignItems: 'center', justifyContent: 'center' }}>
             <Svg width={chartSize} height={chartSize}>
               {pieSlices.map((slice, i) => (
                 <Path key={i} d={slice.pathData} fill={slice.color} stroke="#fff" strokeWidth={0.5} />

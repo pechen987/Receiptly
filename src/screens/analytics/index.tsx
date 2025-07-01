@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, memo, useRef, useMemo } from 'react';
-import { View, ScrollView, RefreshControl, Text, Pressable, StyleSheet, SafeAreaView, Modal, FlatList, TouchableOpacity, Dimensions, Animated, Alert } from 'react-native';
+import { View, ScrollView, RefreshControl, Text, Pressable, StyleSheet, Modal, FlatList, TouchableOpacity, Dimensions, Animated, Alert, StatusBar } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons as Icon } from '@expo/vector-icons';
@@ -8,6 +9,8 @@ import DraggableFlatList, { ScaleDecorator } from 'react-native-draggable-flatli
 import api from '../../services/api';
 import axios from 'axios';
 import apiConfig from '../../config/api';
+import { fetchSpendData as fetchSpendDataApi } from './utils/api';
+import { DraggableWidget } from './components/DraggableWidget';
 
 import { styles } from './styles';
 import TotalSpentChart from './components/TotalSpentChart';
@@ -16,6 +19,7 @@ import MostExpensiveProductsChart from './components/MostExpensiveProductsChart'
 import ExpensesByCategoryChart from './components/ExpensesByCategoryChart';
 import ShoppingDaysChart from './components/ShoppingDaysChart';
 import BillStatsChart from './components/BillStatsChart';
+import DietCompositionChart from './components/DietCompositionChart';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCurrency } from './contexts/CurrencyContext';
 import { useReceipt } from '../../contexts/ReceiptContext';
@@ -25,6 +29,7 @@ import { formatCurrency } from './utils/currency';
 import jwtDecode from 'jwt-decode';
 import AnalyticsHeader from '../../components/AnalyticsHeader';
 import { exportAnalyticsAsPDF } from './utils/exportAnalytics';
+import FilterScreen from './components/FilterScreen';
 
 type RootStackParamList = {
   MainTabs: undefined;
@@ -41,12 +46,14 @@ const MemoizedMostExpensiveProductsChart = memo(MostExpensiveProductsChart);
 const MemoizedExpensesByCategoryChart = memo(ExpensesByCategoryChart);
 const MemoizedShoppingDaysChart = memo(ShoppingDaysChart);
 const MemoizedBillStatsChart = memo(BillStatsChart);
+const MemoizedDietCompositionChart = memo(DietCompositionChart);
 
 const AnalyticsScreenContent = () => {
   const navigation = useNavigation<NavigationProp>();
-  const { user, lastLoginTimestamp, initializeFromToken } = useAuth();
+  const { user, lastLoginTimestamp, initializeFromToken, planRefreshTrigger } = useAuth();
   const { currency } = useCurrency();
   const { refreshTrigger, setRefreshTrigger, triggerRefresh } = useReceipt();
+  const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
   const [spendData, setSpendData] = useState<SpendData[]>([]);
   const [loading, setLoading] = useState(false);
@@ -59,9 +66,12 @@ const AnalyticsScreenContent = () => {
   const refreshThreshold = -100; // Only trigger refresh after pulling down 100 pixels
   const isRefreshing = useRef(false);
   const [totalSpentRefreshTrigger, setTotalSpentRefreshTrigger] = useState(0);
-  const [userPlan, setUserPlan] = useState<string | null>(null);
+  const [userPlan, setUserPlan] = useState<string>('basic');
   const [isLoadingUserPlan, setIsLoadingUserPlan] = useState(true);
   const [exporting, setExporting] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [selectedStore, setSelectedStore] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Use a ref to track if initial data has been loaded
   const hasLoadedInitialData = useRef(false);
@@ -94,7 +104,7 @@ const AnalyticsScreenContent = () => {
           }
         }
       } catch (error) {
-        console.error('[Analytics] Error checking token:', error);
+        console.log('[Analytics] Error checking token:', error);
       }
     }
 
@@ -112,75 +122,29 @@ const AnalyticsScreenContent = () => {
   }, [initializeUserId, user?.id]);
 
   const fetchSpendData = useCallback(async () => {
-    if (!currentUserId) {
-      console.log('[Analytics] Skipping fetch - no user ID available');
-      return;
-    }
+    if (!currentUserId) return;
 
-    setLoading(true);
-    setError(null);
-    
-    const maxRetries = 3;
-    let retryCount = 0;
-    
-    const attemptFetch = async (): Promise<void> => {
+    const attemptFetch = async () => {
       try {
         console.log('[Analytics] Making API request to:', '/api/analytics/spend');
-        console.log('[Analytics] Request params:', { user_id: currentUserId, interval });
-        
-        const res = await api.get('/api/analytics/spend', {
-          params: { 
-            user_id: currentUserId,
-            interval
-          }
+        console.log('[Analytics] Request params:', { 
+          user_id: currentUserId, 
+          interval,
+          store_name: selectedStore,
+          store_category: selectedCategory
         });
         
-        console.log('[Analytics] API Response status:', res.status);
-        console.log('[Analytics] API Response data:', res.data);
-        
-        if (res.data.data && Array.isArray(res.data.data)) {
-          setSpendData(res.data.data);
-          setError(null);
-          // Only trigger refresh for TotalSpentChart
-          setTotalSpentRefreshTrigger(Date.now());
-          // Mark initial data as loaded
-          hasLoadedInitialData.current = true;
-        } else {
-          console.log('[Analytics] Invalid response format:', res.data);
-          setSpendData([]);
-          setError('Invalid data format received');
-        }
-        setLoading(false);
-      } catch (e: any) {
-        console.error('[Analytics] Error fetching spend data:', e);
-        if (axios.isAxiosError(e)) {
-          console.error('[Analytics] Axios error details:', {
-            status: e.response?.status,
-            statusText: e.response?.statusText,
-            data: e.response?.data,
-            headers: e.response?.headers
-          });
-          if (!e.response) {
-            Alert.alert('Analytics', 'No internet connection or the server is not responding.');
-          }
-        } else if (e.message && e.message.toLowerCase().includes('network')) {
-          Alert.alert('Analytics', 'No internet connection. Please check your connection and try again.');
-        }
-        
-        if (retryCount < maxRetries) {
-          retryCount++;
-          console.log(`[Analytics] Retrying fetch (${retryCount}/${maxRetries})...`);
-          await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, retryCount)));
-          return attemptFetch();
-        }
-        setError('Unable to load spend data');
+        const data = await fetchSpendDataApi(Number(currentUserId), interval, selectedStore, selectedCategory);
+        console.log('[Analytics] Received spend data:', data);
+        setSpendData(data.data || []);
+      } catch (error) {
+        console.log('[Analytics] Error fetching spend data:', error);
         setSpendData([]);
-        setLoading(false);
       }
     };
 
     await attemptFetch();
-  }, [currentUserId, interval]);
+  }, [currentUserId, interval, selectedStore, selectedCategory]);
 
   useEffect(() => {
     if (lastLoginTimestamp !== lastLoginRef.current) {
@@ -224,7 +188,7 @@ const AnalyticsScreenContent = () => {
       // Trigger refresh for all other charts
       triggerRefresh();
     } catch (error) {
-      console.error('[Analytics] Error during manual refresh:', error);
+      console.log('[Analytics] Error during manual refresh:', error);
     } finally {
       setRefreshing(false);
       setShouldRefresh(false);
@@ -290,7 +254,7 @@ const AnalyticsScreenContent = () => {
         setModalReceipts([]);
       }
     } catch (e: any) {
-      console.error('Error fetching receipts:', e);
+      console.log('Error fetching receipts:', e);
       let userMessage = 'Unable to load receipts for this date.';
       if (axios.isAxiosError(e)) {
         if (!e.response) {
@@ -307,34 +271,42 @@ const AnalyticsScreenContent = () => {
     }
   }, [currentUserId, interval]);
 
-  // Fetch user plan (copied from HistoryScreen)
-  const fetchUserPlan = useCallback(async () => {
-    let token = await AsyncStorage.getItem('jwt_token');
-    console.log('[Analytics] JWT token for plan fetch:', token);
-    if (!token) {
-      setUserPlan('basic');
-      setIsLoadingUserPlan(false);
-      return;
-    }
-    setIsLoadingUserPlan(true);
-    try {
-      const response = await fetch(`${apiConfig.API_BASE_URL}/api/subscription/receipt-count`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setUserPlan(data.user_plan);
-      } else {
+  // Effect to fetch user plan
+  useEffect(() => {
+    const fetchUserPlan = async () => {
+      if (!user) {
         setUserPlan('basic');
+        setIsLoadingUserPlan(false);
+        return;
       }
-    } catch (e) {
-      setUserPlan('basic');
-    } finally {
-      setIsLoadingUserPlan(false);
-    }
-  }, []);
 
-  useEffect(() => { fetchUserPlan(); }, [fetchUserPlan]);
+      setIsLoadingUserPlan(true);
+      try {
+        const token = await AsyncStorage.getItem('jwt_token');
+        if (!token) {
+          setUserPlan('basic');
+          return;
+        }
+
+        const response = await fetch(`${apiConfig.API_BASE_URL}/api/subscription/receipt-count`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        const data = await response.json();
+        if (response.ok) {
+          setUserPlan(data.user_plan || 'basic');
+        } else {
+          setUserPlan('basic');
+        }
+      } catch (error) {
+        console.log('Error fetching user plan:', error);
+        setUserPlan('basic');
+      } finally {
+        setIsLoadingUserPlan(false);
+      }
+    };
+
+    fetchUserPlan();
+  }, [user, planRefreshTrigger]);
 
   const handleExport = async () => {
     if (!currentUserId || !userPlan) return;
@@ -351,8 +323,34 @@ const AnalyticsScreenContent = () => {
     }
   };
 
-  const renderItem = useCallback(({ item, drag, isActive }: { item: string, drag: () => void, isActive: boolean }) => {
-    const renderWidget = () => {
+  const handleFilterPress = () => {
+    setShowFilterModal(true);
+  };
+
+  const handleCloseFilter = () => {
+    setShowFilterModal(false);
+  };
+
+  const handleStoreSelect = (store: string | null) => {
+    setSelectedStore(store);
+    // Trigger refresh for all charts
+    setRefreshTrigger(Date.now());
+    setShowFilterModal(false);
+  };
+
+  const handleCategorySelect = (category: string | null) => {
+    setSelectedCategory(category);
+    // Trigger refresh for all charts
+    setRefreshTrigger(Date.now());
+    setShowFilterModal(false);
+  };
+
+  const handleIntervalChange = (newInterval: string) => {
+    setInterval(newInterval as 'daily' | 'weekly' | 'monthly');
+  };
+
+  const renderWidget = useCallback(({ item, drag, isActive }: { item: string, drag: () => void, isActive: boolean }) => {
+    const renderChart = () => {
       switch (item) {
         case 'total_spent':
           return (
@@ -364,8 +362,10 @@ const AnalyticsScreenContent = () => {
               loading={loading}
               error={error}
               interval={interval}
-              onIntervalChange={setInterval}
+              onIntervalChange={handleIntervalChange}
               refreshTrigger={totalSpentRefreshTrigger}
+              selectedStore={selectedStore}
+              selectedCategory={selectedCategory}
             />
           );
         case 'top_products':
@@ -373,8 +373,9 @@ const AnalyticsScreenContent = () => {
             <MemoizedTopProductsChart
               userId={currentUserId}
               refreshTrigger={refreshTrigger}
-              userCurrency={currency}
               userPlan={userPlan}
+              selectedStore={selectedStore}
+              selectedCategory={selectedCategory}
             />
           );
         case 'most_expensive':
@@ -382,8 +383,9 @@ const AnalyticsScreenContent = () => {
             <MemoizedMostExpensiveProductsChart
               userId={currentUserId}
               refreshTrigger={refreshTrigger}
-              userCurrency={currency}
               userPlan={userPlan}
+              selectedStore={selectedStore}
+              selectedCategory={selectedCategory}
             />
           );
         case 'expenses_by_category':
@@ -391,7 +393,19 @@ const AnalyticsScreenContent = () => {
             <MemoizedExpensesByCategoryChart
               userId={currentUserId}
               refreshTrigger={refreshTrigger}
-              userCurrency={currency}
+              userPlan={userPlan}
+              selectedStore={selectedStore}
+              selectedCategory={selectedCategory}
+            />
+          );
+        case 'diet_composition':
+          return (
+            <MemoizedDietCompositionChart
+              userId={currentUserId}
+              refreshTrigger={refreshTrigger}
+              userPlan={userPlan}
+              selectedStore={selectedStore}
+              selectedCategory={selectedCategory}
             />
           );
         case 'shopping_days':
@@ -399,6 +413,8 @@ const AnalyticsScreenContent = () => {
             <MemoizedShoppingDaysChart
               refreshTrigger={refreshTrigger}
               userPlan={userPlan}
+              selectedStore={selectedStore}
+              selectedCategory={selectedCategory}
             />
           );
         case 'bill_stats':
@@ -407,6 +423,8 @@ const AnalyticsScreenContent = () => {
               userId={currentUserId}
               refreshTrigger={refreshTrigger}
               userCurrency={currency}
+              selectedStore={selectedStore}
+              selectedCategory={selectedCategory}
             />
           );
         default:
@@ -416,20 +434,26 @@ const AnalyticsScreenContent = () => {
 
     return (
       <ScaleDecorator>
-        <View style={styles.widgetContainer}>
-          <TouchableOpacity
-            onLongPress={drag}
-            disabled={isActive}
-            style={styles.dragHandle}
-            activeOpacity={0.7}
-          >
+        <Pressable
+          onLongPress={drag}
+          disabled={isActive}
+          style={[
+            styles.widgetContainer,
+            {
+              transform: [{ scale: isActive ? 1.02 : 1 }],
+              zIndex: isActive ? 1000 : 1,
+              elevation: isActive ? 5 : 1,
+            },
+          ]}
+        >
+          <View style={styles.dragHandle}>
             <Icon name="reorder-two" size={20} color="#7e5cff" />
-          </TouchableOpacity>
-          {renderWidget()}
-        </View>
+          </View>
+          {renderChart()}
+        </Pressable>
       </ScaleDecorator>
     );
-  }, [currentUserId, currency, spendData, loading, error, interval, refreshTrigger, handleBarPress, totalSpentRefreshTrigger, userPlan]);
+  }, [currentUserId, currency, spendData, loading, error, interval, refreshTrigger, handleBarPress, totalSpentRefreshTrigger, userPlan, selectedStore, selectedCategory, handleIntervalChange]);
 
   const onDragEnd = useCallback(async ({ data }: { data: string[] }) => {
     try {
@@ -437,21 +461,25 @@ const AnalyticsScreenContent = () => {
       await new Promise(resolve => setTimeout(resolve, 100));
       await updateWidgetOrder(data);
     } catch (error) {
-      console.error('Failed to update widget order:', error);
+      console.log('Failed to update widget order:', error);
     }
   }, [updateWidgetOrder]);
 
   const memoizedWidgetOrder = useMemo(() => widgetOrder, [widgetOrder]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#16191f' }}>
-      <AnalyticsHeader onExportPress={handleExport} />
+    <View style={{ flex: 1, backgroundColor: '#16191f', paddingTop: insets.top }}>
+      <StatusBar barStyle="light-content" />
+      <AnalyticsHeader 
+        onExportPress={handleExport} 
+        onFilterPress={handleFilterPress}
+      />
       <View style={{ flex: 1, backgroundColor: '#16191f' }}>
         <DraggableFlatList
           data={memoizedWidgetOrder}
           onDragEnd={onDragEnd}
           keyExtractor={(item) => item}
-          renderItem={renderItem}
+          renderItem={renderWidget}
           onScroll={handleScroll}
           scrollEventThrottle={16}
           refreshControl={
@@ -464,7 +492,7 @@ const AnalyticsScreenContent = () => {
               enabled={true}
             />
           }
-          contentContainerStyle={{ padding: 16 }}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 32, paddingBottom: 16 + insets.bottom }}
         />
         {/* Modal for receipts by date */}
         <Modal
@@ -532,8 +560,17 @@ const AnalyticsScreenContent = () => {
             </Pressable>
           </Pressable>
         </Modal>
+        {/* Filter Screen */}
+        <FilterScreen 
+          visible={showFilterModal}
+          onClose={handleCloseFilter}
+          onStoreSelect={handleStoreSelect}
+          onCategorySelect={handleCategorySelect}
+          selectedStore={selectedStore}
+          selectedCategory={selectedCategory}
+        />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

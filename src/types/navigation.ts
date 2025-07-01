@@ -6,6 +6,7 @@ export type RootStackParamList = {
   ReceiptDetail: { receiptData: Receipt };
   Auth: undefined;
   ProOnboarding: undefined;
+  CustomPayment: { plan: 'monthly' | 'yearly' };
 };
 
 export type AppNavigationProps<T extends keyof RootStackParamList> =
@@ -21,6 +22,7 @@ declare global {
       ReceiptDetail: { receiptData: Receipt };
       Auth: undefined;
       ProOnboarding: undefined;
+      CustomPayment: { plan: 'monthly' | 'yearly' };
     }
   }
 }

@@ -36,20 +36,32 @@ export interface SpendData {
 }
 
 export interface ChartProps {
-  userId: string | undefined;
-  refreshTrigger: number;
+  userId?: string;
+  refreshTrigger?: number;
   userCurrency?: string;
-  navigation?: any;
+  userPlan: string;
+  selectedStore?: string | null;
+  selectedCategory?: string | null;
 }
 
 export interface TotalSpentChartProps extends ChartProps {
-  onBarPress: (date: string) => void;
+  onBarPress: (date: string, amount: number) => void;
   spendData: SpendData[];
   loading: boolean;
   error: string | null;
-  interval: 'daily' | 'weekly' | 'monthly';
-  onIntervalChange: (interval: 'daily' | 'weekly' | 'monthly') => void;
+  interval: string;
+  onIntervalChange: (interval: string) => void;
 }
+
+export interface TopProductsChartProps extends ChartProps {}
+
+export interface MostExpensiveProductsChartProps extends ChartProps {}
+
+export interface ExpensesByCategoryChartProps extends ChartProps {}
+
+export interface ShoppingDaysChartProps extends ChartProps {}
+
+export interface BillStatsChartProps extends ChartProps {}
 
 export interface ShoppingDay {
   day: string;

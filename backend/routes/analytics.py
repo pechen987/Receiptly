@@ -30,8 +30,10 @@ def get_spend_analytics(user_id):
     with app.app_context():
         db = app.extensions['sqlalchemy']
         interval = request.args.get('interval', 'monthly')  # daily, weekly, monthly
+        store_name = request.args.get('store_name')  # Optional store name filter
+        store_category = request.args.get('store_category')
 
-        app.logger.info(f"[Analytics] Spend analytics request - user_id: {user_id}, interval: {interval}")
+        app.logger.info(f"[Analytics] Spend analytics request - user_id: {user_id}, interval: {interval}, store_name: {store_name}, store_category: {store_category}")
         app.logger.info(f"[Analytics] Request headers: {request.headers}")
         app.logger.info(f"[Analytics] Request args: {request.args}")
 
@@ -52,16 +54,27 @@ def get_spend_analytics(user_id):
 
         try:
             app.logger.info(f"[Analytics] Fetching spend analytics for user {user_id} with interval {interval}")
-            period_results = (
+            query = (
                 db.session.query(
                     group_by.label('period'),
                     func.sum(Receipt.total).label('total_spent')
                 )
                 .filter(Receipt.user_id == user_id)
+            )
+
+            # Add store name filter if provided
+            if store_name:
+                query = query.filter(Receipt.store_name == store_name)
+            if store_category:
+                query = query.filter(Receipt.store_category == store_category)
+
+            period_results = (
+                query
                 .group_by('period')
                 .order_by('period')
                 .all()
             )
+
             # Fetch user currency
             user = db.session.query(User).get(user_id) # Use db from extensions
             user_currency = user.currency if user and user.currency else 'USD'
@@ -85,8 +98,10 @@ def get_top_products(user_id):
         db = app.extensions['sqlalchemy']
         limit = request.args.get('limit', 10, type=int)
         period = request.args.get('period', 'month')  # month, year, all
+        store_name = request.args.get('store_name')  # Add store name filter
+        store_category = request.args.get('store_category')
 
-        app.logger.info(f"[Analytics] Top products request - user_id: {user_id}, period: {period}")
+        app.logger.info(f"[Analytics] Top products request - user_id: {user_id}, period: {period}, store_name: {store_name}, store_category: {store_category}")
         app.logger.info(f"[Analytics] Request headers: {request.headers}")
         app.logger.info(f"[Analytics] Request args: {request.args}")
 
@@ -112,6 +127,13 @@ def get_top_products(user_id):
                 Receipt.user_id == user_id,
                 Receipt.items.isnot(None)
             )
+
+            # Add store name filter if provided
+            if store_name:
+                query = query.filter(Receipt.store_name == store_name)
+            if store_category:
+                query = query.filter(Receipt.store_category == store_category)
+
             # Add date filter if needed
             if start_date:
                 query = query.filter(Receipt.date >= start_date)
@@ -193,6 +215,8 @@ def get_most_expensive_products(user_id):
         db = app.extensions['sqlalchemy']
         limit = request.args.get('limit', 8, type=int)
         period = request.args.get('period', 'month')  # month, year, all
+        store_name = request.args.get('store_name')  # Add store name filter
+        store_category = request.args.get('store_category')
 
         if not user_id:
             return jsonify({'error': 'Missing user_id'}), 400
@@ -215,6 +239,13 @@ def get_most_expensive_products(user_id):
                 Receipt.user_id == user_id,
                 Receipt.items.isnot(None)
             )
+
+            # Add store name filter if provided
+            if store_name:
+                query = query.filter(Receipt.store_name == store_name)
+            if store_category:
+                query = query.filter(Receipt.store_category == store_category)
+
             # Add date filter if needed
             if start_date:
                 query = query.filter(Receipt.date >= start_date)
@@ -305,6 +336,8 @@ def expenses_by_category(user_id):
     with app.app_context():
         db = app.extensions['sqlalchemy']
         period = request.args.get('period', 'week')  # week, month, all
+        store_name = request.args.get('store_name')  # Add store name filter
+        store_category = request.args.get('store_category')
 
         if not user_id:
             return jsonify({'error': 'Missing user_id'}), 400
@@ -323,8 +356,13 @@ def expenses_by_category(user_id):
                 Receipt.items.isnot(None)
             )
 
+            # Add store name filter if provided
+            if store_name:
+                query = query.filter(Receipt.store_name == store_name)
+            if store_category:
+                query = query.filter(Receipt.store_category == store_category)
+
             if start_date:
-                # Use Receipt.created_at or Receipt.date for filtering, assuming Receipt.date is the transaction date
                 query = query.filter(Receipt.date >= start_date)
 
             receipts = query.all()
@@ -436,6 +474,8 @@ def get_products_by_category(user_id):
         db = app.extensions['sqlalchemy']
         category = request.args.get('category')
         period = request.args.get('period', 'week')  # week, month, all
+        store_name = request.args.get('store_name')  # Add store name filter
+        store_category = request.args.get('store_category')  # Add store category filter
         
         if not user_id or not category:
             return jsonify({'error': 'Missing user_id or category'}), 400
@@ -456,6 +496,12 @@ def get_products_by_category(user_id):
                 Receipt.items.isnot(None)
             )
             
+            # Add store name filter if provided
+            if store_name:
+                query = query.filter(Receipt.store_name == store_name)
+            if store_category:
+                query = query.filter(Receipt.store_category == store_category)
+            
             if start_date:
                 # Use Receipt.created_at or Receipt.date for filtering, assuming Receipt.date is the transaction date
                 query = query.filter(Receipt.date >= start_date)
@@ -469,16 +515,21 @@ def get_products_by_category(user_id):
             ).count() > 0
             
             # Process items to find and group products in the specified category
-            product_groups = {}  # {(name, price): {'quantity': total_qty, 'total': total_price}}
+            product_groups = {}
             for receipt in receipts:
                 if not receipt.items:
                     continue
                 for item in receipt.items:
                     if item.get('category') == category:
                         name = item.get('name', '')
-                        price = float(item.get('price', 0))
-                        quantity = float(item.get('quantity', 1))
-                        total = float(item.get('total', 0))
+                        # Add null checks before float conversion
+                        try:
+                            price = float(item.get('price', 0)) if item.get('price') is not None else 0.0
+                            quantity = float(item.get('quantity', 1)) if item.get('quantity') is not None else 1.0
+                            total = float(item.get('total', 0)) if item.get('total') is not None else 0.0
+                        except (ValueError, TypeError):
+                            # Skip items with invalid numeric values
+                            continue
                         
                         # Use (name, price) as key to group identical products
                         key = (name, price)
@@ -527,6 +578,8 @@ def get_shopping_days(user_id):
     with app.app_context():
         db = app.extensions['sqlalchemy']
         period = request.args.get('period', 'month')  # month, all
+        store_name = request.args.get('store_name')  # Add store name filter
+        store_category = request.args.get('store_category')
         
         if not user_id:
             return jsonify({'error': 'Missing user_id'}), 400
@@ -544,8 +597,13 @@ def get_shopping_days(user_id):
                 Receipt.user_id == user_id
             )
             
+            # Add store name filter if provided
+            if store_name:
+                query = query.filter(Receipt.store_name == store_name)
+            if store_category:
+                query = query.filter(Receipt.store_category == store_category)
+            
             if start_date:
-                # Use Receipt.created_at or Receipt.date for filtering, assuming Receipt.date is the transaction date
                 query = query.filter(Receipt.date >= start_date)
                 
             receipts = query.all()
@@ -591,6 +649,8 @@ def get_bill_stats(user_id):
     with app.app_context():
         db = app.extensions['sqlalchemy']
         interval = request.args.get('interval', 'M')  # M for monthly, All for all time
+        store_name = request.args.get('store_name')  # Add store name filter
+        store_category = request.args.get('store_category')
         
         if not user_id:
             return jsonify({'error': 'Missing user_id'}), 400
@@ -607,6 +667,12 @@ def get_bill_stats(user_id):
                 )
             else:  # All time
                 query = db.session.query(Receipt).filter(Receipt.user_id == user_id)
+            
+            # Add store name filter if provided
+            if store_name:
+                query = query.filter(Receipt.store_name == store_name)
+            if store_category:
+                query = query.filter(Receipt.store_category == store_category)
                 
             current_receipts = query.all()
             
@@ -675,6 +741,7 @@ def get_widget_order(user_id):
                 'expenses_by_category',
                 'top_products',
                 'most_expensive',
+                'diet_composition',
                 'shopping_days'
             ]
 
@@ -725,6 +792,7 @@ def save_widget_order(user_id):
                     'expenses_by_category',
                     'top_products',
                     'most_expensive',
+                    'diet_composition',
                     'shopping_days'
                 ]
                 widget_order = WidgetOrder(user_id=user_id, order=data.get('order', default_order))
@@ -899,6 +967,32 @@ def export_analytics_pdf(user_id):
                 if rows:
                     add_table(f'Shopping Days ({interval})', headers, rows)
 
+        # Diet Composition (Pro only, 3months interval only)
+        if user_plan == 'pro' and 'diet_composition' in analytics_data:
+            data = analytics_data['diet_composition'].get('3months')
+            if data and not data.get('error') and data.get('data'):
+                headers = [
+                    'Date',
+                    'Fruits & Veggies %',
+                    'Meat & Poultry %',
+                    'Seafood %',
+                    'Snacks %',
+                    'Dairy & Eggs %',
+                ]
+                rows = []
+                for row in data.get('data', []):
+                    fruits_veggies = round((row.get('fruits_percent', 0) or 0) + (row.get('vegetables_percent', 0) or 0), 2)
+                    rows.append([
+                        row.get('period', ''),
+                        fruits_veggies,
+                        row.get('meat_percent', 0),
+                        row.get('seafood_percent', 0),
+                        row.get('snacks_percent', 0),
+                        row.get('dairy_percent', 0),
+                    ])
+                if rows:
+                    add_table(f'Diet Composition (3M)', headers, rows)
+
         # If no data, add a message
         if len(elements) <= 4:
             elements.append(Paragraph('No analytics data available for export.', normal_style))
@@ -918,3 +1012,127 @@ def export_analytics_pdf(user_id):
         app.logger.error(f"Error generating analytics PDF: {e}")
         app.logger.error(traceback.format_exc())
         return jsonify({'error': 'Failed to generate PDF'}), 500
+
+@analytics_bp.route('/diet-composition', methods=['GET'])
+@cross_origin()
+@token_required
+def get_diet_composition(user_id):
+    """
+    Returns a daily time series of plant-based and animal-based food spending percentages for all users.
+    Query params:
+      - interval: 'month' (last 30 days), '3months' (last 90 days), '6months' (last 180 days)
+      - store_name: optional filter
+      - store_category: optional filter
+    """
+    with app.app_context():
+        db = app.extensions['sqlalchemy']
+        interval = request.args.get('interval', 'month')  # month, 3months, 6months
+        store_name = request.args.get('store_name')
+        store_category = request.args.get('store_category')
+
+        user = db.session.query(User).get(user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        FRUITS_CATEGORIES = {'Fruits'}
+        VEGETABLES_CATEGORIES = {'Vegetables'}
+        MEAT_CATEGORIES = {'Meat & poultry'}
+        SEAFOOD_CATEGORIES = {'Seafood'}
+        SNACKS_CATEGORIES = {'Snacks'}
+        DAIRY_CATEGORIES = {'Dairy & eggs'}
+
+        today = datetime.utcnow().date()
+        if interval == 'month':
+            days = 30
+        elif interval == '3months':
+            days = 90
+        elif interval == '6months':
+            days = 180
+        else:
+            days = 30  # fallback to 30 days if invalid
+        start_date = today - timedelta(days=days-1)
+        date_list = [start_date + timedelta(days=i) for i in range(days)]
+
+        # Query all receipts in the interval
+        query = db.session.query(Receipt).filter(
+            Receipt.user_id == user_id,
+            Receipt.items.isnot(None),
+            Receipt.date >= start_date,
+            Receipt.date <= today
+        )
+        if store_name:
+            query = query.filter(Receipt.store_name == store_name)
+        if store_category:
+            query = query.filter(Receipt.store_category == store_category)
+        receipts = query.all()
+
+        # Group receipts by day
+        receipts_by_day = {}
+        for receipt in receipts:
+            key = receipt.date.strftime('%Y-%m-%d')
+            if key not in receipts_by_day:
+                receipts_by_day[key] = []
+            receipts_by_day[key].append(receipt)
+
+        # For each day, calculate category spending
+        result = []
+        for d in date_list:
+            day_str = d.strftime('%Y-%m-%d')
+            sum_fruits = 0.0
+            sum_vegetables = 0.0
+            sum_meat = 0.0
+            sum_seafood = 0.0
+            sum_snacks = 0.0
+            sum_dairy = 0.0
+            sum_other = 0.0
+            for receipt in receipts_by_day.get(day_str, []):
+                for item in receipt.items or []:
+                    try:
+                        total = float(item.get('total', 0))
+                    except Exception:
+                        total = 0.0
+                    category = item.get('category', 'Other')
+                    if category in FRUITS_CATEGORIES:
+                        sum_fruits += total
+                    elif category in VEGETABLES_CATEGORIES:
+                        sum_vegetables += total
+                    elif category in MEAT_CATEGORIES:
+                        sum_meat += total
+                    elif category in SEAFOOD_CATEGORIES:
+                        sum_seafood += total
+                    elif category in SNACKS_CATEGORIES:
+                        sum_snacks += total
+                    elif category in DAIRY_CATEGORIES:
+                        sum_dairy += total
+                    else:
+                        sum_other += total
+            total_spent = sum_fruits + sum_vegetables + sum_meat + sum_seafood + sum_snacks + sum_dairy + sum_other
+            fruits_percent = (sum_fruits / total_spent * 100) if total_spent > 0 else 0.0
+            vegetables_percent = (sum_vegetables / total_spent * 100) if total_spent > 0 else 0.0
+            meat_percent = (sum_meat / total_spent * 100) if total_spent > 0 else 0.0
+            seafood_percent = (sum_seafood / total_spent * 100) if total_spent > 0 else 0.0
+            snacks_percent = (sum_snacks / total_spent * 100) if total_spent > 0 else 0.0
+            dairy_percent = (sum_dairy / total_spent * 100) if total_spent > 0 else 0.0
+            result.append({
+                'period': day_str,
+                'fruits_percent': round(fruits_percent, 2),
+                'vegetables_percent': round(vegetables_percent, 2),
+                'meat_percent': round(meat_percent, 2),
+                'seafood_percent': round(seafood_percent, 2),
+                'snacks_percent': round(snacks_percent, 2),
+                'dairy_percent': round(dairy_percent, 2),
+                'total_spent': round(total_spent, 2),
+                'sum_fruits': round(sum_fruits, 2),
+                'sum_vegetables': round(sum_vegetables, 2),
+                'sum_meat': round(sum_meat, 2),
+                'sum_seafood': round(sum_seafood, 2),
+                'sum_snacks': round(sum_snacks, 2),
+                'sum_dairy': round(sum_dairy, 2),
+            })
+
+        return jsonify({
+            'interval': interval,
+            'group_by': 'day',
+            'data': result,
+            'currency': user.currency if user and user.currency else 'USD',
+        })

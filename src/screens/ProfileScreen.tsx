@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Modal, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Modal, FlatList, Linking, Alert, Animated } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCurrency } from './analytics/contexts/CurrencyContext';
 import jwtDecode from 'jwt-decode';
 import apiConfig from '../config/api';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../contexts/AuthContext';
+import { useButtonAnimation } from '../hooks/useButtonAnimation';
 
 interface JwtPayload {
   email: string;
@@ -16,6 +19,9 @@ interface SubscriptionDetails {
   subscription_end_date: string | null;
   subscription_start_date: string | null;
   subscription_status: string | null;
+  trial_start_date?: string | null;
+  trial_end_date?: string | null;
+  is_trial_active?: boolean;
 }
 
 import axios from 'axios';
@@ -136,6 +142,11 @@ export default function ProfileScreen({ onLogout }: { onLogout: () => void }) {
   const [isLoadingPlan, setIsLoadingPlan] = useState(true);
   const [subscriptionDetails, setSubscriptionDetails] = useState<SubscriptionDetails | null>(null);
   const navigation = useNavigation();
+  const { planRefreshTrigger } = useAuth();
+  const { createPressAnimation } = useButtonAnimation();
+  
+  // Create animation instance for the sign out button
+  const signOutButtonAnim = createPressAnimation();
 
   const formatDate = (dateString: string | null): string => {
     if (!dateString) return '';
@@ -194,7 +205,7 @@ export default function ProfileScreen({ onLogout }: { onLogout: () => void }) {
       }
     };
     loadProfile();
-  }, []);
+  }, [planRefreshTrigger]);
 
   const handleCurrencyChange = async (newCurrency: string) => {
     setCurrency(newCurrency);
@@ -227,21 +238,46 @@ export default function ProfileScreen({ onLogout }: { onLogout: () => void }) {
     }
   };
 
+  const handleManageSubscription = async () => {
+    try {
+      const token = await AsyncStorage.getItem('jwt_token');
+      const res = await fetch(`${API_BASE_URL}/api/subscription/customer-portal`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.url) {
+        Linking.openURL(data.url);
+      } else {
+        Alert.alert('Error', 'Could not open subscription portal.');
+      }
+    } catch (e) {
+      Alert.alert('Error', 'Could not open subscription portal.');
+    }
+  };
+
   const renderSubscriptionInfo = () => {
     if (userPlan === 'basic') return null;
-    
     if (!subscriptionDetails) return null;
 
-    const { next_billing_date, subscription_end_date, subscription_status } = subscriptionDetails;
+    const { next_billing_date, subscription_end_date, subscription_status, trial_end_date, is_trial_active } = subscriptionDetails;
+
+    // Show trial end date if trial is active
+    if (is_trial_active && trial_end_date) {
+      return (
+        <View style={styles.infoSection}>
+          <Text style={styles.label}>Trial ends on</Text>
+          <Text style={styles.value}>{formatDate(trial_end_date)}</Text>
+        </View>
+      );
+    }
 
     // Show end date if subscription is cancelled or will end
     if (subscription_end_date && subscription_status === 'cancelled') {
       return (
         <View style={styles.infoSection}>
           <Text style={styles.label}>Subscription Ends</Text>
-          <Text style={[styles.value, { color: '#ff6b6b' }]}>
-            {formatDate(subscription_end_date)}
-          </Text>
+          <Text style={[styles.value, { color: '#ff6b6b' }]}>{formatDate(subscription_end_date)}</Text>
         </View>
       );
     }
@@ -251,9 +287,7 @@ export default function ProfileScreen({ onLogout }: { onLogout: () => void }) {
       return (
         <View style={styles.infoSection}>
           <Text style={styles.label}>Next Billing Date</Text>
-          <Text style={styles.value}>
-            {formatDate(next_billing_date)}
-          </Text>
+          <Text style={styles.value}>{formatDate(next_billing_date)}</Text>
         </View>
       );
     }
@@ -262,7 +296,7 @@ export default function ProfileScreen({ onLogout }: { onLogout: () => void }) {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.card}>
         <View style={styles.avatarContainer}>
           <Ionicons name="person-circle-outline" size={64} color="#7e5cff" />
@@ -284,19 +318,37 @@ export default function ProfileScreen({ onLogout }: { onLogout: () => void }) {
           {isLoadingPlan ? (
             <ActivityIndicator color="#7e5cff" size="small" />
           ) : (
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={[styles.value, { textTransform: 'capitalize', fontWeight: '700' }]}>
-                {userPlan === 'basic' ? 'Basic' : userPlan === 'premium' || userPlan === 'pro' ? 'Pro' : userPlan}
-              </Text>
+            <>
+              <View>
+                <Text style={[styles.value, { textTransform: 'capitalize', fontWeight: '700' }]}>
+                  {userPlan === 'basic' ? 'Basic' : userPlan === 'premium' || userPlan === 'pro' ? 'Pro' : userPlan}
+                </Text>
+              </View>
               {userPlan === 'basic' && (
-                <TouchableOpacity 
-                  style={{ backgroundColor: '#FFBF00', paddingVertical: 8, paddingHorizontal: 24, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginLeft: 6 }}
-                  onPress={() => navigation.navigate('ProOnboarding')}
-                >
-                  <Text style={{ color: '#000', fontSize: 16, fontWeight: '700' }}>Go Pro</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={{ backgroundColor: '#FFBF00', paddingVertical: 6, paddingHorizontal: 20, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 12, alignSelf: 'flex-start' }}
+                    onPress={() => navigation.navigate('ProOnboarding')}
+                  >
+                    <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
+                  </TouchableOpacity>
               )}
-            </View>
+              {/* Add subscription status row */}
+              {subscriptionDetails?.subscription_status && userPlan !== 'basic' && (
+                <Text style={[styles.value, { marginTop: 8, color: (subscriptionDetails.subscription_status === 'active' || subscriptionDetails.subscription_status === 'trialing') ? '#4caf50' : '#ff6b6b' }]}>
+                  Status: {subscriptionDetails.subscription_status.charAt(0).toUpperCase() + subscriptionDetails.subscription_status.slice(1)}
+                </Text>
+              )}
+              {userPlan !== 'basic' && (
+                <View style={{ alignItems: 'flex-start', width: '100%' }}>
+                  <TouchableOpacity
+                    style={[styles.manageButton, { marginTop: 12, marginLeft: 0 }]}
+                    onPress={handleManageSubscription}
+                  >
+                    <Text style={styles.manageButtonText}>Manage Subscription</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </>
           )}
         </View>
 
@@ -317,15 +369,36 @@ export default function ProfileScreen({ onLogout }: { onLogout: () => void }) {
           {!!saveMsg && <Text style={{ color: '#7e5cff', marginTop: 4 }}>{saveMsg}</Text>}
         </View>
         
-        <TouchableOpacity 
-          style={styles.signOutButton} 
-          onPress={onLogout}
-          activeOpacity={0.8}
+        <Animated.View
+          style={[
+            styles.signOutButtonContainer,
+            {
+              transform: [{ scale: signOutButtonAnim.scaleAnim }],
+            }
+          ]}
         >
-          <Text style={styles.signOutButtonText}>Sign Out</Text>
-        </TouchableOpacity>
+          <Animated.View
+            style={[
+              styles.signOutButtonShadow,
+              {
+                shadowOpacity: signOutButtonAnim.shadowOpacityAnim,
+                elevation: signOutButtonAnim.elevationAnim,
+              }
+            ]}
+          >
+            <TouchableOpacity 
+              style={styles.signOutButton} 
+              onPress={onLogout}
+              onPressIn={signOutButtonAnim.handlePressIn}
+              onPressOut={signOutButtonAnim.handlePressOut}
+              activeOpacity={1}
+            >
+              <Text style={styles.signOutButtonText}>Sign Out</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </Animated.View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -398,13 +471,19 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     marginTop: 24,
+    borderWidth: 2,
+    borderColor: '#9575ff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 0,
   },
   signOutButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
-  // Custom Dropdown Styles
   dropdownButton: {
     backgroundColor: '#2a2d3a',
     borderRadius: 12,
@@ -488,5 +567,30 @@ const styles = StyleSheet.create({
   dropdownItemTextSelected: {
     color: '#7e5cff',
     fontWeight: '600',
+  },
+  manageButton: {
+    backgroundColor: '#232632',
+    borderWidth: 1,
+    borderColor: '#7e5cff',
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 8,
+    marginLeft: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  manageButtonText: {
+    color: '#7e5cff',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  signOutButtonContainer: {
+    width: '100%',
+  },
+  signOutButtonShadow: {
+    shadowColor: '#7e5cff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 8,
+    borderRadius: 12,
   },
 });

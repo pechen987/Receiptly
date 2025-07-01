@@ -1,15 +1,33 @@
-import React, { useRef, useEffect, useMemo, useState } from 'react';
-import { View, Text, ScrollView, Pressable } from 'react-native';
-import { Svg, G, Rect, Text as SvgText } from 'react-native-svg';
+import React, { useRef, useEffect, useMemo } from 'react';
+import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
+import { BarChart } from 'react-native-chart-kit';
+import { Dimensions } from 'react-native';
+import { styles } from '../styles';
 import Icon from 'react-native-vector-icons/Feather';
 import { memo } from 'react';
+import { SpendData } from '../types';
+import { fetchSpendData } from '../utils/api';
+import { Svg, G, Rect, Text as SvgText } from 'react-native-svg';
 import { formatCurrency } from '../utils/currency';
-import { styles } from '../styles';
-import { TotalSpentChartProps } from '../types';
 import { baseChartWidth, interpolateColor, formatLabel } from '../utils';
 import { HintIcon, HintModal, modalStyles, HintIconProps, HintModalProps } from './HintComponents';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const TotalSpentChart = memo(({ 
+interface TotalSpentChartProps {
+  userId?: string;
+  onBarPress: (date: string, amount: number) => void;
+  userCurrency: string;
+  spendData: SpendData[];
+  loading: boolean;
+  error: string | null;
+  interval: string;
+  onIntervalChange: (interval: string) => void;
+  refreshTrigger: number;
+  selectedStore: string | null;
+  selectedCategory: string | null;
+}
+
+const TotalSpentChart: React.FC<TotalSpentChartProps> = ({
   userId, 
   onBarPress, 
   userCurrency,
@@ -17,8 +35,11 @@ const TotalSpentChart = memo(({
   loading,
   error,
   interval,
-  onIntervalChange 
-}: TotalSpentChartProps) => {
+  onIntervalChange,
+  refreshTrigger,
+  selectedStore,
+  selectedCategory
+}) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const prevIntervalRef = useRef(interval);
 
@@ -132,7 +153,7 @@ const TotalSpentChart = memo(({
                   width: barWidth,
                   height: chartHeight - bottomPadding
                 }}
-                onPress={() => onBarPress(chartData.labels[index])}
+                onPress={() => onBarPress(chartData.labels[index], chartData.values[index])}
               />
             );
           })}
@@ -157,10 +178,18 @@ const TotalSpentChart = memo(({
               return (
                 <Pressable
                   key={label}
-                  style={[styles.btn, active && styles.btnActive]}
+                  style={[
+                    styles.btn,
+                    active && styles.btnActive
+                  ]}
                   onPress={() => onIntervalChange(mode)}
                 >
-                  <Text style={[styles.btnText, active && styles.btnTextActive]}>{label}</Text>
+                  <Text style={[
+                    styles.btnText,
+                    active && styles.btnTextActive
+                  ]}>
+                    {label}
+                  </Text>
                 </Pressable>
               );
             })}
@@ -168,17 +197,16 @@ const TotalSpentChart = memo(({
         )}
       </View>
 
-      <View>
         {loading ? (
           <View style={{ height: 200, justifyContent: 'center' }}>
-            <Text style={styles.message}>Loading...</Text>
+          <ActivityIndicator size="large" color="#7e5cff" />
           </View>
         ) : error ? (
           <View style={{ height: 200, justifyContent: 'center' }}>
             <Text style={[styles.message, { color: 'red' }]}>{error}</Text>
           </View>
         ) : chartData.values.length === 0 ? (
-          <View style={{ height: 200, justifyContent: 'center' }}>
+          <View style={styles.emptyCompact}>
             <Text style={styles.message}>No data yet</Text>
           </View>
         ) : (
@@ -187,14 +215,12 @@ const TotalSpentChart = memo(({
             horizontal 
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingRight: 20 }}
-            keyboardShouldPersistTaps="handled"
           >
             {renderCustomBarChart}
           </ScrollView>
         )}
-      </View>
     </View>
   );
-});
+};
 
-export default TotalSpentChart; 
+export default memo(TotalSpentChart); 

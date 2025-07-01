@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     elevation: 2,
   },
   widgetContainer: {
-    marginBottom: 16,
+    marginBottom: 8,
   },
   dragHandle: {
     position: 'absolute',
@@ -124,5 +124,11 @@ export const styles = StyleSheet.create({
     color: '#fff', 
     fontWeight: '600', 
     fontSize: 15 
+  },
+  emptyCompact: {
+    minHeight: 120,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 0,
   },
 }); 

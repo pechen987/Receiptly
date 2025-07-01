@@ -31,7 +31,7 @@ export const WidgetOrderProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setWidgetOrder(response.data.order);
       }
     } catch (err) {
-      console.error('Error fetching widget order:', err);
+      console.log('Error fetching widget order:', err);
       let userMessage = 'Failed to load widget order.';
       if (err && typeof err === 'object' && 'message' in err && typeof err.message === 'string' && err.message.toLowerCase().includes('network')) {
         userMessage = 'No internet connection. Please check your connection and try again.';
@@ -51,7 +51,7 @@ export const WidgetOrderProvider: React.FC<{ children: React.ReactNode }> = ({ c
       // Make the API call in the background
       await api.post('/api/analytics/widget-order', { order: newOrder });
     } catch (err) {
-      console.error('Error updating widget order:', err);
+      console.log('Error updating widget order:', err);
       let userMessage = 'Failed to save widget order.';
       if (err && typeof err === 'object' && 'message' in err && typeof err.message === 'string' && err.message.toLowerCase().includes('network')) {
         userMessage = 'No internet connection. Please check your connection and try again.';

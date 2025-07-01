@@ -1,25 +1,26 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions, Platform, StatusBar, Alert, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Platform, StatusBar, Alert, ActivityIndicator, Animated } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { PaymentSheet, useStripe } from '@stripe/stripe-react-native';
-import { createStripeSubscriptionSetup, completeSubscriptionPayment } from '../services/api';
-
-const { width } = Dimensions.get('window');
+import { useAuth } from '../contexts/AuthContext';
+import { useReceipt } from '../contexts/ReceiptContext';
+import { useButtonAnimation } from '../hooks/useButtonAnimation';
 
 const BENEFITS = [
   {
     icon: <Ionicons name="infinite" size={32} color="#7e5cff" />,
-    title: 'Unlimited Scanning',
+    title: 'Unlimited scanning',
     description: 'Scan as many receipts as you want, with no monthly limits.'
   },
   {
     icon: <MaterialCommunityIcons name="chart-bar" size={32} color="#7e5cff" />,
-    title: 'Premium Analytics',
+    title: 'Premium analytics',
     description: 'Unlock all advanced charts and insights to track your spending.'
   },
   {
     icon: <Ionicons name="cloud-upload-outline" size={32} color="#7e5cff" />,
-    title: 'Priority Processing',
+    title: 'Priority processing',
     description: 'Faster receipt scanning and priority support.'
   },
 ];
@@ -30,8 +31,12 @@ const FAQS = [
     a: 'Receiptly Pro unlocks unlimited receipt scanning and all premium analytics charts, giving you deeper insights into your spending.'
   },
   {
+    q: 'How does the free trial work?',
+    a: 'You get 14 days of full Pro access completely free. No payment required upfront. You can cancel anytime during the trial.'
+  },
+  {
     q: 'Is there a limit to how many receipts I can scan?',
-    a: 'With Pro, you can scan as many receipts as you want. Free users have a monthly limit.'
+    a: 'With Pro (including during your trial), you can scan as many receipts as you want. Free users have a monthly limit.'
   },
   {
     q: 'What premium analytics are included?',
@@ -45,20 +50,21 @@ const FAQS = [
     q: 'Will my data be safe and private?',
     a: 'Absolutely. Your receipt data is securely stored and never shared with third parties. We take privacy and security seriously.'
   },
-  {
-    q: 'How do I contact support?',
-    a: 'You can reach our support team via the in-app contact form or by emailing support@receiptly.app.'
-  },
 ];
 
 export default function ProOnboardingScreen({ navigation }: any) {
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const [plansSectionY, setPlansSectionY] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { presentPaymentSheet, initPaymentSheet } = useStripe();
+  const { createPressAnimation } = useButtonAnimation();
+  
+  // Create animation instances for the buttons
+  const upgradeButtonAnim = createPressAnimation();
+  const monthlyButtonAnim = createPressAnimation();
+  const yearlyButtonAnim = createPressAnimation();
+  const dismissButtonAnim = createPressAnimation();
 
   // Top button: scroll to plans section
   const handleScrollToPlans = () => {
@@ -67,97 +73,9 @@ export default function ProOnboardingScreen({ navigation }: any) {
     }
   };
 
-  const handleCheckout = async (plan: 'monthly' | 'yearly') => {
-    setError(null);
-    setLoading(true);
-    
-    try {
-      console.log(`Starting checkout process for ${plan} plan`);
-      
-      // Step 1: Create payment intent setup
-      const setupData = await createStripeSubscriptionSetup(plan, {});
-      console.log('Setup data received:', setupData);
-      
-      const { client_secret, payment_intent_id, customer_id, amount, currency } = setupData;
-      
-      if (!client_secret) {
-        throw new Error('No client secret received from server');
-      }
-      
-      // Step 2: Initialize payment sheet
-      const { error: initError } = await initPaymentSheet({
-        paymentIntentClientSecret: client_secret,
-        merchantDisplayName: 'Receiptly',
-        customerId: customer_id,
-        billingDetailsCollectionConfiguration: {
-          name: PaymentSheet.CollectionMode.NEVER,
-          phone: PaymentSheet.CollectionMode.NEVER,
-          email: PaymentSheet.CollectionMode.NEVER,
-          address: PaymentSheet.AddressCollectionMode.NEVER,
-        },
-        appearance: {
-          colors: {
-            primary: '#7e5cff',
-          },
-        },
-        allowsDelayedPaymentMethods: false,
-      });
-      
-      if (initError) {
-        console.error('Payment sheet initialization error:', initError);
-        throw new Error(initError.message || 'Failed to initialize payment');
-      }
-      
-      console.log('Payment sheet initialized successfully');
-      setLoading(false);
-      
-      // Step 3: Present payment sheet
-      const { error: presentError } = await presentPaymentSheet();
-      
-      if (presentError) {
-        console.error('Payment sheet presentation error:', presentError);
-        setError(presentError.message || 'Payment was cancelled or failed');
-        return;
-      }
-      
-      console.log('Payment completed successfully, creating subscription...');
-      setLoading(true);
-      
-      // Step 4: Create subscription after successful payment
-      const result = await completeSubscriptionPayment(payment_intent_id);
-      
-      if (result.success) {
-        console.log('Subscription created successfully');
-        Alert.alert(
-          'Success!', 
-          'Your Pro subscription has been activated. Enjoy unlimited receipt scanning!',
-          [
-            {
-              text: 'Great!',
-              onPress: () => navigation.goBack()
-            }
-          ]
-        );
-      } else {
-        throw new Error(result.error || 'Failed to create subscription');
-      }
-      
-    } catch (e: any) {
-      console.error('Checkout error:', e);
-      setError(e?.message || 'Something went wrong. Please try again.');
-      
-      Alert.alert(
-        'Payment Error',
-        e?.message || 'Something went wrong. Please try again.',
-        [{ text: 'OK' }]
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#16191f' }}>
+      <StatusBar barStyle="light-content" backgroundColor="#16191f" />
       {/* Loading overlay */}
       {loading && (
         <View style={styles.loadingOverlay}>
@@ -171,7 +89,7 @@ export default function ProOnboardingScreen({ navigation }: any) {
       {/* Main content */}
       <View style={{ flex: 1, position: 'relative' }}>
         {/* Top Header with Back Arrow */}
-        <View style={[styles.topHeader, { paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 44 }]}>
+        <View style={styles.topHeader}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Ionicons name="chevron-back" size={32} color="#fff" />
           </TouchableOpacity>
@@ -191,11 +109,36 @@ export default function ProOnboardingScreen({ navigation }: any) {
             </View>
             <Text style={styles.heroTitle}>Take full control of your expenses</Text>
             <Text style={styles.heroSubtitle}>
-              Enjoy unlimited scanning and all premium analytics. Take your expense tracking to the next level!
+              Enjoy unlimited scanning and all premium analytics!
             </Text>
-            <TouchableOpacity style={styles.upgradeButton} onPress={handleScrollToPlans}>
-              <Text style={styles.upgradeButtonText}>Upgrade to Pro</Text>
-            </TouchableOpacity>
+            <Animated.View
+              style={[
+                styles.upgradeButtonContainer,
+                {
+                  transform: [{ scale: upgradeButtonAnim.scaleAnim }],
+                }
+              ]}
+            >
+              <Animated.View
+                style={[
+                  styles.upgradeButtonShadow,
+                  {
+                    shadowOpacity: upgradeButtonAnim.shadowOpacityAnim,
+                    elevation: upgradeButtonAnim.elevationAnim,
+                  }
+                ]}
+              >
+                <TouchableOpacity 
+                  style={styles.upgradeButton} 
+                  onPress={handleScrollToPlans}
+                  onPressIn={upgradeButtonAnim.handlePressIn}
+                  onPressOut={upgradeButtonAnim.handlePressOut}
+                  activeOpacity={1}
+                >
+                  <Text style={styles.upgradeButtonText}>Choose your plan</Text>
+                </TouchableOpacity>
+              </Animated.View>
+            </Animated.View>
           </View>
 
           {/* Benefits Section */}
@@ -211,16 +154,6 @@ export default function ProOnboardingScreen({ navigation }: any) {
             ))}
           </View>
 
-          {/* Visual Section */}
-          <View style={styles.visualSection}>
-            <Image
-              source={require('../../assets/analytics-placeholder.png')}
-              style={styles.visualImage}
-              resizeMode="cover"
-            />
-            <Text style={styles.visualCaption}>Unlock all premium charts and insights</Text>
-          </View>
-
           {/* Plans Section */}
           <View
             style={styles.plansSection}
@@ -232,43 +165,86 @@ export default function ProOnboardingScreen({ navigation }: any) {
               <View style={styles.planRow}> 
                 <View style={{ flex: 1 }}>
                   <Text style={styles.planLabel}>Monthly</Text>
+                  <Text style={styles.trialText}>14-day free trial</Text>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
                     <Text style={styles.planPrice}>$3.90</Text>
                   </View>
                   <Text style={styles.planSubtext}>per month</Text>
                 </View>
-                <TouchableOpacity
-                  style={[styles.upgradeButtonSmall, loading && styles.buttonDisabled]}
-                  onPress={() => !loading && handleCheckout('monthly')}
-                  activeOpacity={0.85}
-                  disabled={loading}
+                <Animated.View
+                  style={[
+                    styles.upgradeButtonSmallContainer,
+                    {
+                      transform: [{ scale: monthlyButtonAnim.scaleAnim }],
+                    }
+                  ]}
                 >
-                  <Text style={styles.upgradeButtonText}>
-                    {loading ? 'Processing...' : 'Upgrade to Pro'}
-                  </Text>
-                </TouchableOpacity>
+                  <Animated.View
+                    style={[
+                      styles.upgradeButtonSmallShadow,
+                      {
+                        shadowOpacity: monthlyButtonAnim.shadowOpacityAnim,
+                        elevation: monthlyButtonAnim.elevationAnim,
+                      }
+                    ]}
+                  >
+                    <TouchableOpacity
+                      style={[styles.upgradeButtonSmall, loading && styles.buttonDisabled]}
+                      onPress={() => navigation.navigate('CustomPayment', { plan: 'monthly' })}
+                      onPressIn={monthlyButtonAnim.handlePressIn}
+                      onPressOut={monthlyButtonAnim.handlePressOut}
+                      disabled={loading}
+                      activeOpacity={1}
+                    >
+                      <Text style={styles.upgradeButtonText}>
+                        Start trial
+                      </Text>
+                    </TouchableOpacity>
+                  </Animated.View>
+                </Animated.View>
               </View>
-              
               {/* Yearly Plan Block */}
-              <View style={[styles.planRow, styles.planRowYearly, styles.planRowYearlySelected]}> 
+              <View style={[styles.planRow, styles.planRowYearlySelected]}> 
                 <View style={{ flex: 1 }}>
                   <Text style={styles.planLabel}>Yearly</Text>
                   <Text style={styles.freeMonthsText}>(2 months free)</Text>
+                  <Text style={styles.trialText}>14-day free trial</Text>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
                     <Text style={styles.planPrice}>$40</Text>
                   </View>
                   <Text style={styles.planSubtext}>per year</Text>
                 </View>
-                <TouchableOpacity
-                  style={[styles.upgradeButtonSmall, loading && styles.buttonDisabled]}
-                  onPress={() => !loading && handleCheckout('yearly')}
-                  activeOpacity={0.85}
-                  disabled={loading}
+                <Animated.View
+                  style={[
+                    styles.upgradeButtonSmallContainer,
+                    {
+                      transform: [{ scale: yearlyButtonAnim.scaleAnim }],
+                    }
+                  ]}
                 >
-                  <Text style={styles.upgradeButtonText}>
-                    {loading ? 'Processing...' : 'Upgrade to Pro'}
-                  </Text>
-                </TouchableOpacity>
+                  <Animated.View
+                    style={[
+                      styles.upgradeButtonSmallShadow,
+                      {
+                        shadowOpacity: yearlyButtonAnim.shadowOpacityAnim,
+                        elevation: yearlyButtonAnim.elevationAnim,
+                      }
+                    ]}
+                  >
+                    <TouchableOpacity
+                      style={[styles.upgradeButtonSmall, loading && styles.buttonDisabled]}
+                      onPress={() => navigation.navigate('CustomPayment', { plan: 'yearly' })}
+                      onPressIn={yearlyButtonAnim.handlePressIn}
+                      onPressOut={yearlyButtonAnim.handlePressOut}
+                      disabled={loading}
+                      activeOpacity={1}
+                    >
+                      <Text style={styles.upgradeButtonText}>
+                        Start trial
+                      </Text>
+                    </TouchableOpacity>
+                  </Animated.View>
+                </Animated.View>
               </View>
             </View>
           </View>
@@ -277,12 +253,34 @@ export default function ProOnboardingScreen({ navigation }: any) {
           {error && (
             <View style={styles.errorContainer}>
               <Text style={styles.errorText}>{error}</Text>
-              <TouchableOpacity 
-                style={styles.dismissButton} 
-                onPress={() => setError(null)}
+              <Animated.View
+                style={[
+                  styles.dismissButtonContainer,
+                  {
+                    transform: [{ scale: dismissButtonAnim.scaleAnim }],
+                  }
+                ]}
               >
-                <Text style={styles.dismissButtonText}>Dismiss</Text>
-              </TouchableOpacity>
+                <Animated.View
+                  style={[
+                    styles.dismissButtonShadow,
+                    {
+                      shadowOpacity: dismissButtonAnim.shadowOpacityAnim,
+                      elevation: dismissButtonAnim.elevationAnim,
+                    }
+                  ]}
+                >
+                  <TouchableOpacity 
+                    style={styles.dismissButton} 
+                    onPress={() => setError(null)}
+                    onPressIn={dismissButtonAnim.handlePressIn}
+                    onPressOut={dismissButtonAnim.handlePressOut}
+                    activeOpacity={1}
+                  >
+                    <Text style={styles.dismissButtonText}>Dismiss</Text>
+                  </TouchableOpacity>
+                </Animated.View>
+              </Animated.View>
             </View>
           )}
 
@@ -311,8 +309,11 @@ export default function ProOnboardingScreen({ navigation }: any) {
             ))}
           </View>
         </ScrollView>
+        
+        {/* Fixed bottom border */}
+        <View style={styles.bottomBorder} />
       </View>
-    </>
+    </SafeAreaView>
   );
 }
 
@@ -369,10 +370,13 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginTop: 8,
     alignItems: 'center',
-    shadowColor: '#7e5cff',
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
+    borderWidth: 2,
+    borderColor: '#9575ff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 0,
   },
   upgradeButtonText: {
     color: '#fff',
@@ -410,26 +414,6 @@ const styles = StyleSheet.create({
     color: '#aaa',
     fontSize: 15,
   },
-  visualSection: {
-    width: '100%',
-    alignItems: 'center',
-    paddingHorizontal: 32,
-    marginBottom: 32,
-    marginTop: 32,
-  },
-  visualImage: {
-    width: width * 0.88,
-    height: 256,
-    borderRadius: 14,
-    backgroundColor: '#232632', // Placeholder
-    marginBottom: 10,
-  },
-  visualCaption: {
-    color: '#7e5cff',
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
   plansSection: {
     width: '100%',
     alignItems: 'center',
@@ -463,11 +447,6 @@ const styles = StyleSheet.create({
     marginTop: 0,
     width: '100%',
   },
-  planRowSelected: {
-    borderColor: 'transparent',
-    backgroundColor: '#2e3040',
-  },
-  planRowYearly: {},
   planRowYearlySelected: {
     borderColor: '#FFBF00',
   },
@@ -477,16 +456,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 12,
     alignItems: 'center',
-    shadowColor: '#7e5cff',
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
+    borderWidth: 2,
+    borderColor: '#9575ff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 0,
   },
   planLabel: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '700',
-
   },
   planPrice: {
     color: '#7e5cff',
@@ -499,19 +480,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 4,
   },
-  discountBadge: {
-    backgroundColor: '#FFBF00',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 1,
-    marginLeft: 10,
-    alignSelf: 'auto',
-    height: 22,
-    justifyContent: 'center',
-  },
   topHeader: {
     width: '100%',
-    height: 100,
+    height: 60,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -520,7 +491,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: '#232632',
     zIndex: 200,
-    paddingTop: 0,
   },
   backButton: {
     padding: 8,
@@ -619,10 +589,57 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 8,
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#9575ff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 0,
   },
   dismissButtonText: {
     color: '#fff',
     fontSize: 14,
     fontWeight: '600',
+  },
+  trialText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  upgradeButtonContainer: {
+    width: 'auto',
+  },
+  upgradeButtonShadow: {
+    shadowColor: '#7e5cff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 8,
+    borderRadius: 14,
+  },
+  upgradeButtonSmallContainer: {
+    width: 'auto',
+  },
+  upgradeButtonSmallShadow: {
+    shadowColor: '#7e5cff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 8,
+    borderRadius: 12,
+  },
+  dismissButtonContainer: {
+    width: 'auto',
+  },
+  dismissButtonShadow: {
+    shadowColor: '#7e5cff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 8,
+    borderRadius: 8,
+  },
+  bottomBorder: {
+    height: 0.5,
+    backgroundColor: '#232632',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 }); 

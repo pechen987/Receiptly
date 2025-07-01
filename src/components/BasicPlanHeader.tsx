@@ -4,13 +4,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 interface BasicPlanHeaderProps {
-  monthlyReceiptCount: number | null;
+  monthlyReceiptCount: number | null; // For compatibility, but will be used as current month count
   limit: number;
+  userPlan: string | null;
 }
 
 const BasicPlanHeader: React.FC<BasicPlanHeaderProps> = ({
   monthlyReceiptCount,
   limit,
+  userPlan,
 }) => {
   // Ensure monthlyReceiptCount and limit are valid numbers for calculation
   const currentCount = monthlyReceiptCount !== null && monthlyReceiptCount > 0 ? monthlyReceiptCount : 0;
@@ -21,17 +23,21 @@ const BasicPlanHeader: React.FC<BasicPlanHeaderProps> = ({
 
   return (
     <View style={styles.container}>
-      <View style={styles.progressContainer}>
-        <Text style={styles.progressText}>
-          Receipts last month: {currentCount} / {limit}
-        </Text>
-        <View style={styles.progressBarBackground}>
-          <View style={[styles.progressBarFill, { width: `${progressPercentage}%` }]} />
-        </View>
-      </View>
-      <TouchableOpacity style={styles.goProButton} onPress={() => navigation.navigate('ProOnboarding')}>
-        <Text style={styles.goProButtonText}>Go Pro</Text>
-      </TouchableOpacity>
+      {userPlan === 'basic' && (
+        <>
+          <View style={styles.progressContainer}>
+            <Text style={styles.progressText}>
+              Receipts this month: {currentCount} / {limit}
+            </Text>
+            <View style={styles.progressBarBackground}>
+              <View style={[styles.progressBarFill, { width: `${progressPercentage}%` }]} />
+            </View>
+          </View>
+          <TouchableOpacity style={styles.goProButton} onPress={() => navigation.navigate('ProOnboarding')}>
+            <Text style={styles.goProButtonText}>Go Pro</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </View>
   );
 };
