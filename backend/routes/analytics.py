@@ -36,27 +36,46 @@ def get_spend_analytics(user_id):
         store_name = request.args.get('store_name')  # Optional store name filter
         store_category = request.args.get('store_category')
 
-        app.logger.info(f"[Analytics] Spend analytics request - user_id: {user_id}, interval: {interval}, store_name: {store_name}, store_category: {store_category}")
-        app.logger.info(f"[Analytics] Request headers: {request.headers}")
-        app.logger.info(f"[Analytics] Request args: {request.args}")
-
         if not user_id:
             app.logger.warning("[Analytics] Missing user_id in request")
             return jsonify({'error': 'Missing user_id'}), 400
 
         # Define time formatting based on interval
-        if interval == 'daily':
-            date_format = '%Y-%m-%d'
-            group_by = func.strftime('%Y-%m-%d', Receipt.date)
-        elif interval == 'weekly':
-            date_format = '%Y-W%W'
-            group_by = func.strftime('%Y-W%W', Receipt.date)
-        else:
-            date_format = '%Y-%m'
-            group_by = func.strftime('%Y-%m', Receipt.date)
+        try:
+            if interval == 'daily':
+                date_format = '%Y-%m-%d'
+                group_by = func.strftime('%Y-%m-%d', Receipt.date)
+                app.logger.info(f"[Analytics] Using daily interval with group_by: {group_by}")
+            elif interval == 'weekly':
+                date_format = '%Y-W%W'
+                group_by = func.strftime('%Y-W%W', Receipt.date)
+                app.logger.info(f"[Analytics] Using weekly interval with group_by: {group_by}")
+            else:
+                date_format = '%Y-%m'
+                group_by = func.strftime('%Y-%m', Receipt.date)
+                app.logger.info(f"[Analytics] Using monthly interval with group_by: {group_by}")
+        except Exception as e:
+            app.logger.error(f"[Analytics] Error setting up group_by: {e}")
+            # Fallback to simple date grouping
+            if interval == 'daily':
+                group_by = func.date(Receipt.date)
+            elif interval == 'weekly':
+                group_by = func.date_trunc('week', Receipt.date)
+            else:
+                group_by = func.date_trunc('month', Receipt.date)
+            app.logger.info(f"[Analytics] Using fallback group_by: {group_by}")
 
         try:
             app.logger.info(f"[Analytics] Fetching spend analytics for user {user_id} with interval {interval}")
+            app.logger.info(f"[Analytics] Database session: {db.session}")
+            app.logger.info(f"[Analytics] Receipt model: {Receipt}")
+            
+            # Test basic query first
+            test_query = db.session.query(Receipt).filter(Receipt.user_id == user_id).limit(1)
+            app.logger.info(f"[Analytics] Test query: {test_query}")
+            test_result = test_query.first()
+            app.logger.info(f"[Analytics] Test result: {test_result}")
+            
             query = (
                 db.session.query(
                     group_by.label('period'),
@@ -95,6 +114,10 @@ def get_spend_analytics(user_id):
 
         except Exception as e:
             app.logger.error(f"[Analytics] Error fetching analytics: {e}")
+            app.logger.error(f"[Analytics] Error type: {type(e)}")
+            app.logger.error(f"[Analytics] Error details: {str(e)}")
+            import traceback
+            app.logger.error(f"[Analytics] Full traceback: {traceback.format_exc()}")
             return jsonify({'error': 'Internal server error'}), 500
 
 @analytics_bp.route('/top-products', methods=['GET'])
