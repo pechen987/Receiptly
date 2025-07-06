@@ -42,18 +42,34 @@ def get_spend_analytics(user_id):
 
         # Define time formatting based on interval
         try:
-            if interval == 'daily':
-                date_format = '%Y-%m-%d'
-                group_by = func.strftime('%Y-%m-%d', Receipt.date)
-                app.logger.info(f"[Analytics] Using daily interval with group_by: {group_by}")
-            elif interval == 'weekly':
-                date_format = '%Y-W%W'
-                group_by = func.strftime('%Y-W%W', Receipt.date)
-                app.logger.info(f"[Analytics] Using weekly interval with group_by: {group_by}")
+            # Check database type and use appropriate date functions
+            db_url = app.config.get('SQLALCHEMY_DATABASE_URI', '')
+            app.logger.info(f"[Analytics] Database URL: {db_url}")
+            
+            if 'sqlite' in db_url.lower():
+                # SQLite date functions
+                if interval == 'daily':
+                    date_format = '%Y-%m-%d'
+                    group_by = func.strftime('%Y-%m-%d', Receipt.date)
+                elif interval == 'weekly':
+                    date_format = '%Y-W%W'
+                    group_by = func.strftime('%Y-W%W', Receipt.date)
+                else:
+                    date_format = '%Y-%m'
+                    group_by = func.strftime('%Y-%m', Receipt.date)
+                app.logger.info(f"[Analytics] Using SQLite date functions with group_by: {group_by}")
             else:
-                date_format = '%Y-%m'
-                group_by = func.strftime('%Y-%m', Receipt.date)
-                app.logger.info(f"[Analytics] Using monthly interval with group_by: {group_by}")
+                # PostgreSQL date functions
+                if interval == 'daily':
+                    date_format = '%Y-%m-%d'
+                    group_by = func.date_trunc('day', Receipt.date)
+                elif interval == 'weekly':
+                    date_format = '%Y-W%W'
+                    group_by = func.date_trunc('week', Receipt.date)
+                else:
+                    date_format = '%Y-%m'
+                    group_by = func.date_trunc('month', Receipt.date)
+                app.logger.info(f"[Analytics] Using PostgreSQL date functions with group_by: {group_by}")
         except Exception as e:
             app.logger.error(f"[Analytics] Error setting up group_by: {e}")
             # Fallback to simple date grouping
@@ -101,13 +117,27 @@ def get_spend_analytics(user_id):
 
             app.logger.info(f"[Analytics] Raw query results: {period_results}")
 
-            # Fetch user currency
-            user = db.session.query(User).get(user_id) # Use db from extensions
-            user_currency = user.currency if user and user.currency else 'USD'
-            response = [
-                {'period': period, 'total_spent': round(total, 4)}
-                for period, total in period_results
-            ]
+            # If no results, try a simpler query
+            if not period_results:
+                app.logger.info(f"[Analytics] No results from complex query, trying simple query")
+                simple_query = db.session.query(Receipt.total).filter(Receipt.user_id == user_id)
+                simple_results = simple_query.all()
+                app.logger.info(f"[Analytics] Simple query results: {simple_results}")
+                
+                if simple_results:
+                    # If we have receipts but no grouped results, return a single period
+                    total_spent = sum(r.total for r in simple_results if r.total)
+                    response = [{'period': 'All', 'total_spent': round(total_spent, 4)}]
+                else:
+                    response = []
+            else:
+                # Fetch user currency
+                user = db.session.query(User).get(user_id) # Use db from extensions
+                user_currency = user.currency if user and user.currency else 'USD'
+                response = [
+                    {'period': period, 'total_spent': round(total, 4)}
+                    for period, total in period_results
+                ]
             app.logger.info(f"[Analytics] Found {len(response)} periods of data")
             app.logger.info(f"[Analytics] Final response: {response}")
             return jsonify({'currency': user_currency, 'data': response})
