@@ -159,9 +159,9 @@ export default function CustomPaymentForm({
         ref={scrollViewRef}
       >
         <View style={styles.container}>
-          {/* Header: Receiptly Pro. Free trial. */}
+          {/* Header: Recipta Pro. Free trial. */}
           <Text style={styles.proHeader}>
-            Receiptly <Text style={styles.proHeaderGold}>Pro</Text>
+            Recipta <Text style={styles.proHeaderGold}>Pro</Text>
           </Text>
           <Text style={styles.cardInfoHeader}>Your Pro plan includes:</Text>
           <View style={styles.benefitsContainer}>
@@ -248,7 +248,6 @@ export default function CustomPaymentForm({
             >
               <Animated.View
                 style={[
-                  styles.promoButtonShadow,
                   {
                     shadowOpacity: promoButtonAnim.shadowOpacityAnim,
                     elevation: promoButtonAnim.elevationAnim,
@@ -327,7 +326,6 @@ export default function CustomPaymentForm({
           >
             <Animated.View
               style={[
-                styles.submitButtonShadow,
                 {
                   shadowOpacity: submitButtonAnim.shadowOpacityAnim,
                   elevation: submitButtonAnim.elevationAnim,
@@ -372,7 +370,7 @@ export default function CustomPaymentForm({
               <View style={styles.successModalContent}>
                 <Ionicons name="checkmark-circle" size={64} color="#4caf50" style={{ marginBottom: 16 }} />
                 <Text style={styles.successTitle}>Success!</Text>
-                <Text style={styles.successMessage}>Your free trial is now active. Enjoy Receiptly Pro features for 14 days!</Text>
+                <Text style={styles.successMessage}>Your free trial is now active. Enjoy Recipta Pro features for 14 days!</Text>
               </View>
             </View>
           </Modal>
@@ -384,9 +382,9 @@ export default function CustomPaymentForm({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#232632',
+    backgroundColor: '#0D1117',
     borderRadius: 16,
-    padding: 24,
+    padding: 16,
     margin: 16,
   },
   benefitsContainer: {
@@ -493,7 +491,7 @@ const styles = StyleSheet.create({
   },
   successModalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: 'rgba(13,17,23,0.92)',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 9999,
@@ -528,19 +526,7 @@ const styles = StyleSheet.create({
   promoButtonContainer: {
     width: 'auto',
   },
-  promoButtonShadow: {
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 8,
-    borderRadius: 10,
-  },
   submitButtonContainer: {
     width: '100%',
-  },
-  submitButtonShadow: {
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 8,
-    borderRadius: 12,
   },
 });

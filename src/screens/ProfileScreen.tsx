@@ -9,6 +9,7 @@ import apiConfig from '../config/api';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../contexts/AuthContext';
 import { useButtonAnimation } from '../hooks/useButtonAnimation';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface JwtPayload {
   email: string;
@@ -147,6 +148,7 @@ export default function ProfileScreen({ onLogout }: { onLogout: () => void }) {
   
   // Create animation instance for the sign out button
   const signOutButtonAnim = createPressAnimation();
+  const goProButtonAnim = createPressAnimation();
 
   const formatDate = (dateString: string | null): string => {
     if (!dateString) return '';
@@ -325,12 +327,24 @@ export default function ProfileScreen({ onLogout }: { onLogout: () => void }) {
                 </Text>
               </View>
               {userPlan === 'basic' && (
-                  <TouchableOpacity 
-                    style={{ backgroundColor: '#FFBF00', paddingVertical: 6, paddingHorizontal: 20, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 12, alignSelf: 'flex-start' }}
+                <Animated.View style={{ transform: [{ scale: goProButtonAnim.scaleAnim }], alignSelf: 'flex-start' }}>
+                  <TouchableOpacity
                     onPress={() => navigation.navigate('ProOnboarding')}
+                    onPressIn={goProButtonAnim.handlePressIn}
+                    onPressOut={goProButtonAnim.handlePressOut}
+                    activeOpacity={1}
                   >
-                    <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
+                    <LinearGradient
+                      colors={['#FFD700', '#FFA500']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.goProButton}
+                    >
+                      <Ionicons name="star" size={16} color="#000" style={{ marginRight: 6 }} />
+                      <Text style={styles.goProButtonText}>Go Pro</Text>
+                    </LinearGradient>
                   </TouchableOpacity>
+                </Animated.View>
               )}
               {/* Add subscription status row */}
               {subscriptionDetails?.subscription_status && userPlan !== 'basic' && (
@@ -379,7 +393,6 @@ export default function ProfileScreen({ onLogout }: { onLogout: () => void }) {
         >
           <Animated.View
             style={[
-              styles.signOutButtonShadow,
               {
                 shadowOpacity: signOutButtonAnim.shadowOpacityAnim,
                 elevation: signOutButtonAnim.elevationAnim,
@@ -405,13 +418,13 @@ export default function ProfileScreen({ onLogout }: { onLogout: () => void }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#16191f',
+    backgroundColor: '#0D1117',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
   card: {
-    backgroundColor: '#232632',
+    backgroundColor: '#161B22',
     borderRadius: 20,
     padding: 32,
     width: '100%',
@@ -425,6 +438,8 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 4.65,
+    borderWidth: 1,
+    borderColor: '#30363D',
   },
   avatarContainer: {
     width: 80,
@@ -508,13 +523,13 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(13, 17, 23, 0.92)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
   dropdownModal: {
-    backgroundColor: '#232632',
+    backgroundColor: '#161B22',
     borderRadius: 16,
     width: '100%',
     maxWidth: 350,
@@ -534,7 +549,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#3a3d4a',
+    borderBottomColor: '#30363D',
   },
   dropdownHeaderText: {
     color: '#fff',
@@ -554,10 +569,10 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#2a2d3a',
+    borderBottomColor: '#30363D',
   },
   dropdownItemSelected: {
-    backgroundColor: '#7e5cff15',
+    backgroundColor: '#232632',
   },
   dropdownItemText: {
     color: '#fff',
@@ -587,10 +602,23 @@ const styles = StyleSheet.create({
   signOutButtonContainer: {
     width: '100%',
   },
-  signOutButtonShadow: {
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
+  goProButton: {
+    paddingVertical: 7,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginTop: 12,
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
     shadowRadius: 8,
-    borderRadius: 12,
+    elevation: 5,
+  },
+  goProButtonText: {
+    color: '#000000',
+    fontSize: 14,
+    fontWeight: '700',
   },
 });

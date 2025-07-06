@@ -2,8 +2,14 @@ import { API_BASE_URL } from '@env';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Debug: Log the API_BASE_URL value
+console.log('🔧 [API Config] API_BASE_URL loaded from .env:', API_BASE_URL);
+
 // Fallback to a default value if environment variable is not set
 const API_URL = API_BASE_URL;
+
+// Debug: Log the final API_URL value
+console.log('🔧 [API Config] Final API_URL value:', API_URL);
 
 // Create and configure axios instance
 const axiosInstance = axios.create();

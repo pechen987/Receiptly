@@ -46,45 +46,52 @@ function MainTabs({ onLogout }: { onLogout: () => void }) {
   return (
     <CurrencyProvider>
       <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: '#16191f',
-          borderTopColor: '#2d3748',
-        },
-        tabBarActiveTintColor: '#7e5cff',
-        tabBarInactiveTintColor: '#a0aec0',
-      }}
-    >
-      <Tab.Screen
-        name="My Receipts"
-        component={HistoryScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="receipt-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Analytics"
-        component={AnalyticsScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="analytics-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
-          ),
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: {
+            // Changed: Matched the background to our new component color
+            backgroundColor: '#0D1117',
+            // Changed: Aligned with the new, darker border color
+            borderTopColor: '#30363D',
+            // Improved: Added a bit more height for a more modern feel
+            height: 70, 
+            paddingBottom: 5,
+          },
+          // No change needed, this is our primary accent color
+          tabBarActiveTintColor: '#7e5cff', 
+          // Changed: Using the consistent secondary color for inactive icons
+          tabBarInactiveTintColor: '#8ca0c6', 
         }}
       >
-        {() => <ProfileScreen onLogout={onLogout} />}
-      </Tab.Screen>
-    </Tab.Navigator>
+        <Tab.Screen
+          name="My Receipts"
+          component={HistoryScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="receipt-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Analytics"
+          component={AnalyticsScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="analytics-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="person-outline" size={size} color={color} />
+            ),
+          }}
+        >
+          {() => <ProfileScreen onLogout={onLogout} />}
+        </Tab.Screen>
+      </Tab.Navigator>
     </CurrencyProvider>
   );
 }

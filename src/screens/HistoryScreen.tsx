@@ -110,7 +110,6 @@ export default function HistoryScreen() {
   const [scanModalVisible, setScanModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation<NavigationProp>();
-  const isFocused = useIsFocused();
   const [scanningMessage, setScanningMessage] = useState('');
   const messageInterval = useRef<NodeJS.Timeout | null>(null);
   const [sections, setSections] = useState<SectionData[]>([]);
@@ -122,10 +121,6 @@ export default function HistoryScreen() {
   const [userPlan, setUserPlan] = useState<string | null>(null);
   const [currentMonthReceiptCount, setCurrentMonthReceiptCount] = useState<number | null>(null);
   const [isLoadingReceiptCount, setIsLoadingReceiptCount] = useState(true);
-
-  const scaleAnim = useRef(new Animated.Value(1)).current;
-  const shadowOpacityAnim = useRef(new Animated.Value(0.25)).current;
-  const elevationAnim = useRef(new Animated.Value(12)).current;
 
   const scanningMessages = [
     "Scanning your receipt... 📝",
@@ -415,37 +410,31 @@ export default function HistoryScreen() {
       onPress={() => navigation.navigate('ReceiptDetail', { receiptData: item })}
       activeOpacity={0.85}
     >
-      <View style={styles.rowBetween}>
-        <View style={{ flex: 1, paddingRight: 12 }}>
-          <Text style={styles.receiptTitle}>{item.store_name || 'Unknown Store'}</Text>
-
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
-            <Icon name="calendar" size={14} color="#8ca0c6" />
-            <Text style={styles.receiptDate}> {item.date || 'Unknown Date'}</Text>
-          </View>
-
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
-            <Icon name="tag" size={14} color="#8ca0c6" />
-            <Text style={styles.itemCount}> {item.items.length} items</Text>
-          </View>
+      <View style={styles.receiptInfo}>
+        <Text style={styles.receiptTitle} numberOfLines={1}>{item.store_name || 'Unknown Store'}</Text>
+        <View style={styles.receiptMeta}>
+          <Icon name="calendar" size={14} color="#8ca0c6" />
+          <Text style={styles.receiptDate}>{item.date || 'Unknown Date'}</Text>
+          <Text style={styles.metaSeparator}>•</Text>
+          <Icon name="tag" size={14} color="#8ca0c6" />
+          <Text style={styles.itemCount}>{item.items.length} items</Text>
         </View>
-
-        <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
-          <Text style={styles.receiptAmount}>
-            {formatCurrency(item.total, currency)}
-          </Text>
-          <TouchableOpacity
-            style={styles.cardDeleteFabSubtle}
-            onPress={() => {
-              Alert.alert('Delete Receipt', 'Are you sure you want to delete this receipt?', [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Delete', style: 'destructive', onPress: () => handleDelete(item.id) },
-              ]);
-            }}
-          >
-            <Icon name="trash" size={16} color="#fff" />
-          </TouchableOpacity>
-        </View>
+      </View>
+      <View style={styles.receiptActions}>
+        <Text style={styles.receiptAmount}>
+          {formatCurrency(item.total, currency)}
+        </Text>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => {
+            Alert.alert('Delete Receipt', 'Are you sure you want to delete this receipt?', [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Delete', style: 'destructive', onPress: () => handleDelete(item.id) },
+            ]);
+          }}
+        >
+          <Icon name="trash-2" size={18} color="#8ca0c6" />
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
@@ -454,6 +443,7 @@ export default function HistoryScreen() {
     try {
       await deleteReceipt(id);
       await loadReceipts();
+      await fetchReceiptCountAndPlan(); // Update header after deletion
       triggerRefresh(); // Trigger refresh for analytics screen after deletion
     } catch (error) {
       console.log('Error deleting receipt:', error);
@@ -544,11 +534,9 @@ export default function HistoryScreen() {
           }
           ListEmptyComponent={
             <View style={styles.emptyStateContainer}>
-              <View style={styles.emptyStateContent}>
-                <Text style={styles.emptyText}>Ready to scan your first receipt?</Text>
-                <Text style={styles.emptyText}>Tap the camera button below!</Text>
-                <ArrowSvg width={220} height={220} style={styles.arrow} fill="#8ca0c6" />
-              </View>
+              <Ionicons name="receipt-outline" size={80} color="#30363D" />
+              <Text style={styles.emptyText}>No receipts yet</Text>
+              <Text style={styles.emptySubtext}>Tap the camera button to scan your first receipt!</Text>
             </View>
           }
         />
@@ -564,7 +552,6 @@ export default function HistoryScreen() {
         >
           <Animated.View
             style={[
-              styles.fabShadow,
               {
                 shadowOpacity: scanButtonAnim.shadowOpacityAnim,
                 elevation: scanButtonAnim.elevationAnim,
@@ -610,7 +597,6 @@ export default function HistoryScreen() {
                 >
                   <Animated.View
                     style={[
-                      styles.modalButtonShadow,
                       {
                         shadowOpacity: galleryButtonAnim.shadowOpacityAnim,
                         elevation: galleryButtonAnim.elevationAnim,
@@ -642,7 +628,6 @@ export default function HistoryScreen() {
                 >
                   <Animated.View
                     style={[
-                      styles.modalButtonShadow,
                       {
                         shadowOpacity: cameraButtonAnim.shadowOpacityAnim,
                         elevation: cameraButtonAnim.elevationAnim,
@@ -673,99 +658,146 @@ export default function HistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  emptyStateContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    minHeight: 400,
-  },
-  emptyStateContent: {
-    marginTop: 200,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingSubtext: {
-    fontSize: 14,
-    color: '#94a3b8',
-    marginTop: 8,
-    textAlign: 'center',
-  },
+  // Changed: Matched background to the new design system.
   safeArea: {
     flex: 1,
-    backgroundColor: '#16191f',
-  },
-  rowBetween: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  scanOptionLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#7e5cff',
-    padding: 14,
-    borderRadius: 10,
-    marginBottom: 8,
-    width: 220,
-    justifyContent: 'flex-start',
-    borderWidth: 1.2,
-    borderColor: '#232632',
-  },
-  scanOptionText: {
-    marginLeft: 10,
-    fontSize: 16,
-    color: '#fff',
-    fontWeight: 'bold',
+    backgroundColor: '#0D1117',
   },
   list: {
     flex: 1,
   },
+  // Changed: Set a consistent horizontal padding for all content.
   listContent: {
-    paddingHorizontal: 12,
-    paddingBottom: 0,
+    paddingHorizontal: 16,
+    paddingTop: 8,
   },
   emptyListContent: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
   },
+  sectionHeader: {
+    paddingTop: 24,
+    paddingBottom: 8,
+    paddingHorizontal: 4, // Added slight horizontal padding
+    backgroundColor: '#0D1117', // Match screen background
+  },
+  sectionHeaderText: {
+    fontSize: 18, // Increased size slightly for better hierarchy
+    fontWeight: 'bold', // Made bold
+    color: '#e6e9f0', // Brighter color for titles
+    textTransform: 'capitalize',
+  },
+  // --- CARD STYLES ---
+  // Changed: Complete redesign of the receipt card for a cleaner look.
   receiptCard: {
-    backgroundColor: '#202338',
-    borderRadius: 14,
-    padding: 14,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.10,
-    shadowRadius: 10,
-    elevation: 3,
-    marginHorizontal: 16,
-    marginTop: 4,
+    backgroundColor: '#161B22', // Match new card color
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#30363D', // Match new border color
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  receiptInfo: {
+    flex: 1,
+    marginRight: 12,
   },
   receiptTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '600',
     color: '#e6e9f0',
+  },
+  receiptMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
   },
   receiptDate: {
     color: '#8ca0c6',
     fontSize: 14,
-    marginTop: 2,
+    marginLeft: 6,
+  },
+  itemCount: {
+    fontSize: 14,
+    color: '#8ca0c6',
+    marginLeft: 6,
+  },
+  metaSeparator: {
+    color: '#8ca0c6',
+    marginHorizontal: 8,
+    fontSize: 14,
+  },
+  receiptActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   receiptAmount: {
     fontWeight: 'bold',
     color: '#ffffff',
     fontSize: 16,
-    marginTop: 2,
+    marginRight: 16,
   },
-  itemCount: {
+  // Changed: Cleaner, more integrated delete button.
+  deleteButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: '#30363D',
+  },
+  // --- EMPTY STATE & LOADING ---
+  // Changed: Redesigned empty state for a cleaner look.
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: '#e6e9f0',
+    fontSize: 20,
+    fontWeight: '600',
+    marginTop: 16,
+  },
+  emptySubtext: {
+    textAlign: 'center',
+    color: '#8ca0c6',
+    fontSize: 15,
+    marginTop: 6,
+    maxWidth: '80%',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#0D1117', // Match new background
+  },
+  overlayText: {
+    fontSize: 18,
+    color: '#7e5cff',
+    fontWeight: 'bold',
+    marginTop: 12,
+  },
+  loadingSubtext: {
     fontSize: 14,
     color: '#8ca0c6',
+    marginTop: 8,
+    textAlign: 'center',
+    paddingHorizontal: 20,
+  },
+  // --- FAB & MODAL --- (Keeping existing functional styles)
+  fabContainer: {
+    position: 'absolute',
+    right: 24,
+    bottom: 36,
+    shadowColor: '#7e5cff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 16,
+    zIndex: 100,
   },
   fab: {
     width: 64,
@@ -776,150 +808,57 @@ const styles = StyleSheet.create({
     borderColor: '#9575ff',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 0,
-  },
-  modalContent: {
-    width: '100%',
-    paddingRight: 40,
-    paddingLeft: 40,
-    paddingTop: 30,
-    paddingBottom: 30,
-    borderRadius: 16,
-    alignItems: 'center',
-  },
-  overlayText: {
-    fontSize: 18,
-    color: '#7e5cff',
-    fontWeight: 'bold',
-    marginTop: 8,
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: '#8ca0c6',
-    fontSize: 18,
-    fontWeight: '500',
-    marginTop: 8,
-    marginBottom: 0,
   },
   modalOverlay: {
     flex: 1,
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.7)', // Slightly darker overlay
     justifyContent: 'center',
     alignItems: 'center',
   },
-  cardDeleteFabSubtle: {
-    marginTop: 10,
-    backgroundColor: '#3a3d45',
-    borderRadius: 12,
-    width: 28,
-    height: 28,
+  modalContent: {
+    width: '100%',
+    paddingHorizontal: 40,
+    paddingVertical: 30,
     alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 1.5,
-    elevation: 2,
-    zIndex: 10,
-  },
-  sectionHeader: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    marginTop: 16,
-  },
-  sectionHeaderText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#8ca0c6',
-    textTransform: 'capitalize',
-  },
-  arrowContainer: {
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 99,
-  },
-  arrow: {
-    transform: [{ rotate: '12deg' }],
-    left: 20,
-    top: 40,
-  },
-  fabContainer: {
-    position: 'absolute',
-    right: 24,
-    bottom: 36,
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 16,
-    zIndex: 100,
-  },
-  fabShadow: {
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 16,
-    borderRadius: 32,
   },
   modalButtonsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 20,
   },
   modalButtonContainer: {
-    width: '45%',
-    aspectRatio: 1,
-  },
-  modalButtonShadow: {
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 8,
-    borderRadius: 12,
-    flex: 1,
+    width: 160,
+    height: 150,
+    marginHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   modalButton: {
-    flex: 1,
-    flexDirection: 'column',
+    width: 160,
+    height: 160,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#7e5cff',
-    padding: 16,
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 2,
     borderColor: '#9575ff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    elevation: 0,
-    position: 'relative',
     overflow: 'hidden',
   },
   modalButtonText: {
-    fontSize: 22,
+    fontSize: 24,
     color: '#fff',
     fontWeight: 'bold',
+    marginTop: 10,
     textAlign: 'center',
     zIndex: 2,
-    position: 'relative',
-    textShadowColor: '#000',
+    textShadowColor: 'rgba(0,0,0,0.25)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
   },
   iconBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    marginBottom: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1,
+    opacity: 0.8,
   },
 });
 

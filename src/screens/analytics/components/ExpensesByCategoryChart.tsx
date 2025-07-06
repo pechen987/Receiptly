@@ -306,7 +306,7 @@ const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation: prop
                 <Path key={i} d={slice.pathData} fill={slice.color} stroke="#fff" strokeWidth={0.5} />
               ))}
               {/* Donut hole */}
-              <Circle cx={center} cy={center} r={donutRadius} fill="#202338" />
+              <Circle cx={center} cy={center} r={donutRadius} fill="#161B22" />
               {/* Center label: total sum */}
               <SvgText
                 x={center}
@@ -341,8 +341,10 @@ const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation: prop
                     flexDirection: 'row',
                     alignItems: 'center',
                     marginBottom: 6,
-                    backgroundColor: '#2a2d47',
+                    backgroundColor: '#161B22',
                     borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: '#30363D',
                     paddingVertical: 8,
                     paddingHorizontal: 10,
                     width: '100%',
@@ -405,9 +407,11 @@ const ExpensesByCategoryChart = memo(({ userId, refreshTrigger, navigation: prop
                         flexDirection: 'row',
                         alignItems: 'center',
                         borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: '#30363D',
                         paddingVertical: 7,
                         paddingHorizontal: 8,
-                        backgroundColor: '#232632', // Static background
+                        backgroundColor: '#161B22',
                       }}
                     >
                       <Text style={{ flex: 2, color: '#e6e9f0', fontWeight: '500', fontSize: 15 }} numberOfLines={1}>{item.name}</Text>

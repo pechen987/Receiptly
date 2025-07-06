@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useButtonAnimation } from '../hooks/useButtonAnimation';
 
 interface BasicPlanHeaderProps {
-  monthlyReceiptCount: number | null; // For compatibility, but will be used as current month count
+  monthlyReceiptCount: number | null;
   limit: number;
   userPlan: string | null;
 }
@@ -14,30 +16,46 @@ const BasicPlanHeader: React.FC<BasicPlanHeaderProps> = ({
   limit,
   userPlan,
 }) => {
-  // Ensure monthlyReceiptCount and limit are valid numbers for calculation
-  const currentCount = monthlyReceiptCount !== null && monthlyReceiptCount > 0 ? monthlyReceiptCount : 0;
-  const basicLimit = limit > 0 ? limit : 1; // Avoid division by zero
-
-  const progressPercentage = Math.min(100, (currentCount / basicLimit) * 100);
+  const isLoading = monthlyReceiptCount === null || monthlyReceiptCount === undefined;
+  const currentCount = !isLoading ? monthlyReceiptCount : '-';
+  const basicLimit = limit > 0 ? limit : 1;
+  const progressPercentage = !isLoading ? Math.min(100, (Number(monthlyReceiptCount) / basicLimit) * 100) : 0;
   const navigation = useNavigation();
+  const { createPressAnimation } = useButtonAnimation();
+  const goProButtonAnim = createPressAnimation();
+
+  if (userPlan !== 'basic') {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
-      {userPlan === 'basic' && (
-        <>
-          <View style={styles.progressContainer}>
-            <Text style={styles.progressText}>
-              Receipts this month: {currentCount} / {limit}
-            </Text>
-            <View style={styles.progressBarBackground}>
-              <View style={[styles.progressBarFill, { width: `${progressPercentage}%` }]} />
-            </View>
-          </View>
-          <TouchableOpacity style={styles.goProButton} onPress={() => navigation.navigate('ProOnboarding')}>
+      <View style={styles.progressContainer}>
+        <Text style={styles.progressText}>
+          Monthly scans: {currentCount} / {limit}
+        </Text>
+        <View style={styles.progressBarBackground}>
+          <Animated.View style={[styles.progressBarFill, { width: `${progressPercentage}%` }]} />
+        </View>
+      </View>
+      <Animated.View style={{ transform: [{ scale: goProButtonAnim.scaleAnim }] }}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ProOnboarding')}
+          onPressIn={goProButtonAnim.handlePressIn}
+          onPressOut={goProButtonAnim.handlePressOut}
+          activeOpacity={1}
+        >
+          <LinearGradient
+            colors={['#FFD700', '#FFA500']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.goProButton}
+          >
+            <Ionicons name="star" size={16} color="#000" style={{ marginRight: 6 }} />
             <Text style={styles.goProButtonText}>Go Pro</Text>
-          </TouchableOpacity>
-        </>
-      )}
+          </LinearGradient>
+        </TouchableOpacity>
+      </Animated.View>
     </View>
   );
 };
@@ -49,42 +67,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 20,
-    borderBottomWidth: 0.4,
+    borderBottomWidth: 1,
     borderBottomColor: '#2d3748',
   },
   progressContainer: {
     flex: 1,
-    marginRight: 10,
+    marginRight: 16,
   },
   progressText: {
     fontSize: 14,
     color: '#c1c6d9',
-    marginBottom: 4,
+    marginBottom: 6,
+    fontWeight: '500',
   },
   progressBarBackground: {
-    height: 6,
+    height: 8,
     backgroundColor: '#4a5568',
-    borderRadius: 3,
+    borderRadius: 4,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
     backgroundColor: '#7e5cff',
-    borderRadius: 3,
+    borderRadius: 4,
   },
   goProButton: {
-    backgroundColor: '#FFBF00',
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    paddingVertical: 7,
+    paddingHorizontal: 14,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 5,
   },
   goProButtonText: {
     color: '#000000',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });
 
-export default BasicPlanHeader; 
+export default BasicPlanHeader;

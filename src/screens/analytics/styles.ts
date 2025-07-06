@@ -2,8 +2,10 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   widgetBg: {
-    backgroundColor: '#202338',
+    backgroundColor: '#161B22',
     borderRadius: 18,
+    borderWidth: 1, // Added for consistency
+    borderColor: '#30363D', // Added for consistency
     paddingTop: 16,
     paddingHorizontal: 0,
     paddingBottom: 8,
@@ -24,8 +26,12 @@ export const styles = StyleSheet.create({
     zIndex: 1,
     paddingVertical: 4,
     paddingHorizontal: 16,
-    backgroundColor: '#202338',
+    backgroundColor: '#161B22',
     borderRadius: 16,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: '#30363D',
   },
   widgetContent: {
     padding: 16,
@@ -83,7 +89,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContainer: {
-    backgroundColor: '#232632',
+    backgroundColor: '#161B22',
     borderRadius: 18,
     width: '90%',
     marginVertical: 40,
@@ -94,6 +100,8 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.17,
     shadowRadius: 12,
     elevation: 4,
+    borderWidth: 1,
+    borderColor: '#30363D',
   },
   modalTitle: {
     color: '#e6e9f0',

@@ -135,8 +135,27 @@ const AnalyticsScreenContent = () => {
         });
         
         const data = await fetchSpendDataApi(Number(currentUserId), interval, selectedStore, selectedCategory);
-        console.log('[Analytics] Received spend data:', data);
-        setSpendData(data.data || []);
+        console.log('[Analytics] Raw API response:', data);
+        console.log('[Analytics] Data type:', typeof data);
+        console.log('[Analytics] Data keys:', Object.keys(data || {}));
+        
+        // Handle both possible response formats
+        let spendDataArray = [];
+        if (data && data.data && Array.isArray(data.data)) {
+          // Backend returns { currency: "USD", data: [...] }
+          spendDataArray = data.data;
+          console.log('[Analytics] Using data.data format, found', spendDataArray.length, 'items');
+        } else if (data && Array.isArray(data)) {
+          // Backend returns data array directly
+          spendDataArray = data;
+          console.log('[Analytics] Using direct data format, found', spendDataArray.length, 'items');
+        } else {
+          console.log('[Analytics] Unexpected data format:', data);
+          spendDataArray = [];
+        }
+        
+        console.log('[Analytics] Final spend data array:', spendDataArray);
+        setSpendData(spendDataArray);
       } catch (error) {
         console.log('[Analytics] Error fetching spend data:', error);
         setSpendData([]);
@@ -468,13 +487,13 @@ const AnalyticsScreenContent = () => {
   const memoizedWidgetOrder = useMemo(() => widgetOrder, [widgetOrder]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#16191f', paddingTop: insets.top }}>
+    <View style={{ flex: 1, backgroundColor: '#0D1117', paddingTop: insets.top }}>
       <StatusBar barStyle="light-content" />
       <AnalyticsHeader 
         onExportPress={handleExport} 
         onFilterPress={handleFilterPress}
       />
-      <View style={{ flex: 1, backgroundColor: '#16191f' }}>
+      <View style={{ flex: 1, backgroundColor: '#0D1117' }}>
         <DraggableFlatList
           data={memoizedWidgetOrder}
           onDragEnd={onDragEnd}
@@ -526,13 +545,15 @@ const AnalyticsScreenContent = () => {
                     renderItem={({ item }) => (
                       <Pressable
                         style={({ pressed }) => [{
-                          backgroundColor: '#2a2d47',
-                          borderRadius: 8,
-                          paddingTop: 6,
-                          paddingBottom: 6,
-                          paddingLeft: 8,  
-                          paddingRight: 8,
-                          marginBottom: 4
+                          backgroundColor: '#161B22',
+                          borderRadius: 10,
+                          borderWidth: 1,
+                          borderColor: '#30363D',
+                          paddingTop: 8,
+                          paddingBottom: 8,
+                          paddingLeft: 10,  
+                          paddingRight: 10,
+                          marginBottom: 6
                         }]}
                         onPress={() => {
                           setModalVisible(false);

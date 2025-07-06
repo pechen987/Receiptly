@@ -187,7 +187,7 @@ export default function CustomPaymentScreen({ navigation, route }: CustomPayment
       {paymentData && (
         <StripeProvider
           publishableKey="pk_test_51RWzlWE9IYgVm0lSsdUPhjeqbjHZHatzyp8Wv2XouCBqJjOwCeg2R9fcfKqW2iP2Do6fFCoGmgb4vphnwzg2UhOb00T9X1yffI"
-          merchantIdentifier="merchant.com.receiptly.app"
+          merchantIdentifier="merchant.com.Recipta.app"
         >
           <CustomPaymentForm
             clientSecret={paymentData.client_secret}
@@ -226,7 +226,7 @@ export default function CustomPaymentScreen({ navigation, route }: CustomPayment
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#16191f',
+    backgroundColor: '#0D1117',
   },
   scrollContentContainer: {
     flexGrow: 1,
@@ -239,7 +239,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: '#16191f',
     paddingHorizontal: 8,
     borderBottomWidth: 0.5,
     borderBottomColor: '#232632',
@@ -256,7 +255,7 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#16191f',
+    backgroundColor: '#0D1117',
     justifyContent: 'center',
     alignItems: 'center',
   },

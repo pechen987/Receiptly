@@ -27,7 +27,6 @@ const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onExportPress, onFilt
       >
         <Animated.View
           style={[
-            styles.buttonShadow,
             {
               shadowOpacity: filterButtonAnim.shadowOpacityAnim,
               elevation: filterButtonAnim.elevationAnim,
@@ -59,7 +58,6 @@ const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onExportPress, onFilt
       >
         <Animated.View
           style={[
-            styles.buttonShadow,
             {
               shadowOpacity: exportButtonAnim.shadowOpacityAnim,
               elevation: exportButtonAnim.elevationAnim,
@@ -92,16 +90,10 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? 12 : 12,
     borderBottomWidth: 0.4,
     borderBottomColor: '#2d3748',
-    backgroundColor: '#16191f',
+    backgroundColor: '#0D1117',
     zIndex: 10,
   },
   buttonContainer: {
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 8,
-    borderRadius: 8,
-  },
-  buttonShadow: {
     shadowColor: '#7e5cff',
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 8,

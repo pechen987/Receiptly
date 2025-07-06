@@ -105,7 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await initializeFromToken(token);
       }
     } catch (error) {
-      console.error('Error loading user or token from storage:', error);
+      // Removed console.error for user-facing errors
     } finally {
       setLoading(false);
     }
@@ -123,13 +123,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await initializeFromToken(token);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        // Log detailed error for debugging, but throw a more user-friendly error.
-        console.error('Failed login attempt - Status:', error.response.status, 'Data:', error.response.data);
+        // Removed console.error for user-facing errors
         const message = error.response.data?.message || 'Invalid credentials';
         throw new Error(message);
       } else {
         // Handle non-Axios errors or network issues
-        console.error('Error signing in:', error);
+        // Removed console.error for user-facing errors
         throw new Error('A network error occurred. Please try again.');
       }
     }
@@ -145,7 +144,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // After registration, sign in the user
       await signIn(email, password);
     } catch (error) {
-      console.error('Error signing up:', error);
+      // Removed console.error for user-facing errors
       throw error;
     }
   };

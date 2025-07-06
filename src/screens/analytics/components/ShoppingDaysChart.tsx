@@ -15,6 +15,10 @@ import { BlurView } from 'expo-blur';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import apiConfig from '../../../config/api';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { useButtonAnimation } from '../../../hooks/useButtonAnimation';
+import { Animated } from 'react-native';
 
 const API_BASE_URL = apiConfig.API_BASE_URL;
 
@@ -238,6 +242,8 @@ const ShoppingDaysChart: React.FC<ShoppingDaysChartProps & { navigation?: any }>
     );
   };
 
+  const goProButtonAnim = useButtonAnimation().createPressAnimation();
+
   if (loading) {
     return (
       <View style={sharedStyles.widgetBg}>
@@ -329,11 +335,24 @@ const ShoppingDaysChart: React.FC<ShoppingDaysChartProps & { navigation?: any }>
               <Text style={[{ color: '#fff', fontSize: 22, fontWeight: '700', textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 32 }]}>Shopping Days</Text>
             </View>
             <Text style={[{ color: '#fff', fontSize: 16, fontWeight: '600', textAlign: 'center', marginBottom: 8, marginTop: 16, textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 20 }]}>Upgrade to Pro to unlock this chart</Text>
-            <TouchableOpacity style={{ backgroundColor: '#FFBF00', paddingVertical: 10, paddingHorizontal: 30, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 8 }}
-              onPress={() => navigation.navigate('ProOnboarding')}
-            >
-              <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
-            </TouchableOpacity>
+            <Animated.View style={{ transform: [{ scale: goProButtonAnim.scaleAnim }] }}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ProOnboarding')}
+                onPressIn={goProButtonAnim.handlePressIn}
+                onPressOut={goProButtonAnim.handlePressOut}
+                activeOpacity={1}
+              >
+                <LinearGradient
+                  colors={['#FFD700', '#FFA500']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{ paddingVertical: 7, paddingHorizontal: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 8, shadowColor: '#FFD700', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.5, shadowRadius: 8, elevation: 5 }}
+                >
+                  <Ionicons name="star" size={16} color="#000" style={{ marginRight: 6 }} />
+                  <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Animated.View>
           </BlurView>
         ) : (
           <View style={[StyleSheet.absoluteFillObject, {backgroundColor: 'rgba(20,20,30,0.95)', zIndex: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16, overflow: 'hidden', paddingHorizontal: 24}]}> 
@@ -342,11 +361,24 @@ const ShoppingDaysChart: React.FC<ShoppingDaysChartProps & { navigation?: any }>
               <Text style={[{ color: '#fff', fontSize: 22, fontWeight: '700', textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 32 }]}>Shopping Days</Text>
             </View>
             <Text style={[{ color: '#fff', fontSize: 16, fontWeight: '600', textAlign: 'center', marginBottom: 8, marginTop: 16, textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 20 }]}>Upgrade to Pro to unlock this chart</Text>
-            <TouchableOpacity style={{ backgroundColor: '#FFBF00', paddingVertical: 10, paddingHorizontal: 30, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 8 }}
-              onPress={() => navigation.navigate('ProOnboarding')}
-            >
-              <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
-            </TouchableOpacity>
+            <Animated.View style={{ transform: [{ scale: goProButtonAnim.scaleAnim }] }}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ProOnboarding')}
+                onPressIn={goProButtonAnim.handlePressIn}
+                onPressOut={goProButtonAnim.handlePressOut}
+                activeOpacity={1}
+              >
+                <LinearGradient
+                  colors={['#FFD700', '#FFA500']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{ paddingVertical: 7, paddingHorizontal: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 8, shadowColor: '#FFD700', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.5, shadowRadius: 8, elevation: 5 }}
+                >
+                  <Ionicons name="star" size={16} color="#000" style={{ marginRight: 6 }} />
+                  <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </Animated.View>
           </View>
         )
       )}

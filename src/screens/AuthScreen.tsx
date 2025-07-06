@@ -256,10 +256,8 @@ const AuthScreen: React.FC = () => {
         let data;
         try {
           data = await res.json();
-          console.log('Auth response:', res.status, data);
         } catch (e) {
-          console.error('Failed to parse auth response:', e);
-          throw new Error('Invalid response from server');
+          data = {};
         }
       
         if (res.ok) {
@@ -273,33 +271,32 @@ const AuthScreen: React.FC = () => {
           setPendingEmail(email);
           setShowConfirmationModal(true);
         } else {
-            const error = new Error(data.message || 'Registration failed');
-            throw error;
+          throw new Error(data.message || 'Registration failed');
         }
       }
     } catch (e: any) {
-      const isLogin = mode === 'login';
       let errorMessage = 'An unexpected error occurred.';
-
-      if (e.response && e.response.data && e.response.data.message) {
-        errorMessage = e.response.data.message;
-      } else if (e.message) {
+      if (e.message) {
         errorMessage = e.message;
-      } else {
-        console.error('An unexpected error object was caught:', e);
       }
-      
-      const logMessage = isLogin ? 'Login' : 'Registration';
-      console.log(`${logMessage} attempt failed: ${errorMessage}`);
-
-      if (!isLogin && errorMessage.toLowerCase().includes('email')) {
-        setEmailError(errorMessage);
-      } else if (errorMessage.toLowerCase().includes('password')) {
-        setPasswordError(errorMessage);
-      } else if (isLogin && (errorMessage.toLowerCase().includes('invalid credentials') || errorMessage.toLowerCase().includes('invalid email or password'))) {
-        setError('Invalid email or password. Please try again.');
-      } else {
-        setError(errorMessage);
+      console.log(`${mode === 'login' ? 'Login' : 'Registration'} attempt failed: ${errorMessage}`);
+      if (mode === 'register') {
+        // If the error is about email or password, show it under the relevant field
+        if (errorMessage.toLowerCase().includes('email')) {
+          setEmailError(errorMessage);
+          setEmailTouched(true);
+        } else if (errorMessage.toLowerCase().includes('password')) {
+          setPasswordError(errorMessage);
+        } else {
+          // Otherwise, show as a general error
+          setError(errorMessage);
+        }
+      } else if (mode === 'login') {
+        if (errorMessage.toLowerCase().includes('invalid credentials') || errorMessage.toLowerCase().includes('invalid email or password')) {
+          setError('Invalid email or password. Please try again.');
+        } else {
+          setError(errorMessage);
+        }
       }
     } finally {
       setLoading(false);
@@ -327,34 +324,30 @@ const AuthScreen: React.FC = () => {
     }
   };
 
-  // Fixed email validation with better autofill handling
   const handleEmailBlur = () => {
     if (mode === 'register') {
       setEmailTouched(true);
-      // Longer delay to allow autofill to complete properly
+      // Defer validation to the next event loop cycle. This gives React time to
+      // process the pending state update from `onChangeText` before we validate.
       setTimeout(() => {
-        const currentEmail = email.trim();
-        if (!currentEmail) {
+        // At this point, the 'email' state is guaranteed to be updated from the autofill.
+        if (!email.trim()) {
           setEmailError('Email is required.');
-        } else if (!isValidEmail(currentEmail)) {
+        } else if (!isValidEmail(email)) {
           setEmailError('Please enter a valid email address.');
         } else {
           setEmailError('');
         }
-      }, 300);
+      }, 0); // A delay of 0ms is all that's needed.
     }
   };
 
-  // Handle email change with autofill consideration
-  const handleEmailChange = (text: string) => {
-    setEmail(text);
-    if (mode === 'register') {
-      // Clear email error when user starts typing
-      if (emailError) {
-        setEmailError('');
-      }
-    }
-  };
+const handleEmailChange = (text: string) => {
+  setEmail(text);
+  if (emailError) {
+    setEmailError('');
+  }
+};
 
   // Handle password change
   const handlePasswordChange = (text: string) => {
@@ -397,7 +390,7 @@ const AuthScreen: React.FC = () => {
 
   return (
     <KeyboardAwareScrollView
-      style={{ flex: 1, backgroundColor: '#16191f' }}
+      style={{ flex: 1, backgroundColor: '#0D1117' }}
       contentContainerStyle={{ flexGrow: 1 }}
       enableOnAndroid={true}
       extraScrollHeight={128}
@@ -407,7 +400,7 @@ const AuthScreen: React.FC = () => {
         <View style={styles.bg}>
           <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
             <Ionicons name="receipt-outline" size={48} color="#7e5cff" style={{ marginBottom: 12 }} />
-            <Text style={styles.title}>Receiptly</Text>
+            <Text style={styles.title}>Recipta</Text>
             <Text style={styles.subtitle}>
               {mode === 'login' ? 'Welcome back! Please sign in.' : 'Create a new account.'}
             </Text>
@@ -424,7 +417,6 @@ const AuthScreen: React.FC = () => {
                 >
                   <Animated.View
                     style={[
-                      styles.tabButtonShadow,
                       {
                         shadowOpacity: loginTabAnim.shadowOpacityAnim,
                         elevation: loginTabAnim.elevationAnim,
@@ -459,7 +451,6 @@ const AuthScreen: React.FC = () => {
                 >
                   <Animated.View
                     style={[
-                      styles.tabButtonShadow,
                       {
                         shadowOpacity: registerTabAnim.shadowOpacityAnim,
                         elevation: registerTabAnim.elevationAnim,
@@ -584,7 +575,6 @@ const AuthScreen: React.FC = () => {
               >
                 <Animated.View
                   style={[
-                    styles.buttonShadow,
                     {
                       shadowOpacity: authButtonAnim.shadowOpacityAnim,
                       elevation: authButtonAnim.elevationAnim,
@@ -654,7 +644,7 @@ const AuthScreen: React.FC = () => {
                     <Text style={styles.emailText} numberOfLines={1} ellipsizeMode="tail">
                       {pendingEmail}
                     </Text>
-                    <Text style={[styles.modalText, { marginBottom: 8 }]}>
+                    <Text style={[styles.modalText, { marginBottom: 24 }]}>
                       Please check your inbox and click the confirmation link to verify your email address.
                     </Text>
                     <View style={styles.modalButtons}>
@@ -668,7 +658,6 @@ const AuthScreen: React.FC = () => {
                       >
                         <Animated.View
                           style={[
-                            styles.modalButtonShadow,
                             {
                               shadowOpacity: gotItButtonAnim.shadowOpacityAnim,
                               elevation: gotItButtonAnim.elevationAnim,
@@ -752,7 +741,7 @@ const AuthScreen: React.FC = () => {
                           >
                             <Animated.View
                               style={[
-                                styles.modalButtonShadow,
+
                                 {
                                   shadowOpacity: resetEmailButtonAnim.shadowOpacityAnim,
                                   elevation: resetEmailButtonAnim.elevationAnim,
@@ -776,19 +765,6 @@ const AuthScreen: React.FC = () => {
                               </TouchableOpacity>
                             </Animated.View>
                           </Animated.View>
-                          <TouchableOpacity
-                            style={{
-                              backgroundColor: 'transparent',
-                              marginTop: 10,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              paddingVertical: 8,
-                              borderRadius: 8,
-                            }}
-                            onPress={() => setShowResetModal(false)}
-                          >
-                            <Text style={{ color: '#7e5cff', fontSize: 16, fontWeight: '600' }}>Close</Text>
-                          </TouchableOpacity>
                         </View>
                       </View>
                     </TouchableWithoutFeedback>
@@ -808,7 +784,7 @@ export default AuthScreen;
 const styles = StyleSheet.create({
   bg: {
     flex: 1,
-    backgroundColor: '#16191f',
+    backgroundColor: '#0D1117',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -818,7 +794,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     padding: 0,
-    backgroundColor: '#16191f',
+    backgroundColor: '#0D1117',
   },
   title: {
     fontSize: 32,
@@ -836,7 +812,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   formCard: {
-    backgroundColor: '#232632',
+    backgroundColor: '#161B22',
     borderRadius: 18,
     padding: 22,
     width: '100%',
@@ -889,12 +865,6 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     borderRadius: 10,
   },
-  buttonShadow: {
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 8,
-    borderRadius: 10,
-  },
   button: {
     flexDirection: 'row',
     backgroundColor: '#7e5cff',
@@ -921,14 +891,9 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(13,17,23,0.92)',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
     padding: 20,
   },
   keyboardAvoidingView: {
@@ -938,27 +903,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#232632',
+    backgroundColor: '#161B22',
     borderRadius: 16,
-    padding: 28,
     width: '100%',
-    maxWidth: 380,
-    margin: 0,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    padding: 16,
+    maxWidth: 350,
+    maxHeight: '70%',
     elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    borderWidth: 1,
+    borderColor: '#30363D',
   },
   modalHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#30363D',
+    paddingBottom: 12,
   },
   modalTitle: {
     fontSize: 26,
+    marginHorizontal: 16,
     fontWeight: '700',
     color: '#ffffff',
-    marginTop: 16,
     textAlign: 'center',
     fontFamily: 'System',
   },
@@ -973,13 +948,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   tabButtonContainer: {
-    flex: 1,
-  },
-  tabButtonShadow: {
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 8,
-    borderRadius: 10,
     flex: 1,
   },
   tab: {
@@ -1047,7 +1015,6 @@ const styles = StyleSheet.create({
     elevation: 0,
     borderWidth: 2,
     borderColor: '#9575ff',
-    marginBottom: 10,
   },
   primaryButtonText: {
     color: 'white',
@@ -1060,11 +1027,5 @@ const styles = StyleSheet.create({
   },
   modalButtonContainer: {
     width: '100%',
-  },
-  modalButtonShadow: {
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 8,
-    borderRadius: 10,
   },
 });

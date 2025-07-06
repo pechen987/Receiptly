@@ -12,6 +12,10 @@ import { API_BASE_URL, getProductColor } from '../utils';
 import { HintIcon, HintModal, modalStyles, HintIconProps, HintModalProps } from './HintComponents';
 import { BlurView } from 'expo-blur';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { useButtonAnimation } from '../../../hooks/useButtonAnimation';
+import { Animated } from 'react-native';
 
 const TopProductsChart = memo(({ userId, refreshTrigger, userPlan, navigation: propNavigation, selectedStore, selectedCategory }: ChartProps & { userPlan?: string | null; navigation?: any; selectedStore: string | null; selectedCategory: string | null }) => {
   const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
@@ -22,6 +26,8 @@ const TopProductsChart = memo(({ userId, refreshTrigger, userPlan, navigation: p
   const [hasData, setHasData] = useState(false);
 
   const navigation = propNavigation || useNavigation();
+
+  const goProButtonAnim = useButtonAnimation().createPressAnimation();
 
   // Fetch top products
   const fetchTopProducts = useCallback(async () => {
@@ -249,11 +255,24 @@ const TopProductsChart = memo(({ userId, refreshTrigger, userPlan, navigation: p
                 <Text style={[{ color: '#fff', fontSize: 22, fontWeight: '700', textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 32 }]}>Most popular products</Text>
               </View>
               <Text style={[{ color: '#fff', fontSize: 16, fontWeight: '600', textAlign: 'center', marginBottom: 8, marginTop: 16, textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 30 }]}>Upgrade to Pro to unlock this chart</Text>
-              <TouchableOpacity style={{ backgroundColor: '#FFBF00', paddingVertical: 10, paddingHorizontal: 30, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 8 }}
-                onPress={() => navigation.navigate('ProOnboarding')}
-              >
-                <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
-              </TouchableOpacity>
+              <Animated.View style={{ transform: [{ scale: goProButtonAnim.scaleAnim }] }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('ProOnboarding')}
+                  onPressIn={goProButtonAnim.handlePressIn}
+                  onPressOut={goProButtonAnim.handlePressOut}
+                  activeOpacity={1}
+                >
+                  <LinearGradient
+                    colors={['#FFD700', '#FFA500']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={{ paddingVertical: 7, paddingHorizontal: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 8, shadowColor: '#FFD700', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.5, shadowRadius: 8, elevation: 5 }}
+                  >
+                    <Ionicons name="star" size={16} color="#000" style={{ marginRight: 6 }} />
+                    <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </Animated.View>
             </View>
           </BlurView>
         ) : (
@@ -264,11 +283,24 @@ const TopProductsChart = memo(({ userId, refreshTrigger, userPlan, navigation: p
                 <Text style={[{ color: '#fff', fontSize: 22, fontWeight: '700', textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 32 }]}>Most popular products</Text>
               </View>
               <Text style={[{ color: '#fff', fontSize: 16, fontWeight: '600', textAlign: 'center', marginBottom: 8, marginTop: 16, textShadowColor: 'rgba(0,0,0,0.35)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 30 }]}>Upgrade to Pro to unlock this chart</Text>
-              <TouchableOpacity style={{ backgroundColor: '#FFBF00', paddingVertical: 10, paddingHorizontal: 30, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 8 }}
-                onPress={() => navigation.navigate('ProOnboarding')}
-              >
-                <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
-              </TouchableOpacity>
+              <Animated.View style={{ transform: [{ scale: goProButtonAnim.scaleAnim }] }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('ProOnboarding')}
+                  onPressIn={goProButtonAnim.handlePressIn}
+                  onPressOut={goProButtonAnim.handlePressOut}
+                  activeOpacity={1}
+                >
+                  <LinearGradient
+                    colors={['#FFD700', '#FFA500']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={{ paddingVertical: 7, paddingHorizontal: 14, borderRadius: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 8, shadowColor: '#FFD700', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.5, shadowRadius: 8, elevation: 5 }}
+                  >
+                    <Ionicons name="star" size={16} color="#000" style={{ marginRight: 6 }} />
+                    <Text style={{ color: '#000', fontSize: 14, fontWeight: '700' }}>Go Pro</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </Animated.View>
             </View>
           </View>
         )

@@ -11,16 +11,14 @@ const modalStyles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContainer: {
-    backgroundColor: '#2a2d47',
+    backgroundColor: '#161B22',
     borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#30363D',
     padding: 20,
     marginHorizontal: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+
   },
   modalText: {
     fontSize: 16,
@@ -39,8 +37,8 @@ const modalStyles = StyleSheet.create({
   },
   closeIcon: {
     position: 'absolute',
-    top: 4,
-    right: 0,
+    top: -5,
+    right: -5,
     padding: 8,
     zIndex: 1,
   },

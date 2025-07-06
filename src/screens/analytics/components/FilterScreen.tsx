@@ -275,7 +275,6 @@ const FilterScreen: React.FC<FilterScreenProps> = ({
         >
           <Animated.View
             style={[
-              styles.buttonShadow,
               {
                 shadowOpacity: resetButtonAnim.shadowOpacityAnim,
                 elevation: resetButtonAnim.elevationAnim,
@@ -304,7 +303,6 @@ const FilterScreen: React.FC<FilterScreenProps> = ({
         >
           <Animated.View
             style={[
-              styles.buttonShadow,
               {
                 shadowOpacity: applyButtonAnim.shadowOpacityAnim,
                 elevation: applyButtonAnim.elevationAnim,
@@ -333,9 +331,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     bottom: 0,
-    backgroundColor: '#16191f',
+    backgroundColor: '#0D1117',
     borderRightWidth: 1,
-    borderRightColor: '#2d3748',
+    borderRightColor: '#30363D',
     zIndex: 1000,
   },
   header: {
@@ -345,7 +343,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#2d3748',
+    borderBottomColor: '#30363D',
   },
   title: {
     fontSize: 20,
@@ -381,12 +379,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#2a2d47',
+    backgroundColor: '#232632',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#3a3d4a',
+    borderColor: '#30363D',
   },
   dropdownButtonText: {
     color: '#e6e9f0',
@@ -394,20 +392,20 @@ const styles = StyleSheet.create({
   },
   dropdownList: {
     borderRadius: 8,
-    borderColor: '#3a3d4a',
+    borderColor: '#30363D',
     marginTop: 4,
     maxHeight: 200,
     borderWidth: 1,
-    backgroundColor: '#2a2d47',
+    backgroundColor: '#232632',
   },
   dropdownScrollView: {
     borderRadius: 8,
   },
   dropdownItem: {
-    backgroundColor: '#2a2d47',
+    backgroundColor: '#232632',
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#3a3d4a',
+    borderBottomColor: '#30363D',
     paddingHorizontal: 12,
   },
   dropdownItemText: {
@@ -418,7 +416,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 20,
     paddingBottom: 50,
-    borderTopColor: '#2d3748',
+    borderTopColor: '#30363D',
     gap: 12,
   },
   button: {
@@ -427,11 +425,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 0,
     zIndex: 5,
     minHeight: 48,
   },
@@ -456,12 +449,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     zIndex: 10,
-  },
-  buttonShadow: {
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 8,
-    borderRadius: 8,
   },
   individualButtonContainer: {
     flex: 1,

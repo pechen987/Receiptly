@@ -1,17 +1,14 @@
 import React, { useRef, useEffect, useMemo } from 'react';
 import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
-import { BarChart } from 'react-native-chart-kit';
-import { Dimensions } from 'react-native';
 import { styles } from '../styles';
 import Icon from 'react-native-vector-icons/Feather';
 import { memo } from 'react';
 import { SpendData } from '../types';
-import { fetchSpendData } from '../utils/api';
 import { Svg, G, Rect, Text as SvgText } from 'react-native-svg';
 import { formatCurrency } from '../utils/currency';
 import { baseChartWidth, interpolateColor, formatLabel } from '../utils';
 import { HintIcon, HintModal, modalStyles, HintIconProps, HintModalProps } from './HintComponents';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 interface TotalSpentChartProps {
   userId?: string;

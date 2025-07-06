@@ -27,8 +27,8 @@ const BENEFITS = [
 
 const FAQS = [
   {
-    q: 'What do I get with Receiptly Pro?',
-    a: 'Receiptly Pro unlocks unlimited receipt scanning and all premium analytics charts, giving you deeper insights into your spending.'
+    q: 'What do I get with Recipta Pro?',
+    a: 'Recipta Pro unlocks unlimited receipt scanning and all premium analytics charts, giving you deeper insights into your spending.'
   },
   {
     q: 'How does the free trial work?',
@@ -74,7 +74,7 @@ export default function ProOnboardingScreen({ navigation }: any) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#16191f' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#0D1117' }}>
       <StatusBar barStyle="light-content" backgroundColor="#16191f" />
       {/* Loading overlay */}
       {loading && (
@@ -87,7 +87,7 @@ export default function ProOnboardingScreen({ navigation }: any) {
       )}
       
       {/* Main content */}
-      <View style={{ flex: 1, position: 'relative' }}>
+      <View style={{ flex: 1, position: 'relative', backgroundColor: '#0D1117' }}>
         {/* Top Header with Back Arrow */}
         <View style={styles.topHeader}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -104,7 +104,7 @@ export default function ProOnboardingScreen({ navigation }: any) {
             <View style={styles.proTitleRow}>
               <Ionicons name="receipt-outline" size={36} color="#7e5cff" style={{ marginRight: 10 }} />
               <Text style={styles.proTitle}>
-                Receiptly <Text style={styles.proTitleGold}>Pro</Text>
+                Recipta <Text style={styles.proTitleGold}>Pro</Text>
               </Text>
             </View>
             <Text style={styles.heroTitle}>Take full control of your expenses</Text>
@@ -121,7 +121,7 @@ export default function ProOnboardingScreen({ navigation }: any) {
             >
               <Animated.View
                 style={[
-                  styles.upgradeButtonShadow,
+
                   {
                     shadowOpacity: upgradeButtonAnim.shadowOpacityAnim,
                     elevation: upgradeButtonAnim.elevationAnim,
@@ -263,7 +263,6 @@ export default function ProOnboardingScreen({ navigation }: any) {
               >
                 <Animated.View
                   style={[
-                    styles.dismissButtonShadow,
                     {
                       shadowOpacity: dismissButtonAnim.shadowOpacityAnim,
                       elevation: dismissButtonAnim.elevationAnim,
@@ -320,7 +319,7 @@ export default function ProOnboardingScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#16191f',
+    backgroundColor: '#0D1117',
     paddingTop: 32,
   },
   content: {
@@ -393,7 +392,7 @@ const styles = StyleSheet.create({
   benefitCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#232632',
+    backgroundColor: '#161B22',
     borderRadius: 12,
     padding: 18,
     shadowColor: '#000',
@@ -435,14 +434,14 @@ const styles = StyleSheet.create({
   planRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#232632',
+    backgroundColor: '#161B22',
     borderRadius: 14,
     paddingVertical: 16,
     paddingHorizontal: 16,
     marginBottom: 0,
     marginHorizontal: 0,
     borderWidth: 2,
-    borderColor: 'transparent',
+    borderColor: '#30363D',
     position: 'relative',
     marginTop: 0,
     width: '100%',
@@ -486,10 +485,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: '#16191f',
+    backgroundColor: '#0D1117',
     paddingHorizontal: 8,
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#232632',
+    borderBottomWidth: 1,
+    borderBottomColor: '#30363D',
     zIndex: 200,
   },
   backButton: {
@@ -522,7 +521,7 @@ const styles = StyleSheet.create({
   },
   faqItem: {
     marginBottom: 14,
-    backgroundColor: '#232632',
+    backgroundColor: '#161B22',
     borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -550,13 +549,13 @@ const styles = StyleSheet.create({
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: 'rgba(13,17,23,0.92)',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 9999,
   },
   loadingContainer: {
-    backgroundColor: '#16191f',
+    backgroundColor: '#161B22',
     padding: 24,
     borderRadius: 12,
     alignItems: 'center',
@@ -610,12 +609,7 @@ const styles = StyleSheet.create({
   upgradeButtonContainer: {
     width: 'auto',
   },
-  upgradeButtonShadow: {
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 8,
-    borderRadius: 14,
-  },
+
   upgradeButtonSmallContainer: {
     width: 'auto',
   },
@@ -627,12 +621,6 @@ const styles = StyleSheet.create({
   },
   dismissButtonContainer: {
     width: 'auto',
-  },
-  dismissButtonShadow: {
-    shadowColor: '#7e5cff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 8,
-    borderRadius: 8,
   },
   bottomBorder: {
     height: 0.5,

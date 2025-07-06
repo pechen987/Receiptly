@@ -1,8 +1,8 @@
-# Receiptly - Mobile App Architecture
+# Recipta - Mobile App Architecture
 
 ## Overview
 
-Receiptly is a React Native mobile application with a Flask backend, designed to help users track their spending by scanning and analyzing receipts. The app leverages AI (OpenAI API) to extract meaningful purchase data from receipt images, enabling personalized analytics on user spending habits.
+Recipta is a React Native mobile application with a Flask backend, designed to help users track their spending by scanning and analyzing receipts. The app leverages AI (OpenAI API) to extract meaningful purchase data from receipt images, enabling personalized analytics on user spending habits.
 
 ## Key Features
 

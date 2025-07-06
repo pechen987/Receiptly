@@ -8,20 +8,20 @@ import apiConfig from '../config/api'; // This import assumes apiConfig.ts is in
 
 // Define the options for user goals
 const GOAL_OPTIONS = [
-  'Effortless Expense Tracking',
-  'Smart Savings & Budgeting',
-  'Insightful Spending Habits',
-  'Price Change Monitoring',
-  'Something unique (tell us more!)',
+  'Expense tracking',
+  'Smart savings & budgeting',
+  'Insightful spending habits',
+  'Price change monitoring',
+  'Something else',
 ];
 
 // Define the options for app features
 const FEATURE_OPTIONS = [
-  'Dynamic Spending Trends & Charts',
-  'Secure Receipt Storage & History',
-  'Detailed Product-Level Insights',
-  'Organized Product Categories',
-  'Exclusive Discounts & Savings Tracker',
+  'Dynamic spending trends & charts',
+  'Receipt storage & history',
+  'Detailed product-level insights',
+  'Organized product categories',
+  'Exclusive discounts & savings tracker',
 ];
 
 // Total number of onboarding steps
@@ -144,12 +144,12 @@ const OnboardingScreen = ({ onComplete }: { onComplete: (answers: { goals: strin
           <View style={styles.flexGrowCenter}>
             {step === 0 && (
               <View style={styles.stepContainer}>
-                <Text style={styles.title}>Welcome to Receiptly!</Text>
+                <Text style={styles.title}>Welcome to Recipta!</Text>
                 <Text style={styles.explanation}>
-                  Let's tailor your experience. A couple of quick questions will help us make Receiptly perfect for you!
+                  A couple of quick questions will help us make Recipta perfect for you!
                 </Text>
                 <View style={styles.questionRow}>
-                  <Text style={styles.question}>What's your primary goal with Receiptly?</Text>
+                  <Text style={styles.question}>What brings you to Recipta?</Text>
                 </View>
                 {/* Removed ScrollView for options as requested */}
                 <View style={styles.optionsContainer}>
@@ -194,10 +194,10 @@ const OnboardingScreen = ({ onComplete }: { onComplete: (answers: { goals: strin
               <View style={styles.stepContainer}>
                 <Text style={styles.title}>Almost there!</Text>
                 <Text style={styles.explanation}>
-                  Help us highlight what matters most to you. Select the features you're excited about.
+                  Help us highlight what matters most to you.
                 </Text>
                 <View style={styles.questionRow}>
-                  <Text style={styles.question}>Which features are most important to you?</Text>
+                  <Text style={styles.question}>What are you most excited to try?</Text>
                 </View>
                 {/* Removed ScrollView for options as requested */}
                 <View style={styles.optionsContainer}>
@@ -240,9 +240,9 @@ const OnboardingScreen = ({ onComplete }: { onComplete: (answers: { goals: strin
             )}
             {step === 2 && (
               <View style={[styles.lastStepContainer, { minHeight: height * 0.7 }]}>
-                <Text style={styles.title}>Unlock Your Financial Superpowers!</Text>
+                <Text style={styles.title}>Recipta does it all!</Text>
                 <Text style={styles.explanation}>
-                  Receiptly simplifies your financial life with powerful, intelligent features.
+                  Simplify your financial life with powerful, intelligent features.
                 </Text>
                 <View style={styles.onboardingSteps}>
                   <View style={styles.onboardingStepBlock}>
@@ -293,11 +293,11 @@ const OnboardingScreen = ({ onComplete }: { onComplete: (answers: { goals: strin
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#16191f', // Dark background for sleek look
+    backgroundColor: '#0D1117', // Updated to match new dark background
   },
   container: {
     flex: 1,
-    backgroundColor: '#16191f',
+    backgroundColor: '#0D1117',
     paddingHorizontal: 20,
     paddingVertical: 30,
   },
@@ -358,14 +358,14 @@ const styles = StyleSheet.create({
   option: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2a2e3a', // Slightly darker background for options
+    backgroundColor: '#161B22', // Match new card color
     borderRadius: 14,
     paddingVertical: 16,
     paddingHorizontal: 18,
     marginBottom: 12,
     width: '100%',
     borderWidth: 2,
-    borderColor: 'transparent',
+    borderColor: '#30363D',
     shadowColor: '#000', // Add subtle shadow
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
   },
   optionSelected: {
     borderColor: '#9575ff', // Purple border when selected
-    backgroundColor: 'rgba(149, 117, 255, 0.15)', // Light purple tint when selected
+    backgroundColor: '#232632', // Slightly lighter for selected
   },
   optionIcon: {
     marginRight: 15,
@@ -396,10 +396,10 @@ const styles = StyleSheet.create({
   progressChevronGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2a2e3a',
+    backgroundColor: '#161B22',
     borderRadius: 38, // More rounded
     borderWidth: 2,
-    borderColor: '#9575ff',
+    borderColor: '#30363D',
     paddingLeft: 20,
     paddingRight: 8,
     paddingVertical: 4,
@@ -448,10 +448,10 @@ const styles = StyleSheet.create({
   onboardingStepBlock: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2a2e3a',
+    backgroundColor: '#161B22',
     borderRadius: 20, // More rounded corners
     borderWidth: 2,
-    borderColor: '#9575ff',
+    borderColor: '#30363D',
     paddingVertical: 20,
     paddingHorizontal: 20,
     shadowColor: '#000',
@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#9575ff', // Purple circle
+    backgroundColor: '#232632', // Slightly lighter for step circle
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 18,
