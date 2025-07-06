@@ -1,2 +1,173 @@
-2025-07-01 12:58:44,969 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
-2025-07-01 12:58:45,670 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 18:49:02,082 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 18:49:12,374 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 18:49:13,074 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 18:51:19,075 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 18:51:19,760 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 18:51:49,724 INFO: Created new user: igorek.krug@yandex.ru [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/auth.py:42]
+2025-07-06 18:52:07,454 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:36]
+2025-07-06 18:52:07,457 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:37]
+2025-07-06 18:52:07,461 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:36]
+2025-07-06 18:52:07,467 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:38]
+2025-07-06 18:52:07,469 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:37]
+2025-07-06 18:52:07,470 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:56]
+2025-07-06 18:52:07,471 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:38]
+2025-07-06 18:52:07,473 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:56]
+2025-07-06 18:52:07,475 INFO: [Analytics] Found 0 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 18:52:07,476 INFO: [Analytics] Found 0 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 18:52:07,582 INFO: [Analytics] Top products request - user_id: 1, period: month, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:104]
+2025-07-06 18:52:07,584 INFO: [Analytics] Top products request - user_id: 1, period: month, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:104]
+2025-07-06 18:52:07,584 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:105]
+2025-07-06 18:52:07,584 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:105]
+2025-07-06 18:52:07,584 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '6')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:106]
+2025-07-06 18:52:07,587 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '6')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:106]
+2025-07-06 18:52:53,941 INFO: Receipt saved successfully for user 1. [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/receipts.py:152]
+2025-07-06 18:52:56,108 INFO: [Analytics] Top products request - user_id: 1, period: month, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:104]
+2025-07-06 18:52:56,110 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:105]
+2025-07-06 18:52:56,115 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '6')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:106]
+2025-07-06 18:52:56,131 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:36]
+2025-07-06 18:52:56,132 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:37]
+2025-07-06 18:52:56,133 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:38]
+2025-07-06 18:52:56,133 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:56]
+2025-07-06 18:52:56,137 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 18:53:03,966 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:36]
+2025-07-06 18:53:03,967 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:37]
+2025-07-06 18:53:03,968 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:38]
+2025-07-06 18:53:03,968 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:56]
+2025-07-06 18:53:03,971 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 18:55:45,525 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 18:55:46,224 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 18:56:14,564 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:36]
+2025-07-06 18:56:14,565 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:37]
+2025-07-06 18:56:14,565 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:38]
+2025-07-06 18:56:14,567 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:56]
+2025-07-06 18:56:14,587 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 18:56:14,676 INFO: [Analytics] Top products request - user_id: 1, period: month, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:104]
+2025-07-06 18:56:14,679 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:105]
+2025-07-06 18:56:14,680 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '6')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:106]
+2025-07-06 18:56:14,701 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:36]
+2025-07-06 18:56:14,702 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:37]
+2025-07-06 18:56:14,702 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:38]
+2025-07-06 18:56:14,702 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:56]
+2025-07-06 18:56:14,704 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 18:56:17,175 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:36]
+2025-07-06 18:56:17,175 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:37]
+2025-07-06 18:56:17,175 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:38]
+2025-07-06 18:56:17,176 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:56]
+2025-07-06 18:56:17,177 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 18:56:17,269 INFO: [Analytics] Top products request - user_id: 1, period: month, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:104]
+2025-07-06 18:56:17,272 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:105]
+2025-07-06 18:56:17,274 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '6')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:106]
+2025-07-06 18:56:17,297 INFO: [Analytics] Spend analytics request - user_id: 1, interval: daily, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:36]
+2025-07-06 18:56:17,299 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI1OTkyMX0.uO4sRp1CHC-R5i7DAVdO5tcMOSQ16nqCdqL-gp5myq4
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:37]
+2025-07-06 18:56:17,300 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('interval', 'daily')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:38]
+2025-07-06 18:56:17,302 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:56]
+2025-07-06 18:56:17,304 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 19:01:28,780 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 19:01:40,059 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 19:01:46,137 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 19:01:56,443 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 19:02:08,710 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]

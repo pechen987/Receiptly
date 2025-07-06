@@ -1,30 +1,40 @@
 from flask import Blueprint, request, jsonify, current_app as app, send_file
 from datetime import datetime, timedelta
-from sqlalchemy import func
+from sqlalchemy import func, desc, and_, or_, case, text
 from flask_cors import cross_origin
 import json
 import io
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import letter, A4
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
-from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph, Spacer, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import traceback
 from reportlab.lib.colors import HexColor
+from utils.decorators import token_required
+from models import User, Receipt, WidgetOrder
+from flask_limiter.util import get_remote_address
+from flask_limiter import Limiter
 
 # Import necessary components from the backend application
 # Import models and error classes
-from backend.models import User, Receipt, WidgetOrder
-from backend.errors import AuthenticationError, APIError
+from errors import AuthenticationError, APIError
 
 # Import the token_required decorator
-from backend.utils.decorators import token_required
+from utils.decorators import token_required
 
 analytics_bp = Blueprint('analytics', __name__, url_prefix='/api/analytics')
+
+# Create a limiter instance for analytics endpoints
+analytics_limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["500 per hour", "50 per minute"]
+)
 
 @analytics_bp.route('/spend', methods=['GET'])
 @cross_origin()
 @token_required
+@analytics_limiter.limit("100 per minute")
 def get_spend_analytics(user_id):
     # Access db via app.extensions within context
     with app.app_context():
@@ -65,8 +75,10 @@ def get_spend_analytics(user_id):
             # Add store name filter if provided
             if store_name:
                 query = query.filter(Receipt.store_name == store_name)
+                app.logger.info(f"[Analytics] Added store filter: {store_name}")
             if store_category:
                 query = query.filter(Receipt.store_category == store_category)
+                app.logger.info(f"[Analytics] Added category filter: {store_category}")
 
             period_results = (
                 query
@@ -74,6 +86,8 @@ def get_spend_analytics(user_id):
                 .order_by('period')
                 .all()
             )
+
+            app.logger.info(f"[Analytics] Raw query results: {period_results}")
 
             # Fetch user currency
             user = db.session.query(User).get(user_id) # Use db from extensions
@@ -83,6 +97,7 @@ def get_spend_analytics(user_id):
                 for period, total in period_results
             ]
             app.logger.info(f"[Analytics] Found {len(response)} periods of data")
+            app.logger.info(f"[Analytics] Final response: {response}")
             return jsonify({'currency': user_currency, 'data': response})
 
         except Exception as e:
@@ -331,6 +346,7 @@ def get_most_expensive_products(user_id):
 
 @analytics_bp.route('/expenses-by-category', methods=['GET'])
 @token_required
+@analytics_limiter.limit("100 per minute")
 def expenses_by_category(user_id):
     # Access db via app.extensions within context
     with app.app_context():
@@ -871,7 +887,7 @@ def export_analytics_pdf(user_id):
         # Build content
         elements = []
         # App name at the top
-        elements.append(Paragraph('Receiptly', app_name_style))
+        elements.append(Paragraph('Recipta', app_name_style))
         # Export title and date
         elements.append(Paragraph('Analytics Export', export_title_style))
         elements.append(Paragraph(f'Exported: {export_date[:10]}', export_date_style))

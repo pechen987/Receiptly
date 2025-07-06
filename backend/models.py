@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.ext.mutable import MutableList
 
-db = SQLAlchemy()
+db = SQLAlchemy()  # Only create the instance, do not bind to app
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

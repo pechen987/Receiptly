@@ -4,7 +4,7 @@ import jwt
 from datetime import datetime, timedelta
 
 # Import necessary components that the decorator needs
-from backend.errors import AuthenticationError
+from errors import AuthenticationError
 
 def token_required(f):
     @wraps(f)

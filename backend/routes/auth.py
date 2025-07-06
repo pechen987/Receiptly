@@ -7,15 +7,15 @@ import json as pyjson
 import time
 
 # Import the token_required decorator from the new utility file
-from backend.utils.decorators import token_required
+from utils.decorators import token_required
 
 # Import necessary components from the backend application
 # We assume db, mail, User, ValidationError, AuthenticationError, APIError,
 # and send_confirmation_email, send_password_reset_email are available via app.config or context
 # Import User model, but not db here; access db via app.extensions['sqlalchemy']
-from backend.models import User
-from backend.errors import ValidationError, AuthenticationError, APIError
-from backend.email_utils import send_confirmation_email, send_password_reset_email
+from models import User
+from errors import ValidationError, AuthenticationError, APIError
+from email_utils import send_confirmation_email, send_password_reset_email
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
@@ -200,11 +200,11 @@ def confirm_email():
                 <h1>Email Verified Successfully!</h1>
                 <div class="message">
                     <p>Your email address has been successfully verified.</p>
-                    <p>You can now use <span class="app-name">Receiptly</span> to track your expenses and scan receipts.</p>
+                    <p>You can now use <span class="app-name">Recipta</span> to track your expenses and scan receipts.</p>
                 </div>
                 <button class="button" onclick="window.close()">Close Page</button>
                 <div class="footer">
-                    <p>Welcome to Receiptly!</p>
+                    <p>Welcome to Recipta!</p>
                 </div>
             </div>
         </body>
@@ -373,11 +373,11 @@ def reset_password_web():
                         <h1>Password Reset Successful!</h1>
                         <div class="message">
                             <p>Your password has been successfully updated.</p>
-                            <p>You can now close this page and log in to <span class="app-name">Receiptly</span> with your new password.</p>
+                            <p>You can now close this page and log in to <span class="app-name">Recipta</span> with your new password.</p>
                         </div>
                         <button class="button" onclick="window.close()">Close Page</button>
                         <div class="footer">
-                            <p>Thank you for using Receiptly!</p>
+                            <p>Thank you for using Recipta!</p>
                         </div>
                     </div>
                 </body>
@@ -542,3 +542,10 @@ def refresh_token():
         with app.app_context(): # Also need context for logger in error case
             app.logger.error(f"Error refreshing token: {str(e)}")
         raise AuthenticationError('Failed to refresh token')
+
+# Register error handler for ValidationError
+@auth_bp.app_errorhandler(ValidationError)
+def handle_validation_error(error):
+    response = jsonify({'message': str(error), 'status_code': error.status_code})
+    response.status_code = error.status_code
+    return response

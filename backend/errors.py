@@ -16,8 +16,8 @@ class APIError(Exception):
 
 class ValidationError(APIError):
     """Raised when input validation fails"""
-    def __init__(self, message, payload=None):
-        super().__init__(message, status_code=400, payload=payload)
+    def __init__(self, message, status_code=400, payload=None):
+        super().__init__(message, status_code=status_code, payload=payload)
 
 class AuthenticationError(APIError):
     """Raised when authentication fails"""

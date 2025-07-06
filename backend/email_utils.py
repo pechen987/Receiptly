@@ -35,9 +35,9 @@ def send_confirmation_email(mail, to_email, username, token):
         html=f"""
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #16191f; color: #e6e9f0;">
             <div style="background: #232632; border-radius: 16px; padding: 32px; border: 1px solid #333; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
-                <h1 style="color: #7e5cff; margin-bottom: 20px; font-size: 28px; font-weight: 700; text-align: center;">Welcome to Receiptly!</h1>
+                <h1 style="color: #7e5cff; margin-bottom: 20px; font-size: 28px; font-weight: 700; text-align: center;">Welcome to Recipta!</h1>
                 <p style="color: #c1c6d9; font-size: 16px; line-height: 1.6; margin-bottom: 16px;">Hello {username},</p>
-                <p style="color: #c1c6d9; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">Thank you for registering with Receiptly. Please confirm your email address by clicking the button below:</p>
+                <p style="color: #c1c6d9; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">Thank you for registering with Recipta. Please confirm your email address by clicking the button below:</p>
                 
                 <div style="margin: 32px 0; text-align: center;">
                     <a href="{confirm_url}" 
@@ -77,11 +77,11 @@ def send_confirmation_email(mail, to_email, username, token):
     
     # Add plain text version as well
     msg.body = f"""
-    Welcome to Receiptly!
+    Welcome to Recipta!
     
     Hello {username},
     
-    Thank you for registering with Receiptly. Please confirm your email address by visiting the following link:
+    Thank you for registering with Recipta. Please confirm your email address by visiting the following link:
     
     {confirm_url}
     

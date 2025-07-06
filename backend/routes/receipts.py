@@ -6,11 +6,11 @@ import hashlib
 import json
 
 # Import necessary components from the backend application
-from backend.models import User, Receipt
-from backend.errors import AuthenticationError, APIError, ValidationError
+from models import User, Receipt
+from errors import AuthenticationError, APIError, ValidationError
 
 # Import the token_required decorator
-from backend.utils.decorators import token_required
+from utils.decorators import token_required
 
 receipts_bp = Blueprint('receipts', __name__, url_prefix='/api/receipts')
 

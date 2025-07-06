@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, current_app as app
 from flask_cors import cross_origin
-from ..utils.decorators import token_required
+from utils.decorators import token_required
 from sqlalchemy import text
 from models import db, Receipt
 
@@ -23,9 +23,11 @@ def get_store_names(user_id):
             'store_names': [name[0] for name in store_names if name[0]]
         })
     except Exception as e:
+        # Add logging to see the actual error in your logs
+        app.logger.error(f"Error fetching store names for user {user_id}: {e}") 
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': 'An internal error occurred while fetching filter data.'
         }), 500
 
 @filters_bp.route('/store-categories', methods=['GET'])
@@ -45,7 +47,9 @@ def get_store_categories(user_id):
             'store_categories': [category[0] for category in store_categories if category[0]]
         })
     except Exception as e:
+        # Add logging to see the actual error in your logs
+        app.logger.error(f"Error fetching store categories for user {user_id}: {e}") 
         return jsonify({
             'success': False,
-            'error': str(e)
-        }), 500 
+            'error': 'An internal error occurred while fetching filter data.'
+        }), 500

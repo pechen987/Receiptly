@@ -2,11 +2,11 @@ from flask import Blueprint, request, jsonify, current_app as app
 from flask_cors import cross_origin
 
 # Import necessary components from the backend application
-from backend.models import User
-from backend.errors import AuthenticationError, APIError, ValidationError
+from models import User
+from errors import AuthenticationError, APIError, ValidationError
 
 # Import the token_required decorator
-from backend.utils.decorators import token_required
+from utils.decorators import token_required
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/api/user/profile')
 

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, current_app as app, request, redirect
-from backend.utils.decorators import token_required
-from backend.models import Receipt, User
+from utils.decorators import token_required
+from models import Receipt, User
 from datetime import datetime, timedelta
 import stripe
 import os
@@ -9,9 +9,8 @@ import time
 
 stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
 
-# Stripe price IDs
-MONTHLY_PRICE_ID = 'price_1RX00ZE9IYgVm0lSJvDKn8Y8'  # Test
-YEARLY_PRICE_ID = 'price_1RX00sE9IYgVm0lSsaM5ea9f'   # Test
+MONTHLY_PRICE_ID = os.environ.get('STRIPE_MONTHLY_PRICE_ID')
+YEARLY_PRICE_ID = os.environ.get('STRIPE_YEARLY_PRICE_ID')
 
 subscription_bp = Blueprint('subscription', __name__)
 
@@ -35,18 +34,18 @@ def get_receipt_count(user_id):
             
             current_month_receipt_count = None
             if user.plan == 'basic':
-                # Get the first and last day of the current month
+                # Get the first and last day of the current month (UTC)
                 today = datetime.utcnow().date()
                 first_day = today.replace(day=1)
                 if today.month == 12:
                     next_month = today.replace(year=today.year + 1, month=1, day=1)
                 else:
                     next_month = today.replace(month=today.month + 1, day=1)
-                # Count receipts for the current month
+                # Count receipts uploaded in the current month (use created_at)
                 current_month_receipt_count = db.session.query(Receipt).filter(
                     Receipt.user_id == user_id,
-                    Receipt.date >= first_day,
-                    Receipt.date < next_month
+                    Receipt.created_at >= first_day,
+                    Receipt.created_at < next_month
                 ).count()
             
             # Prepare subscription details

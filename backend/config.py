@@ -11,7 +11,10 @@ class Config:
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
     
     # Database settings
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///app.db'
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        'SQLALCHEMY_DATABASE_URI',
+        'sqlite:///' + os.path.join(os.path.dirname(__file__), 'instance', 'app.db')
+    )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Email settings
