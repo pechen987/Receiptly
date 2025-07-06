@@ -174,3 +174,6 @@ Accept-Encoding: gzip, deflate
 2025-07-06 19:04:58,285 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
 2025-07-06 19:05:03,307 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
 2025-07-06 19:05:22,882 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 19:28:04,466 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 19:28:05,466 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 19:28:27,621 ERROR: User with ID 2 not found in DB based on token data. [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/profile.py:33]

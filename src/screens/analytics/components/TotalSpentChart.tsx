@@ -35,6 +35,7 @@ const TotalSpentChart: React.FC<TotalSpentChartProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [interval, setInterval] = useState<'daily' | 'weekly' | 'monthly'>('daily');
+  const [hasDataInAnyInterval, setHasDataInAnyInterval] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const prevIntervalRef = useRef(interval);
 
@@ -108,6 +109,44 @@ const TotalSpentChart: React.FC<TotalSpentChartProps> = ({
       
       console.log('[TotalSpent] Final spend data array:', spendDataArray);
       setSpendData(spendDataArray);
+      
+      // Check other intervals for data
+      console.log('[TotalSpent] Checking other intervals for data...');
+      const intervals: ('daily' | 'weekly' | 'monthly')[] = ['daily', 'weekly', 'monthly'];
+      let hasData = spendDataArray.length > 0 && spendDataArray.some((item: SpendData) => item.total_spent > 0);
+      
+      if (!hasData) {
+        for (const i of intervals) {
+          if (i === interval) continue;
+          try {
+            const intervalRes = await axios.get(`${API_BASE_URL}/api/analytics/spend`, {
+              params: { 
+                user_id: currentUserId, 
+                interval: i,
+                store_name: selectedStore,
+                store_category: selectedCategory
+              },
+              headers
+            });
+            
+            let intervalDataArray = [];
+            if (intervalRes.data && intervalRes.data.data && Array.isArray(intervalRes.data.data)) {
+              intervalDataArray = intervalRes.data.data;
+            } else if (intervalRes.data && Array.isArray(intervalRes.data)) {
+              intervalDataArray = intervalRes.data;
+            }
+            
+            if (intervalDataArray.length > 0 && intervalDataArray.some((item: SpendData) => item.total_spent > 0)) {
+              hasData = true;
+              break;
+            }
+          } catch (e) {
+            console.error(`[TotalSpent] Error checking interval ${i}:`, e);
+          }
+        }
+      }
+      
+      setHasDataInAnyInterval(hasData);
     } catch (error: any) {
       console.log('[TotalSpent] Error fetching spend data:', error);
       let userMessage = 'Unable to load spend data.';
@@ -120,6 +159,7 @@ const TotalSpentChart: React.FC<TotalSpentChartProps> = ({
       }
       setError(userMessage);
       setSpendData([]);
+      setHasDataInAnyInterval(false);
     } finally {
       setLoading(false);
     }
@@ -265,7 +305,7 @@ const TotalSpentChart: React.FC<TotalSpentChartProps> = ({
           <Text style={sharedStyles.title}>Total spent</Text>
           <HintIcon hintText="This chart shows your total spending over time, grouped by the selected interval (daily, weekly, or monthly). You can click on a bar to see the receipts for that period." />
         </View>
-        {chartData.values.length > 0 && (
+        {hasDataInAnyInterval && !loading && !error && (
           <View style={sharedStyles.selector}>
             {['D', 'W', 'M'].map(label => {
               const mode = label === 'D' ? 'daily' : label === 'W' ? 'weekly' : 'monthly';
@@ -300,9 +340,13 @@ const TotalSpentChart: React.FC<TotalSpentChartProps> = ({
         <View style={{ height: 200, justifyContent: 'center' }}>
           <Text style={[sharedStyles.message, { color: 'red' }]}>{error}</Text>
         </View>
-      ) : chartData.values.length === 0 ? (
+      ) : !hasDataInAnyInterval ? (
         <View style={sharedStyles.emptyCompact}>
           <Text style={sharedStyles.message}>No data yet</Text>
+        </View>
+      ) : chartData.values.length === 0 ? (
+        <View style={sharedStyles.emptyCompact}>
+          <Text style={sharedStyles.message}>No data for this interval</Text>
         </View>
       ) : (
         <ScrollView 
