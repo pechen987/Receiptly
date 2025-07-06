@@ -86,6 +86,11 @@ def get_spend_analytics(user_id):
             app.logger.info(f"[Analytics] Database session: {db.session}")
             app.logger.info(f"[Analytics] Receipt model: {Receipt}")
             
+            # Get user currency first (needed for both cases)
+            user = db.session.query(User).get(user_id) # Use db from extensions
+            user_currency = user.currency if user and user.currency else 'USD'
+            app.logger.info(f"[Analytics] User currency: {user_currency}")
+            
             # Test basic query first
             test_query = db.session.query(Receipt).filter(Receipt.user_id == user_id).limit(1)
             app.logger.info(f"[Analytics] Test query: {test_query}")
@@ -131,13 +136,50 @@ def get_spend_analytics(user_id):
                 else:
                     response = []
             else:
-                # Fetch user currency
-                user = db.session.query(User).get(user_id) # Use db from extensions
-                user_currency = user.currency if user and user.currency else 'USD'
-                response = [
-                    {'period': period, 'total_spent': round(total, 4)}
-                    for period, total in period_results
-                ]
+                # Format the response with proper date formatting
+                response = []
+                for period, total in period_results:
+                    if interval == 'daily':
+                        # Format as '09 Jun' for daily
+                        try:
+                            if isinstance(period, str):
+                                # If it's already a string, try to parse and format
+                                parsed_date = datetime.strptime(period, '%Y-%m-%d')
+                                formatted_period = parsed_date.strftime('%d %b')
+                            else:
+                                # If it's a date object, format directly
+                                formatted_period = period.strftime('%d %b')
+                        except:
+                            formatted_period = str(period)
+                    elif interval == 'weekly':
+                        # Format as 'W23' for weekly
+                        try:
+                            if isinstance(period, str):
+                                # Extract week number from date string
+                                parsed_date = datetime.strptime(period, '%Y-%m-%d')
+                                week_num = parsed_date.isocalendar()[1]
+                                formatted_period = f'W{week_num}'
+                            else:
+                                week_num = period.isocalendar()[1]
+                                formatted_period = f'W{week_num}'
+                        except:
+                            formatted_period = str(period)
+                    else:  # monthly
+                        # Format as 'Jun' for monthly
+                        try:
+                            if isinstance(period, str):
+                                parsed_date = datetime.strptime(period, '%Y-%m-%d')
+                                formatted_period = parsed_date.strftime('%b')
+                            else:
+                                formatted_period = period.strftime('%b')
+                        except:
+                            formatted_period = str(period)
+                    
+                    response.append({
+                        'period': formatted_period, 
+                        'total_spent': round(total, 4)
+                    })
+            
             app.logger.info(f"[Analytics] Found {len(response)} periods of data")
             app.logger.info(f"[Analytics] Final response: {response}")
             return jsonify({'currency': user_currency, 'data': response})

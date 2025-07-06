@@ -149,17 +149,56 @@ const TotalSpentChart: React.FC<TotalSpentChartProps> = ({
       setHasDataInAnyInterval(hasData);
     } catch (error: any) {
       console.log('[TotalSpent] Error fetching spend data:', error);
-      let userMessage = 'Unable to load spend data.';
-      if (axios.isAxiosError(error)) {
-        if (!error.response) {
-          userMessage = 'No internet connection or the server is not responding.';
+      
+      // Check if this is a 500 error with no data (which means no receipts)
+      if (axios.isAxiosError(error) && error.response?.status === 500) {
+        // Try a simple query to check if user has any receipts at all
+        try {
+          const simpleRes = await axios.get(`${API_BASE_URL}/api/analytics/spend`, {
+            params: { 
+              user_id: currentUserId, 
+              interval: 'daily',
+              store_name: selectedStore,
+              store_category: selectedCategory
+            },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${await AsyncStorage.getItem('jwt_token')}`
+            }
+          });
+          
+          // If we get here, the user has no receipts
+          setError(null);
+          setSpendData([]);
+          setHasDataInAnyInterval(false);
+          return;
+        } catch (simpleError: any) {
+          // If simple query also fails, it's a real error
+          let userMessage = 'Unable to load spend data.';
+          if (axios.isAxiosError(simpleError)) {
+            if (!simpleError.response) {
+              userMessage = 'No internet connection or the server is not responding.';
+            }
+          } else if (simpleError.message && simpleError.message.toLowerCase().includes('network')) {
+            userMessage = 'No internet connection. Please check your connection and try again.';
+          }
+          setError(userMessage);
+          setSpendData([]);
+          setHasDataInAnyInterval(false);
         }
-      } else if (error.message && error.message.toLowerCase().includes('network')) {
-        userMessage = 'No internet connection. Please check your connection and try again.';
+      } else {
+        let userMessage = 'Unable to load spend data.';
+        if (axios.isAxiosError(error)) {
+          if (!error.response) {
+            userMessage = 'No internet connection or the server is not responding.';
+          }
+        } else if (error.message && error.message.toLowerCase().includes('network')) {
+          userMessage = 'No internet connection. Please check your connection and try again.';
+        }
+        setError(userMessage);
+        setSpendData([]);
+        setHasDataInAnyInterval(false);
       }
-      setError(userMessage);
-      setSpendData([]);
-      setHasDataInAnyInterval(false);
     } finally {
       setLoading(false);
     }

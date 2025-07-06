@@ -560,3 +560,166 @@ Accept-Encoding: gzip, deflate
 2025-07-06 19:31:59,404 INFO: Created SetupIntent seti_1RhyI7E9IYgVm0lSPn4awBam for trial user 1 [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/subscription.py:147]
 2025-07-06 19:32:06,550 INFO: Retrieved existing Stripe customer cus_SdElntPQPMHoiz for user 1 [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/subscription.py:122]
 2025-07-06 19:32:06,910 INFO: Created SetupIntent seti_1RhyIEE9IYgVm0lSD0KIgPvF for trial user 1 [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/subscription.py:147]
+2025-07-06 19:46:13,669 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 19:46:14,408 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 19:46:43,301 INFO: [Analytics] Database URL: sqlite:////Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/instance/app.db [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:47]
+2025-07-06 19:46:43,302 INFO: [Analytics] Database URL: sqlite:////Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/instance/app.db [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:47]
+2025-07-06 19:46:43,307 INFO: [Analytics] Using SQLite date functions with group_by: strftime(:strftime_1, receipt.date) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:60]
+2025-07-06 19:46:43,311 INFO: [Analytics] Using SQLite date functions with group_by: strftime(:strftime_1, receipt.date) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:60]
+2025-07-06 19:46:43,313 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 19:46:43,314 INFO: [Analytics] Top products request - user_id: 1, period: month, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:165]
+2025-07-06 19:46:43,315 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 19:46:43,316 INFO: [Analytics] Database session: <sqlalchemy.orm.scoping.scoped_session object at 0x111403a90> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:86]
+2025-07-06 19:46:43,317 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI2MjE5OH0.zUgc2p6HvSg2SyXTSsJ1Fe5AwTWSVcdh-FQoOa6hzpo
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:166]
+2025-07-06 19:46:43,317 INFO: [Analytics] Database session: <sqlalchemy.orm.scoping.scoped_session object at 0x111403a90> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:86]
+2025-07-06 19:46:43,317 INFO: [Analytics] Receipt model: <class 'models.Receipt'> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:87]
+2025-07-06 19:46:43,317 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '6')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:167]
+2025-07-06 19:46:43,317 INFO: [Analytics] Receipt model: <class 'models.Receipt'> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:87]
+2025-07-06 19:46:43,318 INFO: [Analytics] Test query: SELECT receipt.id AS receipt_id, receipt.user_id AS receipt_user_id, receipt.store_category AS receipt_store_category, receipt.store_name AS receipt_store_name, receipt.date AS receipt_date, receipt.total AS receipt_total, receipt.tax_amount AS receipt_tax_amount, receipt.total_discount AS receipt_total_discount, receipt.items AS receipt_items, receipt.fingerprint AS receipt_fingerprint, receipt.created_at AS receipt_created_at, receipt.updated_at AS receipt_updated_at 
+FROM receipt 
+WHERE receipt.user_id = ?
+ LIMIT ? OFFSET ? [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:91]
+2025-07-06 19:46:43,319 INFO: [Analytics] Test query: SELECT receipt.id AS receipt_id, receipt.user_id AS receipt_user_id, receipt.store_category AS receipt_store_category, receipt.store_name AS receipt_store_name, receipt.date AS receipt_date, receipt.total AS receipt_total, receipt.tax_amount AS receipt_tax_amount, receipt.total_discount AS receipt_total_discount, receipt.items AS receipt_items, receipt.fingerprint AS receipt_fingerprint, receipt.created_at AS receipt_created_at, receipt.updated_at AS receipt_updated_at 
+FROM receipt 
+WHERE receipt.user_id = ?
+ LIMIT ? OFFSET ? [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:91]
+2025-07-06 19:46:43,320 INFO: [Analytics] Test result: <Receipt 1> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:93]
+2025-07-06 19:46:43,320 INFO: [Analytics] Test result: <Receipt 1> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:93]
+2025-07-06 19:46:43,322 INFO: [Analytics] Raw query results: [('2025-06-09', 1.2)] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:118]
+2025-07-06 19:46:43,322 INFO: [Analytics] Raw query results: [('2025-06-09', 1.2)] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:118]
+2025-07-06 19:46:43,322 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:141]
+2025-07-06 19:46:43,322 INFO: [Analytics] Final response: [{'period': '2025-06-09', 'total_spent': 1.2}] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:142]
+2025-07-06 19:46:43,323 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:141]
+2025-07-06 19:46:43,323 INFO: [Analytics] Final response: [{'period': '2025-06-09', 'total_spent': 1.2}] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:142]
+2025-07-06 19:46:43,327 INFO: [Analytics] Top products request - user_id: 1, period: month, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:165]
+2025-07-06 19:46:43,327 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI2MjE5OH0.zUgc2p6HvSg2SyXTSsJ1Fe5AwTWSVcdh-FQoOa6hzpo
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:166]
+2025-07-06 19:46:43,327 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '6')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:167]
+2025-07-06 19:47:15,567 INFO: [Analytics] Database URL: sqlite:////Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/instance/app.db [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:47]
+2025-07-06 19:47:15,571 INFO: [Analytics] Using SQLite date functions with group_by: strftime(:strftime_1, receipt.date) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:60]
+2025-07-06 19:47:15,571 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 19:47:15,578 INFO: [Analytics] Top products request - user_id: 1, period: month, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:165]
+2025-07-06 19:47:15,580 INFO: [Analytics] Database session: <sqlalchemy.orm.scoping.scoped_session object at 0x111403a90> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:86]
+2025-07-06 19:47:15,584 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI2MjE5OH0.zUgc2p6HvSg2SyXTSsJ1Fe5AwTWSVcdh-FQoOa6hzpo
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:166]
+2025-07-06 19:47:15,585 INFO: [Analytics] Receipt model: <class 'models.Receipt'> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:87]
+2025-07-06 19:47:15,585 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '6')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:167]
+2025-07-06 19:47:15,586 INFO: [Analytics] Test query: SELECT receipt.id AS receipt_id, receipt.user_id AS receipt_user_id, receipt.store_category AS receipt_store_category, receipt.store_name AS receipt_store_name, receipt.date AS receipt_date, receipt.total AS receipt_total, receipt.tax_amount AS receipt_tax_amount, receipt.total_discount AS receipt_total_discount, receipt.items AS receipt_items, receipt.fingerprint AS receipt_fingerprint, receipt.created_at AS receipt_created_at, receipt.updated_at AS receipt_updated_at 
+FROM receipt 
+WHERE receipt.user_id = ?
+ LIMIT ? OFFSET ? [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:91]
+2025-07-06 19:47:15,588 INFO: [Analytics] Test result: <Receipt 1> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:93]
+2025-07-06 19:47:15,589 INFO: [Analytics] Raw query results: [('2025-06-09', 1.2)] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:118]
+2025-07-06 19:47:15,589 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:141]
+2025-07-06 19:47:15,589 INFO: [Analytics] Final response: [{'period': '2025-06-09', 'total_spent': 1.2}] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:142]
+2025-07-06 19:48:02,863 INFO: [Analytics] Database URL: sqlite:////Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/instance/app.db [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:47]
+2025-07-06 19:48:02,866 INFO: [Analytics] Using SQLite date functions with group_by: strftime(:strftime_1, receipt.date) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:60]
+2025-07-06 19:48:02,866 INFO: [Analytics] Fetching spend analytics for user 1 with interval weekly [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 19:48:02,866 INFO: [Analytics] Database session: <sqlalchemy.orm.scoping.scoped_session object at 0x111403a90> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:86]
+2025-07-06 19:48:02,866 INFO: [Analytics] Receipt model: <class 'models.Receipt'> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:87]
+2025-07-06 19:48:02,867 INFO: [Analytics] Test query: SELECT receipt.id AS receipt_id, receipt.user_id AS receipt_user_id, receipt.store_category AS receipt_store_category, receipt.store_name AS receipt_store_name, receipt.date AS receipt_date, receipt.total AS receipt_total, receipt.tax_amount AS receipt_tax_amount, receipt.total_discount AS receipt_total_discount, receipt.items AS receipt_items, receipt.fingerprint AS receipt_fingerprint, receipt.created_at AS receipt_created_at, receipt.updated_at AS receipt_updated_at 
+FROM receipt 
+WHERE receipt.user_id = ?
+ LIMIT ? OFFSET ? [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:91]
+2025-07-06 19:48:02,868 INFO: [Analytics] Test result: <Receipt 1> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:93]
+2025-07-06 19:48:02,870 INFO: [Analytics] Raw query results: [('2025-W23', 1.2)] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:118]
+2025-07-06 19:48:02,870 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:141]
+2025-07-06 19:48:02,871 INFO: [Analytics] Final response: [{'period': '2025-W23', 'total_spent': 1.2}] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:142]
+2025-07-06 19:48:03,633 INFO: [Analytics] Database URL: sqlite:////Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/instance/app.db [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:47]
+2025-07-06 19:48:03,634 INFO: [Analytics] Using SQLite date functions with group_by: strftime(:strftime_1, receipt.date) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:60]
+2025-07-06 19:48:03,634 INFO: [Analytics] Fetching spend analytics for user 1 with interval monthly [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 19:48:03,634 INFO: [Analytics] Database session: <sqlalchemy.orm.scoping.scoped_session object at 0x111403a90> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:86]
+2025-07-06 19:48:03,634 INFO: [Analytics] Receipt model: <class 'models.Receipt'> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:87]
+2025-07-06 19:48:03,636 INFO: [Analytics] Test query: SELECT receipt.id AS receipt_id, receipt.user_id AS receipt_user_id, receipt.store_category AS receipt_store_category, receipt.store_name AS receipt_store_name, receipt.date AS receipt_date, receipt.total AS receipt_total, receipt.tax_amount AS receipt_tax_amount, receipt.total_discount AS receipt_total_discount, receipt.items AS receipt_items, receipt.fingerprint AS receipt_fingerprint, receipt.created_at AS receipt_created_at, receipt.updated_at AS receipt_updated_at 
+FROM receipt 
+WHERE receipt.user_id = ?
+ LIMIT ? OFFSET ? [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:91]
+2025-07-06 19:48:03,637 INFO: [Analytics] Test result: <Receipt 1> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:93]
+2025-07-06 19:48:03,638 INFO: [Analytics] Raw query results: [('2025-06', 1.2)] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:118]
+2025-07-06 19:48:03,639 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:141]
+2025-07-06 19:48:03,639 INFO: [Analytics] Final response: [{'period': '2025-06', 'total_spent': 1.2}] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:142]
+2025-07-06 19:48:04,688 INFO: [Analytics] Database URL: sqlite:////Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/instance/app.db [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:47]
+2025-07-06 19:48:04,689 INFO: [Analytics] Using SQLite date functions with group_by: strftime(:strftime_1, receipt.date) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:60]
+2025-07-06 19:48:04,689 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 19:48:04,689 INFO: [Analytics] Database session: <sqlalchemy.orm.scoping.scoped_session object at 0x111403a90> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:86]
+2025-07-06 19:48:04,689 INFO: [Analytics] Receipt model: <class 'models.Receipt'> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:87]
+2025-07-06 19:48:04,691 INFO: [Analytics] Test query: SELECT receipt.id AS receipt_id, receipt.user_id AS receipt_user_id, receipt.store_category AS receipt_store_category, receipt.store_name AS receipt_store_name, receipt.date AS receipt_date, receipt.total AS receipt_total, receipt.tax_amount AS receipt_tax_amount, receipt.total_discount AS receipt_total_discount, receipt.items AS receipt_items, receipt.fingerprint AS receipt_fingerprint, receipt.created_at AS receipt_created_at, receipt.updated_at AS receipt_updated_at 
+FROM receipt 
+WHERE receipt.user_id = ?
+ LIMIT ? OFFSET ? [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:91]
+2025-07-06 19:48:04,692 INFO: [Analytics] Test result: <Receipt 1> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:93]
+2025-07-06 19:48:04,693 INFO: [Analytics] Raw query results: [('2025-06-09', 1.2)] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:118]
+2025-07-06 19:48:04,694 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:141]
+2025-07-06 19:48:04,695 INFO: [Analytics] Final response: [{'period': '2025-06-09', 'total_spent': 1.2}] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:142]
+2025-07-06 19:48:15,143 INFO: [Analytics] Database URL: sqlite:////Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/instance/app.db [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:47]
+2025-07-06 19:48:15,147 INFO: [Analytics] Using SQLite date functions with group_by: strftime(:strftime_1, receipt.date) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:60]
+2025-07-06 19:48:15,149 INFO: [Analytics] Fetching spend analytics for user 1 with interval daily [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 19:48:15,150 INFO: [Analytics] Database session: <sqlalchemy.orm.scoping.scoped_session object at 0x111403a90> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:86]
+2025-07-06 19:48:15,153 INFO: [Analytics] Top products request - user_id: 1, period: month, store_name: None, store_category: None [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:165]
+2025-07-06 19:48:15,157 INFO: [Analytics] Receipt model: <class 'models.Receipt'> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:87]
+2025-07-06 19:48:15,161 INFO: [Analytics] Request headers: Host: 172.20.10.2:5001
+Connection: keep-alive
+Accept: application/json, text/plain, */*
+User-Agent: Expo/1017699 CFNetwork/3855.100.1 Darwin/25.0.0
+Accept-Language: en-GB,en;q=0.9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6Imlnb3Jlay5rcnVnQHlhbmRleC5ydSIsImV4cCI6MTc1MjI2MjE5OH0.zUgc2p6HvSg2SyXTSsJ1Fe5AwTWSVcdh-FQoOa6hzpo
+Accept-Encoding: gzip, deflate
+
+ [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:166]
+2025-07-06 19:48:15,162 INFO: [Analytics] Test query: SELECT receipt.id AS receipt_id, receipt.user_id AS receipt_user_id, receipt.store_category AS receipt_store_category, receipt.store_name AS receipt_store_name, receipt.date AS receipt_date, receipt.total AS receipt_total, receipt.tax_amount AS receipt_tax_amount, receipt.total_discount AS receipt_total_discount, receipt.items AS receipt_items, receipt.fingerprint AS receipt_fingerprint, receipt.created_at AS receipt_created_at, receipt.updated_at AS receipt_updated_at 
+FROM receipt 
+WHERE receipt.user_id = ?
+ LIMIT ? OFFSET ? [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:91]
+2025-07-06 19:48:15,162 INFO: [Analytics] Request args: ImmutableMultiDict([('user_id', '1'), ('period', 'month'), ('limit', '6')]) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:167]
+2025-07-06 19:48:15,164 INFO: [Analytics] Test result: <Receipt 1> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:93]
+2025-07-06 19:48:15,165 INFO: [Analytics] Raw query results: [('2025-06-09', 1.2)] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:118]
+2025-07-06 19:48:15,166 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:141]
+2025-07-06 19:48:15,166 INFO: [Analytics] Final response: [{'period': '2025-06-09', 'total_spent': 1.2}] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:142]
+2025-07-06 19:48:37,889 INFO: [Analytics] Database URL: sqlite:////Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/instance/app.db [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:47]
+2025-07-06 19:48:37,890 INFO: [Analytics] Using SQLite date functions with group_by: strftime(:strftime_1, receipt.date) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:60]
+2025-07-06 19:48:37,891 INFO: [Analytics] Fetching spend analytics for user 1 with interval weekly [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 19:48:37,891 INFO: [Analytics] Database session: <sqlalchemy.orm.scoping.scoped_session object at 0x111403a90> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:86]
+2025-07-06 19:48:37,891 INFO: [Analytics] Receipt model: <class 'models.Receipt'> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:87]
+2025-07-06 19:48:37,892 INFO: [Analytics] Test query: SELECT receipt.id AS receipt_id, receipt.user_id AS receipt_user_id, receipt.store_category AS receipt_store_category, receipt.store_name AS receipt_store_name, receipt.date AS receipt_date, receipt.total AS receipt_total, receipt.tax_amount AS receipt_tax_amount, receipt.total_discount AS receipt_total_discount, receipt.items AS receipt_items, receipt.fingerprint AS receipt_fingerprint, receipt.created_at AS receipt_created_at, receipt.updated_at AS receipt_updated_at 
+FROM receipt 
+WHERE receipt.user_id = ?
+ LIMIT ? OFFSET ? [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:91]
+2025-07-06 19:48:37,893 INFO: [Analytics] Test result: <Receipt 1> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:93]
+2025-07-06 19:48:37,894 INFO: [Analytics] Raw query results: [('2025-W23', 1.2)] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:118]
+2025-07-06 19:48:37,895 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:141]
+2025-07-06 19:48:37,896 INFO: [Analytics] Final response: [{'period': '2025-W23', 'total_spent': 1.2}] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:142]
+2025-07-06 19:48:38,931 INFO: [Analytics] Database URL: sqlite:////Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/instance/app.db [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:47]
+2025-07-06 19:48:38,931 INFO: [Analytics] Using SQLite date functions with group_by: strftime(:strftime_1, receipt.date) [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:60]
+2025-07-06 19:48:38,931 INFO: [Analytics] Fetching spend analytics for user 1 with interval monthly [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:85]
+2025-07-06 19:48:38,931 INFO: [Analytics] Database session: <sqlalchemy.orm.scoping.scoped_session object at 0x111403a90> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:86]
+2025-07-06 19:48:38,931 INFO: [Analytics] Receipt model: <class 'models.Receipt'> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:87]
+2025-07-06 19:48:38,932 INFO: [Analytics] Test query: SELECT receipt.id AS receipt_id, receipt.user_id AS receipt_user_id, receipt.store_category AS receipt_store_category, receipt.store_name AS receipt_store_name, receipt.date AS receipt_date, receipt.total AS receipt_total, receipt.tax_amount AS receipt_tax_amount, receipt.total_discount AS receipt_total_discount, receipt.items AS receipt_items, receipt.fingerprint AS receipt_fingerprint, receipt.created_at AS receipt_created_at, receipt.updated_at AS receipt_updated_at 
+FROM receipt 
+WHERE receipt.user_id = ?
+ LIMIT ? OFFSET ? [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:91]
+2025-07-06 19:48:38,933 INFO: [Analytics] Test result: <Receipt 1> [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:93]
+2025-07-06 19:48:38,933 INFO: [Analytics] Raw query results: [('2025-06', 1.2)] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:118]
+2025-07-06 19:48:38,934 INFO: [Analytics] Found 1 periods of data [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:141]
+2025-07-06 19:48:38,934 INFO: [Analytics] Final response: [{'period': '2025-06', 'total_spent': 1.2}] [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/routes/analytics.py:142]
