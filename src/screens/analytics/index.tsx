@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, memo, useRef, useMemo } from 'react';
-import { View, ScrollView, RefreshControl, Text, Pressable, StyleSheet, Modal, FlatList, TouchableOpacity, Dimensions, Animated, Alert, StatusBar } from 'react-native';
+import { View, ScrollView, RefreshControl, Text, Pressable, Modal, FlatList, TouchableOpacity, Dimensions, Animated, Alert, StatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -9,9 +9,6 @@ import DraggableFlatList, { ScaleDecorator } from 'react-native-draggable-flatli
 import api from '../../services/api';
 import axios from 'axios';
 import apiConfig from '../../config/api';
-import { fetchSpendData as fetchSpendDataApi } from './utils/api';
-import { DraggableWidget } from './components/DraggableWidget';
-
 import { styles } from './styles';
 import TotalSpentChart from './components/TotalSpentChart';
 import TopProductsChart from './components/TopProductsChart';
@@ -24,7 +21,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useCurrency } from './contexts/CurrencyContext';
 import { useReceipt } from '../../contexts/ReceiptContext';
 import { useWidgetOrder, WidgetOrderProvider } from './contexts/WidgetOrderContext';
-import { SpendData } from './types';
 import { formatCurrency } from './utils/currency';
 import jwtDecode from 'jwt-decode';
 import AnalyticsHeader from '../../components/AnalyticsHeader';
@@ -55,17 +51,14 @@ const AnalyticsScreenContent = () => {
   const { refreshTrigger, setRefreshTrigger, triggerRefresh } = useReceipt();
   const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
-  const [spendData, setSpendData] = useState<SpendData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [interval, setInterval] = useState<'daily' | 'weekly' | 'monthly'>('daily');
   const lastLoginRef = useRef<number | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | undefined>(undefined);
   const scrollY = useRef(new Animated.Value(0)).current;
   const [shouldRefresh, setShouldRefresh] = useState(false);
   const refreshThreshold = -100; // Only trigger refresh after pulling down 100 pixels
   const isRefreshing = useRef(false);
-  const [totalSpentRefreshTrigger, setTotalSpentRefreshTrigger] = useState(0);
   const [userPlan, setUserPlan] = useState<string>('basic');
   const [isLoadingUserPlan, setIsLoadingUserPlan] = useState(true);
   const [exporting, setExporting] = useState(false);
@@ -121,73 +114,14 @@ const AnalyticsScreenContent = () => {
     initializeUserId();
   }, [initializeUserId, user?.id]);
 
-  const fetchSpendData = useCallback(async () => {
-    if (!currentUserId) return;
-
-    const attemptFetch = async () => {
-      try {
-        console.log('[Analytics] Making API request to:', '/api/analytics/spend');
-        console.log('[Analytics] Request params:', { 
-          user_id: currentUserId, 
-          interval,
-          store_name: selectedStore,
-          store_category: selectedCategory
-        });
-        
-        const data = await fetchSpendDataApi(Number(currentUserId), interval, selectedStore, selectedCategory);
-        console.log('[Analytics] Raw API response:', data);
-        console.log('[Analytics] Data type:', typeof data);
-        console.log('[Analytics] Data keys:', Object.keys(data || {}));
-        
-        // Handle both possible response formats
-        let spendDataArray = [];
-        if (data && data.data && Array.isArray(data.data)) {
-          // Backend returns { currency: "USD", data: [...] }
-          spendDataArray = data.data;
-          console.log('[Analytics] Using data.data format, found', spendDataArray.length, 'items');
-        } else if (data && Array.isArray(data)) {
-          // Backend returns data array directly
-          spendDataArray = data;
-          console.log('[Analytics] Using direct data format, found', spendDataArray.length, 'items');
-        } else {
-          console.log('[Analytics] Unexpected data format:', data);
-          spendDataArray = [];
-        }
-        
-        console.log('[Analytics] Final spend data array:', spendDataArray);
-        setSpendData(spendDataArray);
-      } catch (error) {
-        console.log('[Analytics] Error fetching spend data:', error);
-        setSpendData([]);
-      }
-    };
-
-    await attemptFetch();
-  }, [currentUserId, interval, selectedStore, selectedCategory]);
-
   useEffect(() => {
     if (lastLoginTimestamp !== lastLoginRef.current) {
       console.log('[Analytics] Login timestamp changed, triggering refresh');
       console.log('[Analytics] Current user ID:', currentUserId);
       console.log('[Analytics] Last login timestamp:', lastLoginTimestamp);
       lastLoginRef.current = lastLoginTimestamp;
-      fetchSpendData();
     }
-  }, [lastLoginTimestamp, currentUserId, fetchSpendData]);
-
-  // Add effect to refetch data when interval changes
-  useEffect(() => {
-    console.log('[Analytics] Interval changed to:', interval);
-    if (currentUserId) {
-      fetchSpendData();
-    }
-  }, [interval, currentUserId, fetchSpendData]);
-
-  // Add effect to refetch data when the receipt refresh trigger changes
-  useEffect(() => {
-    console.log('[Analytics] Receipt refresh trigger changed, refetching spend data');
-    fetchSpendData();
-  }, [refreshTrigger, fetchSpendData]);
+  }, [lastLoginTimestamp, currentUserId]);
 
   const onRefresh = useCallback(async () => {
     // Prevent multiple refreshes
@@ -203,8 +137,7 @@ const AnalyticsScreenContent = () => {
     
     try {
       await initializeUserId();
-      await fetchSpendData();
-      // Trigger refresh for all other charts
+      // Trigger refresh for all charts
       triggerRefresh();
     } catch (error) {
       console.log('[Analytics] Error during manual refresh:', error);
@@ -213,7 +146,7 @@ const AnalyticsScreenContent = () => {
       setShouldRefresh(false);
       isRefreshing.current = false;
     }
-  }, [fetchSpendData, currentUserId, initializeUserId, triggerRefresh]);
+  }, [currentUserId, initializeUserId, triggerRefresh]);
 
   // Add effect to handle refresh when shouldRefresh changes
   useEffect(() => {
@@ -229,12 +162,12 @@ const AnalyticsScreenContent = () => {
       // Only fetch data on the first focus (initial load) or if explicitly triggered
       if (!hasLoadedInitialData.current) {
         console.log('[Analytics] Initial load on focus, fetching data');
-        fetchSpendData();
+        onRefresh();
       }
     });
 
     return unsubscribe;
-  }, [navigation, fetchSpendData]);
+  }, [navigation, onRefresh]);
 
   const handleScroll = useCallback((event: any) => {
     const offsetY = event.nativeEvent.contentOffset.y;
@@ -257,12 +190,12 @@ const AnalyticsScreenContent = () => {
     setModalError(null);
     setModalReceipts([]);
     try {
-      console.log('Fetching receipts for date:', date, 'interval:', interval);
+      console.log('Fetching receipts for date:', date);
       const res = await api.get('/api/analytics/receipts-by-date', {
         params: { 
           user_id: currentUserId,
           date,
-          interval
+          interval: 'daily' // Default to daily for now
         }
       });
       console.log('Receipts response:', res.data);
@@ -288,7 +221,7 @@ const AnalyticsScreenContent = () => {
     } finally {
       setModalLoading(false);
     }
-  }, [currentUserId, interval]);
+  }, [currentUserId]);
 
   // Effect to fetch user plan
   useEffect(() => {
@@ -364,25 +297,15 @@ const AnalyticsScreenContent = () => {
     setShowFilterModal(false);
   };
 
-  const handleIntervalChange = (newInterval: string) => {
-    setInterval(newInterval as 'daily' | 'weekly' | 'monthly');
-  };
-
   const renderWidget = useCallback(({ item, drag, isActive }: { item: string, drag: () => void, isActive: boolean }) => {
     const renderChart = () => {
       switch (item) {
         case 'total_spent':
           return (
             <MemoizedTotalSpentChart
-              userId={currentUserId}
               onBarPress={handleBarPress}
               userCurrency={currency}
-              spendData={spendData}
-              loading={loading}
-              error={error}
-              interval={interval}
-              onIntervalChange={handleIntervalChange}
-              refreshTrigger={totalSpentRefreshTrigger}
+              refreshTrigger={refreshTrigger}
               selectedStore={selectedStore}
               selectedCategory={selectedCategory}
             />
@@ -472,7 +395,7 @@ const AnalyticsScreenContent = () => {
         </Pressable>
       </ScaleDecorator>
     );
-  }, [currentUserId, currency, spendData, loading, error, interval, refreshTrigger, handleBarPress, totalSpentRefreshTrigger, userPlan, selectedStore, selectedCategory, handleIntervalChange]);
+  }, [currentUserId, currency, refreshTrigger, handleBarPress, selectedStore, selectedCategory]);
 
   const onDragEnd = useCallback(async ({ data }: { data: string[] }) => {
     try {

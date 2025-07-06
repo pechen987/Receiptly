@@ -171,3 +171,6 @@ Accept-Encoding: gzip, deflate
 2025-07-06 19:01:46,137 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
 2025-07-06 19:01:56,443 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
 2025-07-06 19:02:08,710 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 19:04:58,285 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 19:05:03,307 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]
+2025-07-06 19:05:22,882 INFO: Application startup [in /Users/igorkruglov/Desktop/Check scan/CascadeProjects/windsurf-project/backend/logger.py:33]

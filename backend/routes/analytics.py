@@ -25,16 +25,9 @@ from utils.decorators import token_required
 
 analytics_bp = Blueprint('analytics', __name__, url_prefix='/api/analytics')
 
-# Create a limiter instance for analytics endpoints
-analytics_limiter = Limiter(
-    key_func=get_remote_address,
-    default_limits=["500 per hour", "50 per minute"]
-)
-
 @analytics_bp.route('/spend', methods=['GET'])
 @cross_origin()
 @token_required
-@analytics_limiter.limit("100 per minute")
 def get_spend_analytics(user_id):
     # Access db via app.extensions within context
     with app.app_context():
@@ -346,7 +339,6 @@ def get_most_expensive_products(user_id):
 
 @analytics_bp.route('/expenses-by-category', methods=['GET'])
 @token_required
-@analytics_limiter.limit("100 per minute")
 def expenses_by_category(user_id):
     # Access db via app.extensions within context
     with app.app_context():

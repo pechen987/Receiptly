@@ -13,8 +13,6 @@ from flask import Flask, request, jsonify, url_for, render_template_string, send
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_mail import Mail
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
 from dotenv import load_dotenv
@@ -40,11 +38,6 @@ application = app
 # --- Initialize Extensions ---
 CORS(app)
 mail = init_mail(app)
-limiter = Limiter(
-    get_remote_address,
-    app=app,
-    default_limits=["1000 per day", "200 per hour", "30 per minute"]
-)
 
 # Setup logging
 setup_logger(app)

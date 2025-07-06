@@ -3,14 +3,12 @@ import { View, Text, StyleSheet, Dimensions, Pressable, ScrollView, TouchableOpa
 import { Svg, G, Rect, Text as SvgText } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/Feather';
 import { useAuth } from '../../../contexts/AuthContext';
-import { useCurrency } from '../contexts/CurrencyContext';
 import { interpolateColor, baseChartWidth, formatLabel } from '../utils';
 import { ShoppingDaysData, ShoppingDay } from '../types';
-import { fetchShoppingDays } from '../utils/api';
 import { styles as sharedStyles } from '../styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwtDecode from 'jwt-decode';
-import { HintIcon, HintModal, modalStyles, HintIconProps, HintModalProps } from './HintComponents';
+import { HintIcon} from './HintComponents';
 import { BlurView } from 'expo-blur';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
