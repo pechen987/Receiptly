@@ -158,12 +158,8 @@ const AnalyticsScreenContent = () => {
   // Add effect to refetch data when the screen is focused
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log('[Analytics] Screen focused');
-      // Only fetch data on the first focus (initial load) or if explicitly triggered
-      if (!hasLoadedInitialData.current) {
-        console.log('[Analytics] Initial load on focus, fetching data');
-        onRefresh();
-      }
+      console.log('[Analytics] Screen focused, refreshing analytics');
+      onRefresh();
     });
 
     return unsubscribe;
