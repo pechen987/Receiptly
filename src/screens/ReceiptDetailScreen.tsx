@@ -431,6 +431,7 @@ export default function ReceiptDetailScreen() {
         </TouchableOpacity>
       </View>
 
+      <View style={styles.scrollBorderTop} />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.summaryCard}>
           <TouchableOpacity onPress={() => openModal('storeName', receipt.store_name || '')} style={styles.editableField}>
@@ -483,6 +484,7 @@ export default function ReceiptDetailScreen() {
             </View>
         </View>
       </ScrollView>
+      <View style={styles.scrollBorderBottom} />
 
       <Modal
         visible={isModalVisible}
@@ -706,5 +708,15 @@ const styles = StyleSheet.create({
   modalListText: {
     fontSize: 16,
     color: '#e6e9f0',
+  },
+  scrollBorderTop: {
+    height: 2,
+    backgroundColor: '#232632',
+    width: '100%',
+  },
+  scrollBorderBottom: {
+    height: 2,
+    backgroundColor: '#232632',
+    width: '100%',
   },
 });
