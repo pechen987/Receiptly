@@ -710,13 +710,13 @@ const styles = StyleSheet.create({
     color: '#e6e9f0',
   },
   scrollBorderTop: {
-    height: 2,
-    backgroundColor: '#232632',
+    height: 1,
+    backgroundColor: '#30363D',
     width: '100%',
   },
   scrollBorderBottom: {
-    height: 2,
-    backgroundColor: '#232632',
+    height: 1,
+    backgroundColor: '#30363D',
     width: '100%',
   },
 });
